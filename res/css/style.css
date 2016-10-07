@@ -1,0 +1,174 @@
+body {
+    background-color: #d7d6d6;
+/*    background-image: url(../img/logo-sman-1-bangkalan.png);*/
+    background-repeat: repeat;
+    font-family: 'Lato', sans-serif;
+}
+
+.row.wraper {
+    margin-right: 0;
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+@media (min-width: 1200px) {
+    .row.wraper {
+        margin-right: 015px;
+        margin-left: 15px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+body > .row > .container {
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 0;
+    padding-right: 0;
+    background: #fff;
+    float: none;
+}
+
+.container > .social-header {
+    height: auto;
+    min-height: 43px;
+    border-top: 4px solid #eb8a44;
+}
+
+.social-header > .social-left {
+    color: #747474 !important;
+    font-size: 12px;
+    padding-top: 10px;
+    padding-bottom: 12px;
+    float: left;
+}
+
+.social-left > .separator {
+    padding: 0 6px;
+}
+
+.social-header > .social-right {
+    color: #a0a0a0 !important;
+    font-size: 18px;
+    padding-top:8px;
+    text-align: right;
+}
+
+body > .row > .container > .header{
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.header >.navbar {
+	border-radius: 0px;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+@media (min-width: 1200px) {
+    .header > .navbar {
+        border-radius: 0px;
+        font-size: 14px;
+        padding:0 120px 0 120px;
+        margin-bottom: 0;
+    }
+}
+
+.navbar-default {
+    background-color: #ffffff;
+    border-top: 0.2px solid #dedede;
+}
+
+@media (min-width: 768px){
+    .navbar-nav > li > a {
+        padding-top:29.5px;
+        padding-bottom: 30.5px;
+    }
+    .navbar-header > .navbar-brand {
+        padding-top:29.5px;
+    }
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #727272;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #000;
+    border-top: 3px solid rgba(235, 138, 68, 0);
+}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #eb8a44;
+    background-color: #fff;
+    border-top: 3px solid #eb8a44;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #eb8a44;
+    background-color: transparent;
+    border-top: 3px solid #eb8a44;
+}
+
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+    color: #eb8a44;
+    background-color: #fff;
+    border-top: 3px solid #eb8a44;;
+}
+
+@media (max-width: 767px) {
+
+    .navbar-default .navbar-nav > .open > a,
+    .navbar-default .navbar-nav > .open > a:hover,
+    .navbar-default .navbar-nav > .open > a:focus {
+        color: #eb8a44;
+        background-color: #fff;
+        border-top: 3px solid #eb8a44;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        color: #000;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+        color: #000;
+        background-color: #fff;
+        border-top: 3px solid #eb8a44;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a,
+    .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:focus {
+        color: #cccccc;
+        background-color: transparent;
+    }
+}
+
+body > .row > .footer{
+    margin-right: auto;
+    margin-left: auto;
+    padding: 20px 0 0 0;
+    background: #8C8989 !important;
+    min-height: 320px;
+    float: none;
+}
+
+.footer > .first-footer > .about {
+    font-size: 12px;
+    color:#fff;
+    text-shadow: 2px 2px #4b4b4b;
+}
+.list-group-item.link {
+    position: relative;
+    display: block;
+    padding: 10px 0;
+    margin-bottom: -1px;
+    background: none;
+    border:0;
+    border-bottom: 1px solid #ecf0f1;
+}
