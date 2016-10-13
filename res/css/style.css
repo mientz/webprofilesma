@@ -35,7 +35,8 @@ body > .row > .container {
 .container > .social-header {
     height: auto;
     min-height: 43px;
-    border-top: 4px solid #eb8a44;
+    border-top-style: solid;
+    border-top-width: 4px;
     background: #fff;
 }
 
@@ -107,14 +108,14 @@ body > .row > .container > .header{
 .navbar-default .navbar-nav > .active > a:focus {
     color: #eb8a44;
     background-color: #fff;
-    border-top: 3px solid #eb8a44;
+    border-top: 3px solid #fff;
 }
 
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
     color: #eb8a44;
     background-color: transparent;
-    border-top: 3px solid #eb8a44;
+    border-top-width: 3px solid #fff;
 }
 
 .navbar-default .navbar-nav > .open > a,
@@ -122,7 +123,7 @@ body > .row > .container > .header{
 .navbar-default .navbar-nav > .open > a:focus {
     color: #eb8a44;
     background-color: #fff;
-    border-top: 3px solid #eb8a44;;
+    border-top: 3px solid #fff;
 }
 
 @media (min-width: 768px) {
@@ -132,7 +133,6 @@ body > .row > .container > .header{
 }
 
 @media (max-width: 767px) {
-
     .navbar-default .navbar-nav > .open > a,
     .navbar-default .navbar-nav > .open > a:hover,
     .navbar-default .navbar-nav > .open > a:focus {
@@ -242,6 +242,7 @@ body > .row > .footer{
 }
 
 /*content custom style*/
+/*front page*/
 .testimonial-area {
     margin-right: auto;
     margin-left: auto;
@@ -272,4 +273,85 @@ body > .row > .footer{
 }
 .testimonial-area  p {
     font-size: 14px;
+    text-align: justify;
 }
+
+.register-area {
+    margin-right: auto;
+    margin-left: auto;
+    float: none;
+    padding: 0;
+}
+
+.register-area > div {
+    background: url(../img/13385771_255950824767690_1897064539_n.jpg) no-repeat center center fixed;
+    background-size: cover;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin: 0;
+    border-top: 1px solid #e5e5e5;
+}
+
+.register-area .jumbotron {
+	background: none;
+    width: auto;
+    color:#fff;
+}
+
+.register-area .jumbotron p {
+	background: rgba(0, 0, 0, 0.59);
+    color:#fff;
+    display: inline-block;
+}
+
+.register-area .jumbotron h1 {
+	background: rgba(0, 0, 0, 0.59);
+    color:#fff;
+    display: inline-block;
+}
+
+.register-area .jumbotron p .time-counter {
+	background: none;
+    border:1px solid #fff;
+    border-radius: 100%;
+    color:#fff;
+    font-weight: 800;
+    font-size: 30px;
+    margin:10px;
+    width: 100px;
+    height: 100px;
+    line-height: 1;
+    padding: 18px 0;
+}
+.register-area .jumbotron p .time-counter small {
+    font-weight: 100;
+    font-size: 18px;
+}
+
+.event-area {
+    margin-right: auto;
+    margin-left: auto;
+    float: none;
+    padding: 0;
+}
+
+.event-area > div {
+    background: #ffffff;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border-top:1px solid #bfbfbf;
+    margin: 0;
+}
+
+.event-area blockquote + div {
+	padding-left: 0;
+    padding-right:0;
+}
+
+.event-area blockquote + div > div:first-child {
+	padding-left: 0;
+}
+.event-area blockquote + div > div:last-child {
+    padding-right:0;
+}
+
