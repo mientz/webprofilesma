@@ -343,15 +343,17 @@ body > .row > .footer{
     margin: 0;
 }
 
-.event-area blockquote + div {
+.event-area > div > div > div {
 	padding-left: 0;
     padding-right:0;
 }
 
-.event-area blockquote + div > div:first-child {
+.event-area > div > div > div > div:first-child {
 	padding-left: 0;
 }
-.event-area blockquote + div > div:last-child {
+.event-area  > div > div > div > div:last-child {
     padding-right:0;
+    padding-top: 21px;
 }
+
 
