@@ -55,6 +55,11 @@
     color:#eb8a44;
 }
 
-.event-area > div > div > div > div:first-child {
+.news-area > div > div > div > div:first-child {
     color:#eb8a44;
+}
+
+
+.event-area .info button{
+    background:#eb8a44;
 }
