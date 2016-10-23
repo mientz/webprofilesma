@@ -1,3 +1,25 @@
+/*button themed*/
+.btn-thm-default {
+    color: #ffffff;
+    background-color: #eb8a44;
+    border-color: #eb8a44;
+    border-radius:0;
+}
+
+/*pannel themed*/
+.panel-thm-primary {
+    border:none;
+    border-left: 1px solid #eee;
+    box-shadow: none;
+    border-radius: 0;
+}
+.panel-thm-primary > .panel-heading {
+    color: #000;
+    background-color: #fff;
+    border-left: 3px solid #eb8a44;
+}
+
+
 .container > .social-header {
     border-top-color: #eb8a44;
 }
@@ -62,4 +84,11 @@
 
 .event-area .info button{
     background:#eb8a44;
+}
+
+
+
+.side-bar li a:hover{
+    background: none;
+    color:#eb8a44;
 }
