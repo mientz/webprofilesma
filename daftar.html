@@ -12,6 +12,7 @@
         <link href="res/css/animate.css" rel="stylesheet">
         <link href="res/css/materialdesignicons.min.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Lato|Roboto|Roboto+Mono|Roboto+Slab" rel="stylesheet">
+        <link href="res/css/bootstrap-tagsinput.css" rel="stylesheet">
     </head>
 
     <body>
@@ -126,7 +127,7 @@
                     <div class="col-md-12">
                         <div class="col-md-10 col-md-offset-1">
                             <blockquote>
-                                <h3>Sejarah Sekolah</h3>
+                                <h3>Pendaftaran Siswa Baru</h3>
                             </blockquote>
                         </div>
                     </div>
@@ -137,30 +138,111 @@
                         <div class="col-md-10 col-md-offset-1">
                             <ul class="breadcrumb">
                                 <li><a href="#">Beranda</a></li>
-                                <li><a href="#">Profil</a></li>
-                                <li class="active">Sejarah Sekolah</li>
+                                <li><a href="#">Pendaftaran Siswa Baru</a></li>
+                                <li class="active">Pendaftaran Siswa Baru Jalur Prestasi</li>
                             </ul>
                             <div class="col-md-9 news-list">
-                                <div class="col-md-12 news-item">
+                                <div class="col-md-12 news-item register-menu">
                                     <div class="col-md-12 news-title news-title-detail">
-                                        <h1>Sejarah Sekolah</h1>
+                                        <h1>Formulir Pendaftaran</h1>
                                     </div>
-                                    <div class="col-md-12 news-summary">
-                                        <p><img alt="" src="https://pbs.twimg.com/profile_images/542597573890961408/D9uX9GDi.jpeg" style="float:left; height:100px; width:100px" />SMA Negeri 1 Bangkalan merupakan lembaga pendidikan tingkat menengah atas (SMA) yang pertama dan tertua di Kabupaten Bangkalan. Sekolah ini didirikan pada bulan Juli 1962 atas Inisiatif Bupati Kepala Daerah Tingkat II Kabupaten Bangkalan, yaitu R.P. Moh. Noer, dengan nama SMA NEGERI BANGKALAN. Sejak tahun 1978 berubah nama menjadi SMA Negeri 1 Bangkalan sehubungan dengan berdirinya SMA Negeri 2 Bangkalan. Sejalan dengan terbitnya Kurikulum SMU 1994, maka nama sekolah inipun berubah nama men&shy;jadi SMU Negeri 1 Bangkalan.</p>
-
-                                        <p>Yang perlu dicatat dan diketahui bahwa pendirian SMA Negeri Bangkalan ditetapkan berdasarkan SK Menteri Pendidikan dan Kebudayaan Nomor 21/SKlB.IH/1962&nbsp;<u>tanggal 1 Agustus 1962&nbsp;</u>dan diberlakukan ter&shy;hitung sejak tanggal 1 Agustus 1962. Dengan demikian maka tanggal 1 Agustus<u>ditetapkan&nbsp;</u>sebagai &quot;Hari Ulang Tahun&quot; SMA Negeri 1 Bangkalan. Hingga kini SMA Negeri 1 Bangkalan telah berusia 46 tahun (1962 sampai dengan 2008).</p>
-
-                                        <p>Adapun Nomor sekolah kita adalah No. 213, Nomer Rutin 166204, dan Nomer Statistik Sekolah (NSS) adalah 301052901001.</p>
-
-                                    </div>
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="inputEmail3">NISN</label>
+                                            <input type="text" class="form-control" id="inputEmail3" placeholder="6658936221654">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3">Nama Lengkap</label>
+                                            <input type="text" class="form-control" id="inputEmail3" placeholder="6658936221654">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3">Jenis Kelamin</label>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1">
+                                                    Laki Laki &nbsp;
+                                                </label>
+                                                <label>
+                                                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                                                    Perempuan
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3">Tempat Lahir</label>
+                                            <input type="text" class="form-control" id="inputEmail3" placeholder="6658936221654">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3">Tanggal Lahir</label>
+                                            <div class="form-group">
+                                                <div class="col-lg-2" style="padding:0">
+                                                    <input type="text" class="form-control" id="exampleInputName2" placeholder="Tanggal">
+                                                </div>
+                                                <div class="col-lg-6" style="padding:0">
+                                                    <select class="form-control" id="select">
+                                                        <option>Januari</option>
+                                                        <option>Februari</option>
+                                                        <option>Maret</option>
+                                                        <option>April</option>
+                                                        <option>Mei</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-lg-4" style="padding:0">
+                                                    <input type="text" class="form-control" id="exampleInputName2" placeholder="Tahun">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3">Agama</label>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" >
+                                                    Islam &nbsp;
+                                                </label>
+                                                <label>
+                                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" >
+                                                    Kristen Katolik &nbsp;
+                                                </label>
+                                                <label>
+                                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" >
+                                                    Kristen Protestan &nbsp;
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" >
+                                                    Hindu &nbsp;
+                                                </label>
+                                                <label>
+                                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" >
+                                                    Budha &nbsp;
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3">Nilai Ujian Nasional</label>
+                                            <input type="number" class="form-control" id="inputEmail3" placeholder="6658936221654">
+                                            <span id="helpBlock" class="help-block">Nilai Total Ujian Nasional</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3">Asal Sekolah</label>
+                                            <input type="text" class="form-control" id="inputEmail3" placeholder="6658936221654">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3">Pekerjaan Orang Tua</label>
+                                            <input type="text" class="form-control" id="inputEmail3" placeholder="6658936221654">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3">Prestasi Akademik</label>
+                                            <input type="text" class="form-control" data-role="tagsinput" id="inputEmail3" placeholder="6658936221654">
+                                            <span id="helpBlock" class="help-block">Jika lebih dari satu prestasi, mohon di pisah dengan koma (,)</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3">Prestasi NonAkademik</label>
+                                            <input type="text" class="form-control" data-role="tagsinput"  id="inputEmail3" placeholder="6658936221654">
+                                        </div>
+                                    </form>
                                 </div>
-                                <ul class="pagination pagination-sm pull-right">
-                                    <li><a>Share</a></li>
-                                    <li><a href="#" class="mdi mdi-facebook"style="color:#3b5998; border-color:#3b5998"></a></li>
-                                    <li><a href="#" class="mdi mdi-twitter" style="color:#55acee; border-color:#55acee"></a></li>
-                                    <li><a href="#" class="mdi mdi-google-plus" style="color:#dd4b39; border-color:#dd4b39"></a></li>
-                                    <li><a href="#" class="mdi mdi-pinterest" style="color:#cb2027; border-color:#cb2027"></a></li>
-                                </ul>
                             </div>
                             <div class="col-md-3 side-bar">
                                 <div class="panel panel-thm-primary">
@@ -312,6 +394,7 @@
 
         <script src="res/js/jquery.min.js"></script>
         <script src="res/js/bootstrap.min.js"></script>
+        <script src="res/js/bootstrap-tagsinput.js"></script>
         <script src="res/js/style.js"></script>
     </body>
 

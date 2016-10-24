@@ -86,9 +86,12 @@
     background:#eb8a44;
 }
 
-
-
 .side-bar li a:hover{
     background: none;
+    color:#eb8a44;
+}
+
+
+.list-group-item-heading.contact i{
     color:#eb8a44;
 }

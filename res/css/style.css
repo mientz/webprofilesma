@@ -467,8 +467,9 @@ body > .row > .footer {
     margin: 0;
     margin-bottom: 3px;
     text-transform: capitalize;
-    font-weight: 700;
-    font-size: 24px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
     line-height: 36px;
 }
 
@@ -685,6 +686,7 @@ body > .row > .footer {
     padding-left: 0;
     padding-bottom: 20px;
     margin-top:20px;
+    background:none;
 }
 
 .news-list .news-item div.news-title h1 {
@@ -787,4 +789,52 @@ body > .row > .footer {
     text-decoration: none;
     font-family: Roboto Slab;
 }
+.list-group-item-heading.contact{
+    font-weight: 600;
+}
+.list-group-item-heading.contact i{
+    margin-right: 10px;
+}
 
+.list-group-item-text.contact{
+    padding-left: 35px;
+}
+
+.album-gutter {
+	padding: 0 10px;
+}
+
+.register-menu > div{
+    background: url(../img/13385771_255950824767690_1897064539_n.jpg) no-repeat center center fixed;
+    background-size: cover;
+    padding-left: 0;
+}
+
+
+.register-menu .jumbotron{
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 0px;
+}
+
+.register-menu .jumbotron p {
+    display: inline-block;
+    color: #fff;
+}
+
+.register-menu .jumbotron h1 {
+    display: inline-block;
+    color: #fff;
+    font-weight: 700;
+    font-size: 45px;
+}
+
+@media only screen and (max-width : 768px) {
+
+    .register-menu .jumbotron h1 {
+        display: inline-block;
+        background: rgba(0, 0, 0, 0.59);
+        color: #fff;
+        font-weight: 700;
+        font-size: 42px;
+    }
+}

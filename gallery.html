@@ -12,6 +12,7 @@
         <link href="res/css/animate.css" rel="stylesheet">
         <link href="res/css/materialdesignicons.min.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Lato|Roboto|Roboto+Mono|Roboto+Slab" rel="stylesheet">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
     </head>
 
     <body>
@@ -126,7 +127,7 @@
                     <div class="col-md-12">
                         <div class="col-md-10 col-md-offset-1">
                             <blockquote>
-                                <h3>Sejarah Sekolah</h3>
+                                <h3>Gallery</h3>
                             </blockquote>
                         </div>
                     </div>
@@ -137,96 +138,101 @@
                         <div class="col-md-10 col-md-offset-1">
                             <ul class="breadcrumb">
                                 <li><a href="#">Beranda</a></li>
-                                <li><a href="#">Profil</a></li>
-                                <li class="active">Sejarah Sekolah</li>
+                                <li class="active">Gallery</li>
                             </ul>
-                            <div class="col-md-9 news-list">
-                                <div class="col-md-12 news-item">
-                                    <div class="col-md-12 news-title news-title-detail">
-                                        <h1>Sejarah Sekolah</h1>
-                                    </div>
-                                    <div class="col-md-12 news-summary">
-                                        <p><img alt="" src="https://pbs.twimg.com/profile_images/542597573890961408/D9uX9GDi.jpeg" style="float:left; height:100px; width:100px" />SMA Negeri 1 Bangkalan merupakan lembaga pendidikan tingkat menengah atas (SMA) yang pertama dan tertua di Kabupaten Bangkalan. Sekolah ini didirikan pada bulan Juli 1962 atas Inisiatif Bupati Kepala Daerah Tingkat II Kabupaten Bangkalan, yaitu R.P. Moh. Noer, dengan nama SMA NEGERI BANGKALAN. Sejak tahun 1978 berubah nama menjadi SMA Negeri 1 Bangkalan sehubungan dengan berdirinya SMA Negeri 2 Bangkalan. Sejalan dengan terbitnya Kurikulum SMU 1994, maka nama sekolah inipun berubah nama men&shy;jadi SMU Negeri 1 Bangkalan.</p>
-
-                                        <p>Yang perlu dicatat dan diketahui bahwa pendirian SMA Negeri Bangkalan ditetapkan berdasarkan SK Menteri Pendidikan dan Kebudayaan Nomor 21/SKlB.IH/1962&nbsp;<u>tanggal 1 Agustus 1962&nbsp;</u>dan diberlakukan ter&shy;hitung sejak tanggal 1 Agustus 1962. Dengan demikian maka tanggal 1 Agustus<u>ditetapkan&nbsp;</u>sebagai &quot;Hari Ulang Tahun&quot; SMA Negeri 1 Bangkalan. Hingga kini SMA Negeri 1 Bangkalan telah berusia 46 tahun (1962 sampai dengan 2008).</p>
-
-                                        <p>Adapun Nomor sekolah kita adalah No. 213, Nomer Rutin 166204, dan Nomer Statistik Sekolah (NSS) adalah 301052901001.</p>
-
-                                    </div>
-                                </div>
-                                <ul class="pagination pagination-sm pull-right">
-                                    <li><a>Share</a></li>
-                                    <li><a href="#" class="mdi mdi-facebook"style="color:#3b5998; border-color:#3b5998"></a></li>
-                                    <li><a href="#" class="mdi mdi-twitter" style="color:#55acee; border-color:#55acee"></a></li>
-                                    <li><a href="#" class="mdi mdi-google-plus" style="color:#dd4b39; border-color:#dd4b39"></a></li>
-                                    <li><a href="#" class="mdi mdi-pinterest" style="color:#cb2027; border-color:#cb2027"></a></li>
+                            <div class="col-md-6 col-md-offset-3" style="margin-bottom:30px;">
+                                <ul class="nav nav-tabs  nav-justified">
+                                    <li role="presentation" class="active"><a href="#allimage" class="text-primary" aria-controls="allimage" role="tab" data-toggle="tab">Semua Foto</a></li>
+                                    <li role="presentation"><a href="#uncategorizeimage" class="text-primary" aria-controls="allimage" role="tab" data-toggle="tab">Uncategorized</a></li>
+                                    <li role="presentation"><a href="#albumimage" class="text-primary" aria-controls="allimage" role="tab" data-toggle="tab">Album</a></li>
                                 </ul>
                             </div>
-                            <div class="col-md-3 side-bar">
-                                <div class="panel panel-thm-primary">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title">Kategori</h3>
-                                    </div>
-                                    <div class="panel-body">
-                                        <ul class="nav nav-pills nav-stacked">
-                                            <li role="presentation"><a href="#">Pengumuman</a></li>
-                                            <li role="presentation"><a href="#">Artikel</a></li>
-                                            <li role="presentation"><a href="#">Pengetahuan</a></li>
-                                        </ul>
-                                    </div>
+                            <div class="tab-content col-xs-12">
+                                <div role="tabpanel" class="tab-pane active" id="allimage">
+                                    <div class='list-group gallery'>
+                                        <div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
+                                            <a class="thumbnail fancybox" rel="ligthbox" href="res/img/Ccd90V1UMAA_Knl.jpg">
+                                                <img class="img-responsive" alt="" src="res/img/Ccd90V1UMAA_Knl.jpg" />
+                                                <div class='text-right'>
+                                                    <small class='text-muted'>Image Title</small>
+                                                </div> <!-- text-right / end -->
+                                            </a>
+                                        </div> <!-- col-6 / end -->
+                                        <div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
+                                            <a class="thumbnail fancybox" rel="ligthbox" href="res/img/Ccd9iEuUcAAylNM.jpg">
+                                                <img class="img-responsive" alt="" src="res/img/Ccd9iEuUcAAylNM.jpg" />
+                                                <div class='text-right'>
+                                                    <small class='text-muted'>Image Title</small>
+                                                </div> <!-- text-right / end -->
+                                            </a>
+                                        </div> <!-- col-6 / end -->
+                                        <div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
+                                            <a class="thumbnail fancybox" rel="ligthbox" href="res/img/Ccd9ltiUAAA_WKs.jpg">
+                                                <img class="img-responsive" alt="" src="res/img/Ccd9ltiUAAA_WKs.jpg" />
+                                                <div class='text-right'>
+                                                    <small class='text-muted'>Image Title</small>
+                                                </div> <!-- text-right / end -->
+                                            </a>
+                                        </div> <!-- col-6 / end -->
+                                        <div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
+                                            <a class="thumbnail fancybox" rel="ligthbox" href="res/img/Ccd9oOSUAAEGWQM.jpg">
+                                                <img class="img-responsive" alt="" src="res/img/Ccd9oOSUAAEGWQM.jpg" />
+                                                <div class='text-right'>
+                                                    <small class='text-muted'>Image Title</small>
+                                                </div> <!-- text-right / end -->
+                                            </a>
+                                        </div> <!-- col-6 / end -->
+                                        <div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
+                                            <a class="thumbnail fancybox" rel="ligthbox" href="res/img/Ccd9z9MVIAID1d7.jpg">
+                                                <img class="img-responsive" alt="" src="res/img/Ccd9z9MVIAID1d7.jpg" />
+                                                <div class='text-right'>
+                                                    <small class='text-muted'>Image Title</small>
+                                                </div> <!-- text-right / end -->
+                                            </a>
+                                        </div> <!-- col-6 / end -->
+                                    </div> <!-- list-group / end -->
                                 </div>
-                                <div class="panel panel-thm-primary">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title">Arsip</h3>
-                                    </div>
-                                    <div class="panel-body">
-                                        <ul class="nav nav-pills nav-stacked">
-                                            <li role="presentation"><a role="button" data-toggle="collapse" href="#archive2016" aria-expanded="false" aria-controls="archive2016">2016</a></li>
-                                            <ul id="archive2016" class="collapse nav nav-pills nav-stacked ">
-                                                <li role="presentation"><a href="#">Januari</a></li>
-                                                <li role="presentation"><a href="#">Februari</a></li>
-                                            </ul>
-                                            <li role="presentation"><a role="button" data-toggle="collapse" href="#archive2015" aria-expanded="false" aria-controls="archive2016">2015</a></li>
-                                            <ul id="archive2015" class="collapse nav nav-pills nav-stacked ">
-                                                <li role="presentation"><a href="#">Januari</a></li>
-                                                <li role="presentation"><a href="#">Februari</a></li>
-                                                <li role="presentation"><a href="#">April</a></li>
-                                            </ul>
-                                            <li role="presentation"><a role="button" data-toggle="collapse" href="#archive2014" aria-expanded="false" aria-controls="archive2016">2014</a></li>
-                                            <ul id="archive2014" class="collapse nav nav-pills nav-stacked ">
-                                                <li role="presentation"><a href="#">Januari</a></li>
-                                                <li role="presentation"><a href="#">Februari</a></li>
-                                                <li role="presentation"><a href="#">Juni</a></li>
-                                                <li role="presentation"><a href="#">Agustus</a></li>
-                                            </ul>
-                                        </ul>
-                                    </div>
+                                <div role="tabpanel" class="tab-pane" id="uncategorizeimage">
+                                    <div class='list-group gallery'>
+                                        <div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
+                                            <a class="thumbnail fancybox" rel="ligthbox" href="res/img/13385771_255950824767690_1897064539_n.jpg">
+                                                <img class="img-responsive" alt="" src="res/img/13385771_255950824767690_1897064539_n.jpg" />
+                                                <div class='text-right'>
+                                                    <small class='text-muted'>Image Title</small>
+                                                </div> <!-- text-right / end -->
+                                            </a>
+                                        </div> <!-- col-6 / end -->
+                                    </div> <!-- list-group / end -->
                                 </div>
-                                <div class="panel panel-thm-primary">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title">Terbaru</h3>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="media">
-                                            <div class="media-header">
-                                                <img src="res/img/13385771_255950824767690_1897064539_n.jpg" width="100%">
-                                            </div>
-                                            <div class="media-body">
-                                                <a href="#" class="media-heading">Olympiade Sains Kabupaten 2015</a>
-                                                <h6>20 Jan 2015</h6>
-                                            </div>
-                                        </div>
-                                        <div class="media">
-                                            <div class="media-header">
-                                                <img src="res/img/995940IMG_0200.JPG" width="100%">
-                                            </div>
-                                            <div class="media-body">
-                                                <a href="#" class="media-heading">Upacara Hari Pendidikan Nasional 2016</a>
-                                                <h6>20 Jan 2015</h6>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div role="tabpanel" class="tab-pane" id="albumimage">
+                                    <div class='list-group gallery'>
+                                        <div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
+                                            <a class="thumbnail fancybox" rel="ligthbox" href="res/img/Ccd90V1UMAA_Knl.jpg">
+                                                <div class="col-xs-12">
+                                                    <div class="col-xs-6 album-gutter">
+                                                        <img class="img-responsive" alt="" src="res/img/Ccd90V1UMAA_Knl.jpg" />
+                                                    </div>
+                                                    <div class="col-xs-6 album-gutter">
+                                                        <img class="img-responsive" alt="" src="res/img/Ccd9ltiUAAA_WKs.jpg" />
+                                                    </div>
+                                                    <div class="col-xs-6 album-gutter">
+                                                        <img class="img-responsive" alt="" src="res/img/Ccd9oOSUAAEGWQM.jpg" />
+                                                    </div>
+                                                    <div class="col-xs-6 album-gutter">
+                                                        <img class="img-responsive" alt="" src="res/img/Ccd9iEuUcAAylNM.jpg" />
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class='text-right'>
+                                                    <small class='text-muted'>Image Title</small>
+                                                </div> <!-- text-right / end -->
+                                            </a>
+                                        </div> <!-- col-6 / end -->
+                                    </div> <!-- list-group / end -->
                                 </div>
+                            </div>
+                            <div class="col-md-12">
+
                             </div>
                         </div>
                     </div>
@@ -313,6 +319,18 @@
         <script src="res/js/jquery.min.js"></script>
         <script src="res/js/bootstrap.min.js"></script>
         <script src="res/js/style.js"></script>
+        <script src='https://www.google.com/recaptcha/api.js?hl=id'></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                //FANCYBOX
+                //https://github.com/fancyapps/fancyBox
+                $(".fancybox").fancybox({
+                    openEffect: "none",
+                    closeEffect: "none"
+                });
+            });
+        </script>
     </body>
 
 </html>
