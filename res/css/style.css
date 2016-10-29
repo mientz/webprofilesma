@@ -701,6 +701,32 @@ body > .row > .footer {
     line-height: 34px;
 }
 
+
+
+.news-list .news-item div.event-date {
+    padding: 0 10px;
+    color:#eb8a44;
+}
+
+.news-list .news-item div.event-date h1 {
+    font-weight: 700;
+    font-size: 22px;
+    font-family: Roboto;
+    line-height: 38px;
+    color:#eb8a44;
+    margin-top: 0;
+    padding: 0;
+}
+
+.news-list .news-item div.event-date h3 {
+    margin-top: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 13px;
+    font-family: Roboto;
+}
+
 .news-list .news-item div.news-subtitle {
     padding: 0;
 }

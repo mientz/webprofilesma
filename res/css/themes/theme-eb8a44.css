@@ -1,3 +1,11 @@
+/*global themed*/
+a{
+    color: #000;
+}
+a:hover, a:focus{
+    color: #eb8a44;
+}
+
 /*button themed*/
 .btn-thm-default {
     color: #ffffff;
