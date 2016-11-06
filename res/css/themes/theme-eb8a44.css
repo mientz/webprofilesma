@@ -103,3 +103,21 @@ a:hover, a:focus{
 .list-group-item-heading.contact i{
     color:#eb8a44;
 }
+
+.headmaster-boxes{
+    background: #eb8a44;
+}
+
+.headmaster-area .teacher-boxes .quote {
+    color:#eb8a44;
+}
+
+.headmaster-area .teacher-boxes .carousel-indicators li {
+    background: none;
+    border:1px solid #eb8a44;
+}
+
+.headmaster-area .teacher-boxes .carousel-indicators li.active {
+    background: #eb8a44;
+    border:1px solid #eb8a44;
+}
