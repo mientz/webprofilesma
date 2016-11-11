@@ -1,0 +1,43 @@
+{% extends "web/base.html" %} {% block title %} Home {% endblock %} {% block content %} {% include 'web/header.html' %}
+<div class="col-md-12 col-xs-12 page-wrapper-area">
+    <div class="col-md-12">
+        <div class="col-md-10 col-md-offset-1">
+            <ul class="breadcrumb">
+                <li><a href="#">Beranda</a></li>
+                <li class="active">Berita</li>
+            </ul>
+            <div class="col-md-9 news-list">
+                <div class="col-md-12 news-item">
+                    <div class="col-md-12 news-title news-title-detail">
+                        <h1>Visi dan Misi Sekolah</h1>
+                    </div>
+                    <div class="col-md-12 news-summary">
+                        <p><strong>Visi</strong>:</p>
+
+                        <p style="margin-left: 40px;">Unggul Dalam Mutu, Akademis &nbsp;dan&nbsp; Non Akademis. Berbudi Pekerti Luhur Dan Mampu Berkomunikasi Dengan Bahasa Nasional dan Internasional Berdasarkan Iman dan Taqwa</p>
+
+                        <p><strong>Misi :</strong></p>
+
+                        <p style="margin-left: 40px;">1. Menanamkan Keimanan dan Ketaqwaan Terhadap Tuhan Yang Maha Esa<br />
+                            2. Menanamkan Budi Pekerti Luhur yang berahlakul karimah berdasarkan iman dan taqwa<br />
+                            3. Meningkatkan Kompetensi dan profesionalisme pendidik dan tenaga kependidikan<br />
+                            4. Meningkatkan kemampuan akademis peserta didik<br />
+                            5. Mengembangkan kecerdasan spiritual, intelektual, emosi dan sosial.<br />
+                            6. Menumbuhkembangkan minat, bakat, dan kreatifitas peserta didik<br />
+                            7. Membiasakan peserta didik berkomunikasi dengan bahasa Indonesia&nbsp;</p>
+
+                    </div>
+                </div>
+                <ul class="pagination pagination-sm pull-right">
+                    <li><a>Share</a></li>
+                    <li><a href="#" class="mdi mdi-facebook"style="color:#3b5998; border-color:#3b5998"></a></li>
+                    <li><a href="#" class="mdi mdi-twitter" style="color:#55acee; border-color:#55acee"></a></li>
+                    <li><a href="#" class="mdi mdi-google-plus" style="color:#dd4b39; border-color:#dd4b39"></a></li>
+                    <li><a href="#" class="mdi mdi-pinterest" style="color:#cb2027; border-color:#cb2027"></a></li>
+                </ul>
+            </div>
+            {% include 'web/sidebar.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }} {% endblock %}

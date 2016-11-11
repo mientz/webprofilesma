@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block head %}
+    <base href="{{ path_for('homepage') }}">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SMA Negeri 1 Bangkalan</title>
+    <link href="public/assets/css/web.css" rel="stylesheet">
+    <link href="public/assets/css/web.style.css" rel="stylesheet">
+    <link href="public/assets/css/themes/theme-eb8a44.css" rel="stylesheet">
+    <link href="public/assets/css/animate.css" rel="stylesheet">
+    <link href="public/assets/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato|Roboto|Roboto+Mono|Roboto+Slab" rel="stylesheet">
+    {% endblock %}
+</head>
+
+<body>
+    <div class="row wraper">
+        <div class="col-md-11 col-xs-12 container">
+            <!--header-->
+            <!--social header (#1 header)-->
+            <div class="col-md-12 social-header">
+                <div class="col-md-4 col-md-offset-1 social-left">
+                    Telp : (031) 3095132 <span class="separator">|</span> humas@sman1bangkalan.sch.id
+                </div>
+                <div class="col-md-6 social-right hidden-xs hidden-sm">
+                    <i class="mdi mdi-facebook-box"></i>
+                    <span class="separator">&nbsp;</span>
+                    <i class="mdi mdi-twitter-box"></i>
+                </div>
+            </div>
+            <!--Navigationbar header (#2 Header)-->
+            <div class="col-md-12 header">
+                <nav class="navbar navbar-default">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand" href="index.html">
+                                <img src="public/assets/img/sma%2520n%25201%2520bangkalan%2520logo%2520nav.png">
+                            </a>
+                        </div>
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Profil</a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="sejarah.html">Sejarah</a></li>
+                                        <li><a href="visi-misi.html">Visi dan Misi</a></li>
+                                        <li><a href="sambutan.html">Sambutan Kepala Sekolah</a></li>
+                                        <li><a href="struktur.html">Struktur Organisasi</a></li>
+                                        <li><a href="prestasi.html">Prestasi</a></li>
+                                        <li><a href="tata-tertib.html">Tata Tertib</a></li>
+                                        <li><a href="guru.html">Profil Guru dan Staf</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Aplikasi</a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="pendaftaran.html">Pendaftaran PSBB Online</a></li>
+                                        <li><a href="formulir.html">Formulir Siswa Baru</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Download</a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="download.html">Logo</a></li>
+                                        <li><a href="download.html">Pengumuman PSBB</a></li>
+                                        <li><a href="download.html">Materi Pelajaran</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="list-berita.html">Berita</a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Komunitas</a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="komunitas.html">OSIS</a></li>
+                                        <li><a href="komunitas.html">MPK</a></li>
+                                        <li><a href="komunitas.html">Pencinta Alam</a></li>
+                                        <li><a href="komunitas.html">Pramuka</a></li>
+                                        <li><a href="komunitas.html">Futsal</a></li>
+                                        <li><a href="komunitas.html">PMR</a></li>
+                                        <li><a href="komunitas.html">Alumni</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Info</a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="pengumuman.html">Pengumuman</a></li>
+                                        <li><a href="event.html">Event</a></li>
+                                        <li><a href="#">Humas</a></li>
+                                        <li><a href="sarana.html">Sarana</a></li>
+                                        <li><a href="kurikulum.html">Kurikulum</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="gallery.html">Galeri</a></li>
+                                <li><a href="contact.html">Hubungi Kami</a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                        <p class="visible-xs visible-sm"><i class="mdi mdi-magnify"></i> Pencarian</p>
+                                        <p class="hidden-xs hidden-sm"><i class="mdi mdi-magnify"></i></p>
+                                    </a>
+                                    <ul class="dropdown-menu drop-search" role="menu">
+                                        <li><a href="#">Pencarian</a></li>
+                                        <li>
+                                            <a class="form-group">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control">
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-default" type="button">Cari</button>
+                                                    </span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        {% block content %}
+        {% endblock %}
+        </div>
+        <!--footer area-->
+        <br>
+        <div class="col-md-11 footer">
+            <div class="col-md-12 first-footer">
+                <div class="col-md-4 col-md-offset-1 about">
+                    <img src="public/assets/img/sma%2520n%25201%2520bangkalan%2520logo%2520nav.png">
+                    <p>
+                        <i class="mdi mdi-phone"></i>
+                        <a href="tel:0313095132">(031) 3095132</a>
+                    </p>
+                    <p>
+                        <i class="mdi mdi-email-outline"></i>
+                        <a href="mailto:humas@sman1bangkalan.sch.id">humas@sman1bangkalan.sch.id</a>
+                    </p>
+                    <p>
+                        <i class="mdi mdi-map-marker"></i>
+                        <a href="https://www.google.co.id/maps/place/SMAN1+Bangkalan/@-7.0297891,112.7586301,19z/data=!4m13!1m7!3m6!1s0x2dd805816177bbcf:0xca3fa787270b867a!2sSMAN1+Bangkalan!3b1!8m2!3d-7.029829!4d112.758732!3m4!1s0x2dd805816177bbcf:0xca3fa787270b867a!8m2!3d-7.029829!4d112.758732?hl=id">Jl. Pemuda Kaffa 10 Bangkalan</a>
+                    </p>
+                </div>
+                <div class="col-md-2 about">
+                    <h3 style="margin-top:-6px;">Link</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item link">
+                            Cras justo odio
+                        </li>
+                        <li class="list-group-item link">
+                            Dapibus ac facilisis in
+                        </li>
+                        <li class="list-group-item link">
+                            Morbi leo risus
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-2 about">
+                    <h3 style="margin-top:-6px;">&nbsp</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item link">
+                            Cras justo odio
+                        </li>
+                        <li class="list-group-item link">
+                            Dapibus ac facilisis in
+                        </li>
+                        <li class="list-group-item link">
+                            Morbi leo risus
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-2 about text-right">
+                    <h3 style="margin-top:-6px;">Download</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item link">
+                            Materi Pelajaran
+                        </li>
+                        <li class="list-group-item link">
+                            Logo Sekolah
+                        </li>
+                        <li class="list-group-item link">
+                            Lain-lain
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-12 second-footer">
+                <div class="col-md-4 col-md-offset-1 footer-left">
+                    Copyright 2016 SMA Negeri 1 Bantaeng
+                </div>
+                <div class="col-md-6 footer-right hidden-xs">
+                    <i class="mdi mdi-facebook-box"></i>
+                    <span class="separator">&nbsp;</span>
+                    <i class="mdi mdi-twitter-box"></i>
+                </div>
+            </div>
+            <div class="col-md-12 map-footer">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3959.8255333434477!2d112.75627431436799!3d-7.029782994922304!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd8058160976537%3A0x3345961e04796b15!2sSMA+Negeri+1+Bangkalan!5e0!3m2!1sid!2sid!4v1475856255730" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    {% block js %}
+    <script src="public/assets/js/jquery.min.js"></script>
+    <script src="public/assets/js/bootstrap.js"></script>
+    <script src="public/assets/js/web.app.js"></script>
+    {% endblock %}
+</body>
+
+</html>

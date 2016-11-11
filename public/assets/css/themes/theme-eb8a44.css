@@ -1,0 +1,123 @@
+/*global themed*/
+a{
+    color: #000;
+}
+a:hover, a:focus{
+    color: #eb8a44;
+}
+
+/*button themed*/
+.btn-thm-default {
+    color: #ffffff;
+    background-color: #eb8a44;
+    border-color: #eb8a44;
+    border-radius:0;
+}
+
+/*pannel themed*/
+.panel-thm-primary {
+    border:none;
+    border-left: 1px solid #eee;
+    box-shadow: none;
+    border-radius: 0;
+}
+.panel-thm-primary > .panel-heading {
+    color: #000;
+    background-color: #fff;
+    border-left: 3px solid #eb8a44;
+}
+
+
+.container > .social-header {
+    border-top-color: #eb8a44;
+}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #eb8a44;
+    background-color: #fff;
+    border-top-color: #eb8a44;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #eb8a44;
+    background-color: transparent;
+    border-top-color: #eb8a44;
+}
+
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+    color: #eb8a44;
+    background-color: #fff;
+    border-top-color: #eb8a44;
+}
+
+@media (max-width: 767px) {
+    .navbar-default .navbar-nav > .open > a,
+    .navbar-default .navbar-nav > .open > a:hover,
+    .navbar-default .navbar-nav > .open > a:focus {
+        color: #eb8a44;
+        background-color: #fff;
+        border-top-color: #eb8a44;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        color: #000;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+        color: #000;
+        background-color: #fff;
+        border-top-color: #eb8a44;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a,
+    .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:focus {
+        color: #cccccc;
+        background-color: transparent;
+    }
+}
+
+.register-area .jumbotron span {
+    color:#eb8a44;
+}
+
+.news-area > div > div > div > div:first-child {
+    color:#eb8a44;
+}
+
+
+.event-area .info button{
+    background:#eb8a44;
+}
+
+.side-bar li a:hover{
+    background: none;
+    color:#eb8a44;
+}
+
+
+.list-group-item-heading.contact i{
+    color:#eb8a44;
+}
+
+.headmaster-boxes{
+    background: #eb8a44;
+}
+
+.headmaster-area .teacher-boxes .quote {
+    color:#eb8a44;
+}
+
+.headmaster-area .teacher-boxes .carousel-indicators li {
+    background: none;
+    border:1px solid #eb8a44;
+}
+
+.headmaster-area .teacher-boxes .carousel-indicators li.active {
+    background: #eb8a44;
+    border:1px solid #eb8a44;
+}

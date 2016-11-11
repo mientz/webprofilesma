@@ -1,0 +1,80 @@
+{% extends "web/base.html" %} {% block title %} Home {% endblock %} {% block content %} {% include 'web/header.html' %}
+<div class="col-md-12 col-xs-12 page-wrapper-area">
+    <div class="col-md-12">
+        <div class="col-md-10 col-md-offset-1">
+            <ul class="breadcrumb">
+                <li><a href="#">Beranda</a></li>
+                <li class="active">Berita</li>
+            </ul>
+            <div class="col-md-9 news-list">
+                <div class="col-md-12 news-item">
+                    <img class="news-header" src="res/img/13385771_255950824767690_1897064539_n.jpg">
+                    <div class="col-md-2 news-date">
+                        <h1>20</h1>
+                        <h3>January</h3>
+                    </div>
+                    <div class="col-md-10 news-title">
+                        <a href="detail-berita.html"><h1>Olympiade Sains Kabupaten 2015</h1></a>
+                        <div class="col-md-12 news-subtitle">
+                            <ul class="nav nav-pills">
+                                <li role="presentation">
+                                    Diposting
+                                    <a href="#">ANTHONY</a>
+                                </li>
+                                <li role="presentation">
+                                    Kategori
+                                    <a href="#">Pengumuman</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-12 news-summary">
+                        <p>
+                            singulis aliqua concursionibus ullamco ullamco exercitation dolore praetermissum irure firmissimum pariatur aute non aut quae tamen fugiat coniunctione pariatur ipsum
+                        </p>
+                        <a href="#" class="btn btn-thm-default">Baca Selengkapnya</a>
+                    </div>
+                </div>
+                <div class="col-md-12 news-item">
+                    <img class="news-header" src="res/img/995940IMG_0200.JPG">
+                    <div class="col-md-2 news-date">
+                        <h1>20</h1>
+                        <h3>January</h3>
+                    </div>
+                    <div class="col-md-10 news-title">
+                        <h1>Upacara Hari Pendidikan Nasional 2016</h1>
+                        <div class="col-md-12 news-subtitle">
+                            <ul class="nav nav-pills">
+                                <li role="presentation">
+                                    Diposting
+                                    <a href="#">ANTHONY</a>
+                                </li>
+                                <li role="presentation">
+                                    Kategori
+                                    <a href="#">Pengumuman</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-12 news-summary">
+                        <p>
+                            singulis aliqua concursionibus ullamco ullamco exercitation dolore praetermissum irure firmissimum pariatur aute non aut quae tamen fugiat coniunctione pariatur ipsum
+                        </p>
+                        <a href="#" class="btn btn-thm-default">Baca Selengkapnya</a>
+                    </div>
+                </div>
+                <ul class="pagination pagination-sm">
+                    <li class="disabled"><a href="#">&laquo;</a></li>
+                    <li class="active"><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#">&raquo;</a></li>
+                </ul>
+            </div>
+            {% include 'web/sidebar.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }} {% endblock %}
