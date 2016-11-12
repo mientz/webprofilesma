@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Admin</title>
+        <link href="res/css/bootstrap.css" rel="stylesheet">
+        <link href="res/css/materialdesignicons.min.css" rel="stylesheet">
+        <link href="res/css/style.css" rel="stylesheet">
+    </head>
+    <body>
+        <!--top navbar static-->
+        <div class="wraper">
+            <nav class="navbar navbar-default navbar-fixed-top" style="border-bottom:1px solid #3c3c3c;">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#profile-sm-menu" style="padding:2px 0;">
+                            <img src="res/img/profile.jpg" height="25px">
+                        </button>
+                        <button type="button" class="navbar-toggle collapsed"  id="menu-toggle" style="float:left;">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand hidden-xs hidden-sm" href="#">
+                            <img src="res/img/logo.png" height="100%">
+                        </a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="profile-sm-menu">
+                        <ul class="nav navbar-nav hidden-xs hidden-sm">
+                            <li><a href="#" class="btn btn-default navbar-btn btn-lg mdi mdi-open-in-app"></a></li>
+                            <li><a href="#" class="btn btn-default navbar-btn btn-lg mdi mdi-email-variant">&nbsp;<span class="badge">42</span></a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right hidden-md hidden-lg">
+                            <li><a href="#">Admin</a></li>
+                            <li><a href="#">Edit Profile</a></li>
+                            <li><a href="#">Log Out</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right hidden-xs hidden-sm">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                    Admin &nbsp;
+                                    <div class="pull-right">
+                                        <img src="res/img/profile.jpg" height="22px">
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <div class="navbar-login">
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                    <p class="text-center">
+                                                        <img src="res/img/profile.jpg" class="icon-size">
+                                                    </p>
+                                                </div>
+                                                <div class="col-lg-8">
+                                                    <p class="text-left"><strong>Admin</strong></p>
+                                                    <p class="text-left small">admin@email.com</p>
+                                                    <p class="text-left">
+                                                        <a href="#" class="btn btn-primary btn-block btn-sm">Edit Profile</a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <div class="navbar-login navbar-login-session">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <p>
+                                                        <a href="#" class="btn btn-danger btn-block">Log Out</a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!--after top navbar wrapper static-->
+        <div id="wrapper">
+            <!--sidebar wrapper-->
+            <div id="sidebar-wrapper">
+                <ul class="nav nav-pills nav-stacked">
+                    <li style="padding: 10px 0;">
+                        <i class="mdi mdi-cube-outline"></i> <a href="#">Dasbor</a>
+                    </li>
+                    <li class="">
+                        <i class="mdi mdi-pencil-box"></i> <a href="#">Pos</a>
+                        <ul class="nav nav-pills nav-stacked nav-sub">
+                            <li><a href="#">Semua Pos</a></li>
+                            <li class="active"><a href="#">Tambah Baru</a></li>
+                            <li><a href="#">Media</a></li>
+                            <li><a href="#">Kategori</a></li>
+                            <li><a href="#">Tags</a></li>
+                        </ul>
+                    </li>
+                    <li class="active">
+                        <i class="mdi mdi-layers"></i>
+                        <a href="#">Halaman</a>
+                        <ul class="nav nav-pills nav-stacked nav-sub">
+                            <li class="active"><a href="#">Semua Halaman</a></li>
+                            <li><a href="#">Tambah Baru</a></li>
+                        </ul>
+                    </li>
+                    <li><i class="mdi mdi-comment-text"></i><a href="#">Komentar</a></li>
+                    <li>
+                        <i class="mdi mdi-image-multiple"></i>
+                        <a href="#">Galeri</a>
+                        <ul class="nav nav-pills nav-stacked nav-sub">
+                            <li class="active"><a href="#">Pustaka</a></li>
+                            <li><a href="#">Tambah Album</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav nav-pills nav-stacked" style="padding-top:30px;">
+                    <li class="">
+                        <i class="mdi mdi-apps"></i> <a href="#">Aplikasi</a>
+                        <ul class="nav nav-pills nav-stacked nav-sub">
+                            <li><a href="#">Pendaftaran</a></li>
+                            <li><a href="#">Pengaturan</a></li>
+                            <li><a href="#">Data Pendaftar</a></li>
+                            <li class="active"><a href="#">Formulir Data Siswa</a></li>
+                            <li class="active"><a href="#">Manager File</a></li>
+                        </ul>
+                    </li>
+                    <li class="active">
+                        <i class="mdi mdi-account-circle"></i>
+                        <a href="#">Tampilan</a>
+                        <ul class="nav nav-pills nav-stacked nav-sub">
+                            <li class="active"><a href="#">Pengaturan Tampilan</a></li>
+                            <li><a href="#">Halaman Depan</a></li>
+                            <li><a href="#">Menu</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <i class="mdi mdi-account-circle"></i>
+                        <a href="#">Pengguna</a>
+                        <ul class="nav nav-pills nav-stacked nav-sub">
+                            <li class="active"><a href="#">Semua Pengguna</a></li>
+                            <li><a href="#">Tambah Baru</a></li>
+                            <li><a href="#">Komunitas</a></li>
+                            <li><a href="#">Profil Anda</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <i class="mdi mdi-settings"></i>
+                        <a href="#">Pengaturan</a>
+                        <ul class="nav nav-pills nav-stacked nav-sub">
+                            <li class="active"><a href="#">Umum</a></li>
+                            <li><a href="#">Menu</a></li>
+                            <li><a href="#">Email</a></li>
+                            <li><a href="#">Media Sosial</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1>Simple Sidebar</h1>
+                            <p>This template has a responsive menu toggling system. The menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will appear/disappear. On small screens, the page content will be pushed off canvas.</p>
+                            <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /#page-content-wrapper -->
+        </div>
+        <script src="res/js/jquery.min.js"></script>
+        <script src="res/js/bootstrap.min.js"></script>
+        <script src="res/js/app.js"></script>
+    </body>
+</html>
