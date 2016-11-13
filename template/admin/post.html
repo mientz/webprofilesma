@@ -1,0 +1,144 @@
+{% extends "admin/base.html" %} {% block title %} Pos {% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 no-gutter">
+            <div class="col-md-8 no-gutter">
+                <h3 class="page-title pull-left">Pos</h3>
+                <a href="{{ path_for('admin-addpost') }}" class="btn btn-info btn-xs pull-left" style="margin:8px;">Tambah Baru</a>
+            </div>
+            <div class="col-md-4 no-gutter">
+                <div class="form-group" style="margin:8px 0;">
+                    <div class="input-group">
+                        <input type="text" class="form-control input-sm">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default btn-sm" type="button"><i class="mdi mdi-magnify"></i> Cari Pos</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 no-gutter">
+            <ul  id="myTabPost"  class="nav nav-pills custom-nav-pills">
+                <li class="active"><a href="#all-post" data-toggle="tab">Semua <span class="badge">1</span></a></li>
+                <li><a href="#published-post" data-toggle="tab">Telah Terbit <span class="badge">0</span></a></li>
+                <li><a href="#draft-post" data-toggle="tab">Konsep <span class="badge">0</span></a></li>
+                <li><a href="#trash-post" data-toggle="tab">Tong Sampah <span class="badge">0</span></a></li>
+            </ul>
+        </div>
+        <br>
+        <div class="col-md-12 no-gutter" style="padding-top:20px;">
+            <div class="tab-content">
+                <div class="tab-pane fade active in" id="all-post">
+                    <div class="col-md-12 no-gutter">
+                        <form class="form-inline pull-left">
+                            <div class="form-group">
+                                <select class="form-control input-sm" id="select">
+                                    <option>Tindakan Masal</option>
+                                    <option>Terbitkan Semua</option>
+                                    <option>jadikan Konsep</option>
+                                    <option>Sembunyikan</option>
+                                    <option>Masukan Tong Sampah</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info btn-sm">Terapkan</button>
+                            </div>
+                        </form>
+                        <div class="form-inline pull-left" style="padding-left:20px;">
+                            <div class="form-group">
+                                <select class="form-control input-sm" id="select">
+                                    <option>Semua Tanggal</option>
+                                    <option>November 2016</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-inline pull-left" style="padding-left:20px;">
+                            <div class="form-group">
+                                <select class="form-control input-sm" id="select">
+                                    <option>Seluruh Kategori</option>
+                                    <option>Tidak Berkategori</option>
+                                </select>
+                            </div>
+                        </div>
+                        <span class="pull-right">1 Item</span>
+                    </div>
+                    <div class="col-md-12 no-gutter table-responsive" style="padding-top:10px;">
+                        <table class="table table-striped post-list">
+                            <thead>
+                                <tr class="info">
+                                    <th style="width:1em;"><input type="checkbox"></th>
+                                    <th>Judul</th>
+                                    <th style="width:10em;">Penulis</th>
+                                    <th style="width:10em;">Kategori</th>
+                                    <th style="width:10em;">Tag</th>
+                                    <th style="width:5em;"><i class="mdi mdi-comment-multiple-outline"></i></th>
+                                    <th style="width:10em;">Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td>
+                                        <strong class="post-title">
+                                            Column content <i class="mdi mdi-eye-off pull-right"></i><i class="mdi mdi-lock-open pull-right"></i>
+                                        </strong>
+                                        <div class="form-inline">
+                                            <a href="" class="btn btn-link btn-sm no-gutter" style="color:#fff;"><i class="mdi mdi-tooltip-edit"></i> Edit</a> &nbsp;&#124;&nbsp;
+                                            <a href="" class="btn btn-link btn-sm no-gutter text-warning"><i class="mdi mdi-delete-sweep"></i> Hapus</a> &nbsp;&#124;&nbsp;
+                                            <a href="" class="btn btn-link btn-sm no-gutter" style="color:#fff;"><i class="mdi mdi-open-in-new"></i> Tampil</a>
+                                        </div>
+                                    </td>
+                                    <td>Admin</td>
+                                    <td>Tidak Berkategori</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>Terakhir Diubah 2016/01/12</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="info">
+                                    <th><input type="checkbox"></th>
+                                    <th>Judul</th>
+                                    <th>Penulis</th>
+                                    <th>Kategori</th>
+                                    <th>Tag</th>
+                                    <th><i class="mdi mdi-comment-multiple-outline"></i></th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <ul class="pagination pagination-sm pull-right">
+                            <li class="disabled"><a href="#">&laquo;</a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                            <li><a href="#">&raquo;</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="draft-post">
+                    <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
+                </div>
+                <div class="tab-pane fade" id="trash-post">
+                    <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %} {% block js %} {{ parent() }}
+<script src="public/assets/js/list.min.js"></script>
+<script src="public/assets/js/list.pagination.min.js"></script>
+<script>
+    $('#myTabPost a').click(function (e) {
+        localStorage.setItem("tab_post", $(this).attr('href'));
+    });
+    $(document).ready(function (e){
+        var tab = localStorage.getItem('tab_post');
+        $('#myTabPost a[href="'+tab+'"]').tab('show');
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,201 @@
+.navbar {
+    margin-bottom: 0;
+}
+
+.navbar-login {
+    width: 305px;
+    padding: 10px;
+    padding-bottom: 0px;
+}
+
+.navbar-login-session {
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.icon-size {
+    height: 87px;
+}
+
+.no-gutter {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#wrapper {
+    padding-left: 0;
+    /*-webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;*/
+    padding-top:44px;
+}
+
+#wrapper.toggled {
+    padding-left: 160px;
+}
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 160px;
+    width: 0;
+    height: 100%;
+    margin-left: -160px;
+    overflow-y: auto;
+    background: #4e5d6c;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    width: 160px;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    position: absolute;
+    padding: 15px;
+}
+
+#wrapper.toggled #page-content-wrapper {
+    position: absolute;
+    margin-right: -160px;
+}
+
+@media(min-width:768px) {
+    #wrapper {
+        padding-left: 160px;
+    }
+
+    #wrapper.toggled {
+        padding-left: 0;
+    }
+
+    #sidebar-wrapper {
+        width: 160px;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        width: 0;
+    }
+
+    #page-content-wrapper {
+        padding: 20px;
+        position: relative;
+    }
+
+    #wrapper.toggled #page-content-wrapper {
+        position: relative;
+        margin-right: 0;
+    }
+}
+
+
+#sidebar-wrapper .nav li i{
+    font-weight: 800;
+    font-size: 20px;
+    position: relative;
+    float: left;
+    display: block;
+    padding: 6px 10px;
+}
+
+#sidebar-wrapper .nav li:hover{
+    background-color: #2b3e50;
+}
+
+#sidebar-wrapper .nav li.active{
+    background-color: #5bc0de;;
+}
+
+#sidebar-wrapper .nav li a{
+    background: none;
+}
+
+#sidebar-wrapper .nav li .nav-sub {
+    display: none;
+}
+
+#sidebar-wrapper .nav li.active .nav-sub {
+    display: block;
+}
+
+#sidebar-wrapper .nav li.active .nav-sub {
+    background: #262c33;
+}
+
+#sidebar-wrapper .nav li.active .nav-sub li {
+    background: none;
+}
+
+#sidebar-wrapper .nav li.active .nav-sub li a {
+    background: none;
+    font-weight: 400;
+    font-size: 13.5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    color:#bfbfbf;
+}
+
+#sidebar-wrapper .nav li.active .nav-sub li a:hover {
+    background: none;
+    font-weight: 700;
+    color:#fff;
+}
+
+#sidebar-wrapper .nav li.active .nav-sub li.active a {
+    background: none;
+    font-weight: 700;
+    color:#fff;
+}
+
+/*
+#sidebar-wrapper .nav li.active .nav-sub li.active:after {
+    display: inline-block;
+}
+*/
+#sidebar-wrapper .nav li.active .nav-sub li.active:after {
+    content: "\A";
+    width: 0;
+    height: 0;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-right: 7px solid #ffffff;
+    float: right;
+    margin-top: -24px;
+}
+
+.page-title {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.post-list .post-title{
+	font-weight: 800;
+    font-size: 13px;
+}
+
+.post-list .post-title + .form-inline{
+    display: none;
+}
+
+.post-list .post-title .form-inline a{
+    font-weight: 800;
+}
+
+.post-list .post-title:hover + .form-inline{
+    display: block;
+}
+
+.custom-nav-pills li.active a{
+	background: none;
+    border-bottom: 1px solid #fff;
+}
+
+.custom-nav-pills li.active a:hover{
+    background: #4e5d6c;
+}

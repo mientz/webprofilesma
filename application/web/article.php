@@ -18,5 +18,5 @@ $app->group('/post', function () {
         }else{ /* [[give detailed post]] */
             return $this->view->render($res, 'web/post-details.html');
         }
-    })->add($allpost)->setName('post');
+    })->setName('post');
 });

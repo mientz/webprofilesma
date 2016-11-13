@@ -32,3 +32,17 @@ $container['view'] = function ($container) {
 
     return $view;
 };
+
+/*
+ * session
+ */
+$container['session'] = function ($c) {
+    return new \SlimSession\Helper;
+};
+
+/*
+ * Flash message register
+ */
+$container['flash'] = function () {
+    return new \Slim\Flash\Messages();
+};

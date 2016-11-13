@@ -14,6 +14,7 @@ class ComposerStaticInit3395cd736a09978f5e65a8517b556d01
         'S' =>
         array (
             'Slim\\Views\\' => 11,
+            'Slim\\Flash\\' => 11,
             'Slim\\' => 5,
         ),
         'P' =>
@@ -34,6 +35,10 @@ class ComposerStaticInit3395cd736a09978f5e65a8517b556d01
         'Slim\\Views\\' =>
         array (
             0 => __DIR__ . '/..' . '/slim/twig-view/src',
+        ),
+        'Slim\\Flash\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/slim/flash/src',
         ),
         'Slim\\' =>
         array (

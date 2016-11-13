@@ -5,7 +5,7 @@ return [
         'determineRouteBeforeAppMiddleware' => true,
         "database" => [
             "host" => "localhost",
-            "database_name" => "starsv3",
+            "database_name" => "sma3bangkalan",
             "user" => "root",
             "pass" => ""
         ],
