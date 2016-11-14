@@ -8,9 +8,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}{% endblock %} ‹ SMA N 3 Bangkalan - Admin </title>
         <link href="public/assets/css/admin.css" rel="stylesheet">
-        <link href="public/assets/css/materialdesignicons.min.css" rel="stylesheet">
+        <link href="public/assets/css/font-awesome.min.css" rel="stylesheet">
         <link href="public/assets/css/admin.style.css" rel="stylesheet">
         {% endblock %}
+        {% set privilege = user_data.privilege %}
     </head>
     <body>
         <!--top navbar static-->
@@ -19,7 +20,7 @@
                 <div class="container-fluid">
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#profile-sm-menu" style="padding:2px 0;">
-                            <img src="res/img/profile.jpg" height="25px">
+                            <img src="public/profile/{{ user_data.image }}" height="25px">
                         </button>
                         <button type="button" class="navbar-toggle collapsed"  id="menu-toggle" style="float:left;">
                             <span class="sr-only">Toggle navigation</span>
@@ -33,11 +34,11 @@
                     </div>
                     <div class="collapse navbar-collapse" id="profile-sm-menu">
                         <ul class="nav navbar-nav hidden-xs hidden-sm">
-                            <li><a href="#" class="btn btn-default navbar-btn btn-lg mdi mdi-email-variant">&nbsp;<span class="badge">42</span></a></li>
-                            <li><a href="{{ uri_base }}" target="_blank" class="btn btn-default navbar-btn btn-lg"><span class="badge">{{ uri_base }}</span>&nbsp;<i class="mdi mdi-open-in-new"></i></a></li>
+                            <li><a href="#" class="btn btn-default navbar-btn btn-lg"><i class="fa fa-envelope-o"></i>&nbsp;<span class="badge">42</span></a></li>
+                            <li><a href="{{ uri_base }}" target="_blank" class="btn btn-default navbar-btn btn-lg"><span class="badge">SMA Negeri 1 Bangkalan <i class="fa fa-external-link-square fa-fw"></i></span></a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right hidden-md hidden-lg">
-                            <li><a href="#">{{ user_data.user_name }} ({{ user_data.user_username }})</a></li>
+                            <li><a href="#">{{ user_data.nickname }} ({{ user_data.username }})</a></li>
                             <li><a href="#">Pengaturan Akun</a></li>
                             <li><a href="{{ path_for('logout') }}">Log Out</a></li>
                         </ul>
@@ -46,7 +47,7 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                     Admin &nbsp;
                                     <div class="pull-right">
-                                        <img src="{{ user_data.user_image }}" height="22px">
+                                        <img src="public/profile/{{ user_data.image }}" height="22px">
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
@@ -55,12 +56,12 @@
                                             <div class="row">
                                                 <div class="col-lg-4">
                                                     <p class="text-center">
-                                                        <img src="{{ user_data.user_image }}" class="icon-size">
+                                                        <img src="public/profile/{{ user_data.image }}" class="icon-size">
                                                     </p>
                                                 </div>
                                                 <div class="col-lg-8">
-                                                    <p class="text-left"><strong>{{ user_data.user_name }} ({{ user_data.user_username }})</strong></p>
-                                                    <p class="text-left small">{{ user_data.user_email }}</p>
+                                                    <p class="text-left"><strong>{{ user_data.nickname }} ({{ user_data.username }})</strong></p>
+                                                    <p class="text-left small">{{ user_data.email }}</p>
                                                     <p class="text-left">
                                                         <a href="#" class="btn btn-info btn-block btn-sm">Pengaturan Akun</a>
                                                     </p>
@@ -93,10 +94,11 @@
             <div id="sidebar-wrapper">
                 <ul class="nav nav-pills nav-stacked">
                     <li class="{{ dashboard }}"style="padding: 10px 0;">
-                        <i class="mdi mdi-cube-outline"></i> <a href="{{ path_for('admin-dashboard') }}">Dasbor</a>
+                        <a href="{{ path_for('admin-dashboard') }}"><i class="fa fa-circle-o-notch fa-spin" style="padding:0;margin-right:10px;"></i>Dasbor</a>
                     </li>
+                    {% if privilege.post_management %}
                     <li class="{{ post }}{{ addpost }}">
-                        <i class="mdi mdi-pencil-box"></i> <a href="{{ path_for('admin-allpost') }}">Pos</a>
+                        <a href="{{ path_for('admin-allpost') }}"><i class="fa fa-thumb-tack fa-fw"></i>Pos</a>
                         <ul class="nav nav-pills nav-stacked nav-sub">
                             <li class="{{ post }}"><a href="{{ path_for('admin-allpost') }}">Semua Pos</a></li>
                             <li class="{{ addpost }}"><a href="{{ path_for('admin-addpost') }}">Tambah Baru</a></li>
@@ -106,46 +108,49 @@
                         </ul>
                     </li>
                     <li class="">
-                        <i class="mdi mdi-layers"></i>
-                        <a href="#">Halaman</a>
+                        <a href="#"><i class="fa fa-clone fa-fw"></i>Halaman</a>
                         <ul class="nav nav-pills nav-stacked nav-sub">
                             <li class=""><a href="#">Semua Halaman</a></li>
                             <li class=""><a href="#">Tambah Baru</a></li>
+                            <li class=""><a href="#">Manager File</a></li>
+                            <li class=""><a href="#">Data Guru</a></li>
                         </ul>
                     </li>
-                    <li class=""><i class="mdi mdi-comment-text"></i><a href="#">Komentar</a></li>
+                    <li class=""><a href="#"><i class="fa fa-comments-o fa-fw"></i>Komentar</a></li>
                     <li class="">
-                        <i class="mdi mdi-image-multiple"></i>
-                        <a href="#">Galeri</a>
+                        <a href="#"><i class="fa fa-picture-o fa-fw"></i>Galeri</a>
                         <ul class="nav nav-pills nav-stacked nav-sub">
                             <li class=""><a href="#">Pustaka</a></li>
                             <li class=""><a href="#">Tambah Album</a></li>
                         </ul>
                     </li>
+                    {% endif %}
                 </ul>
                 <ul class="nav nav-pills nav-stacked" style="padding-top:30px;">
+                    {% if privilege.register_management %}
                     <li class="">
-                        <i class="mdi mdi-apps"></i> <a href="#">Aplikasi</a>
+                        <a href="#"><i class="fa fa-rocket fa-fw"></i>Aplikasi</a>
                         <ul class="nav nav-pills nav-stacked nav-sub">
                             <li class=""><a href="#">Pendaftaran</a></li>
                             <li class=""><a href="#">Pengaturan</a></li>
                             <li class=""><a href="#">Data Pendaftar</a></li>
                             <li class=""><a href="#">Formulir Data Siswa</a></li>
-                            <li class=""><a href="#">Manager File</a></li>
                         </ul>
                     </li>
+                    {% endif %}
+                    {% if privilege.web_management %}
                     <li class="">
-                        <i class="mdi mdi-account-circle"></i>
-                        <a href="#">Tampilan</a>
+                        <a href="#"><i class="fa fa-paint-brush fa-fw"></i>Tampilan</a>
                         <ul class="nav nav-pills nav-stacked nav-sub">
                             <li class=""><a href="#">Pengaturan Tampilan</a></li>
                             <li class=""><a href="#">Halaman Depan</a></li>
                             <li class=""><a href="#">Menu</a></li>
                         </ul>
                     </li>
+                    {% endif %}
+                    {% if privilege.user_management %}
                     <li class="">
-                        <i class="mdi mdi-account-circle"></i>
-                        <a href="#">Pengguna</a>
+                        <a href="#"><i class="fa fa-user-circle-o fa-fw"></i>Pengguna</a>
                         <ul class="nav nav-pills nav-stacked nav-sub">
                             <li class=""><a href="#">Semua Pengguna</a></li>
                             <li class=""><a href="#">Tambah Baru</a></li>
@@ -153,9 +158,10 @@
                             <li class=""><a href="#">Profil Anda</a></li>
                         </ul>
                     </li>
+                    {% endif %}
+                    {% if privilege.web_management %}
                     <li class="">
-                        <i class="mdi mdi-settings"></i>
-                        <a href="#">Pengaturan</a>
+                        <a href="#"><i class="fa fa-sliders fa-fw"></i>Pengaturan</a>
                         <ul class="nav nav-pills nav-stacked nav-sub">
                             <li class=""><a href="#">Umum</a></li>
                             <li class=""><a href="#">Menu</a></li>
@@ -163,6 +169,7 @@
                             <li class=""><a href="#">Media Sosial</a></li>
                         </ul>
                     </li>
+                    {% endif %}
                 </ul>
             </div>
             <!-- Page Content -->
@@ -175,6 +182,7 @@
         {% block js %}
         <script src="public/assets/js/jquery.min.js"></script>
         <script src="public/assets/js/bootstrap.min.js"></script>
+        <script src="public/assets/js/mustache.min.js"></script>
         <script src="public/assets/js/admin.app.js"></script>
         {% endblock %}
     </body>

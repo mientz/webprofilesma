@@ -1,0 +1,124 @@
+{% extends "admin/base.html" %} {% block head %} {{ parent() }}
+<link href="public/assets/css/bootstrap-tagsinput.css" rel="stylesheet">
+<link href="public/assets/css/croppie.css" rel="stylesheet">
+{% endblock %} {% block title %} Pos {% endblock %} {% block content %}
+<div class="container-fluid">
+    <form>
+        <div class="row">
+            <div class="col-md-12 no-gutter">
+                <div class="col-md-8 no-gutter">
+                    <h3 class="page-title pull-left">Tambahkan Pos Baru</h3>
+                </div>
+            </div>
+            <div class="col-md-9 no-gutter" style="padding:10px 10px 0 0;">
+                <div class="col-md-12 no-gutter">
+                    <div class="form-group">
+                        <label>Judul</label>
+                        <input type="text" class="form-control" name="title" placeholder="Masukkan Judul Disini">
+                    </div>
+                </div>
+                <div class="col-md-12 no-gutter">
+                    <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target="#header-select"><i class="fa fa-picture-o fa-fw"></i> Tambahkan Gambar Fitur</a>
+                </div>
+                <div class="col-md-12 no-gutter editor" style="padding-top:10px;color:">
+                    <textarea name="content" id="editor1" rows="10" cols="80">
+                    </textarea>
+                </div>
+            </div>
+            <div class="col-md-3 no-gutter" style="padding:35px 0 0 10px;">
+                <div class="panel panel-default" style="background:#fff; color:#4e5d6c; ">
+                    <a class="panel-heading" role="button" data-toggle="collapse" href=".terbitkan" aria-expanded="true" aria-controls="collapseExample" style="display:block;">
+                        Terbitkan
+                    </a>
+                    <div class="panel-body collapse in terbitkan">
+                        <button type="button" class="btn btn-default btn-sm pull-left" value=""><i class="fa fa-floppy-o fa-fw"></i> Simpan Konsep</button>
+                        <a href="" class="btn btn-default btn-sm pull-right"><i class="fa fa-eye fa-fw"></i> Pratinjau</a>
+                        <br><br>
+                        <ul class="list-unstyled">
+                            <li><i class="fa fa-info-circle fa-fw"></i> Status: <span class="text-info">Konsep</span></li>
+                            <li><i class="fa fa-eye fa-fw"></i> Kenampakan: <a href="#" class="text-info">Umum <i class="fa fa-pencil"></i></a></li>
+                        </ul>
+                    </div>
+                    <div class="panel-footer collapse in terbitkan">
+                        <button type="button" class="btn btn-link">&nbsp;</button>
+                        <button type="submit" class="btn btn-info pull-right" value="Terbitkan">Terbitkan</button>
+                    </div>
+                </div>
+                <div class="panel panel-default" style="background:#fff; color:#4e5d6c; ">
+                    <a class="panel-heading" role="button" data-toggle="collapse" href=".kategori" aria-expanded="true" aria-controls="collapseExample" style="display:block;">
+                        Kategori
+                    </a>
+                    <div class="panel-body collapse in kategori">
+                        <div class="col-md-12 no-gutter category-select">
+                        </div>
+                        <a href="#" class="btn btn-default btn-xs pull-right"><i class="fa fa-plus fa-fw"></i> Tambah Kategori</a>
+                    </div>
+                </div>
+                <div class="panel panel-default" style="background:#fff; color:#4e5d6c; ">
+                    <a class="panel-heading" role="button" data-toggle="collapse" href=".tag" aria-expanded="true" aria-controls="collapseExample" style="display:block;">
+                        Tag
+                    </a>
+                    <div class="panel-body collapse in tag">
+                        <input type="text" class="form-control input-sm" data-role="tagsinput">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal fade" id="header-select" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Pilih Gambar Fitur</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs">
+                    <li><a href="#upload" data-toggle="tab">Upload</a></li>
+                    <li class="active"><a href="#select" data-toggle="tab">Pustaka Gambar Fitur</a></li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade active in" id="upload">
+                        <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+                    </div>
+                    <div class="tab-pane fade" id="select">
+                        <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }}
+{% verbatim %}
+<script id="category-tmpl" type="x-tmpl-mustache">
+<div class="radio radio-primary">
+    <input type="radio" name="category" id="radio{{id}}" value="{{id}}" {{checked}}>
+    <label for="radio{{id}}">
+        {{name}}
+    </label>
+</div>
+</script>
+{% endverbatim %}
+<script src="public/assets/ckeditor/ckeditor.js"></script>
+<script src="public/assets/js/bootstrap-tagsinput.js"></script>
+<script src="public/assets/js/croppie.min.js"></script>
+<script>
+    CKEDITOR.replace( 'editor1');
+    function loadCategory(){
+        $.getJSON("{{ path_for('admin-category-json') }}", {}, function(data){
+            $.each(data, function(key, val){
+                if (key == 0){
+                    val.checked = 'checked'
+                }
+                $('.category-select').append(Mustache.render($('#category-tmpl').html(), val));
+            });
+        });
+    }
+    $(document).ready(function(){
+        loadCategory();
+    });
+</script>
+{% endblock %}

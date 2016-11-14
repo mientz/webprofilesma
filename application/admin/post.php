@@ -15,6 +15,8 @@ $app->group('/admin/post', function () {
     $this->get('/add', function ($req, $res, $args) {
         $req = $req->withAttribute('addpost', 'active');
 
-        return $this->view->render($res, 'admin/post.html', $req->getAttributes());
+        return $this->view->render($res, 'admin/add-post.html', $req->getAttributes());
     })->setName('admin-addpost');
-})->add($user_session_data);
+
+
+})->add($session);

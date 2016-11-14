@@ -1,3 +1,5 @@
 {% extends "admin/base.html" %} {% block title %} Dashboard {% endblock %} {% block content %}
-{{ dashboard }}
+{% set foo = user_data.privilege %}
+{{foo.post_management}}
+<!--{{ user_data.privilege }}-->
 {% endblock %} {% block js %} {{ parent() }} {% endblock %}

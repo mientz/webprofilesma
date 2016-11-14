@@ -14,7 +14,7 @@ $app->group('/auth', function () {
      * [[Login Process]]
      */
     $this->post('/login', function ($req, $res, $args) {
-        $select = $this->db->prepare("select * from sma_users where user_password=:password and (user_username=:username or user_email=:email) and user_deleted = '0' group by user_id");
+        $select = $this->db->prepare("select * from users where password=:password and (username=:username or email=:email) and deleted = '0' group by id");
         $select->bindParam(':username', $_POST["username"], PDO::PARAM_STR);
         $select->bindParam(':email', $_POST["username"], PDO::PARAM_STR);
         $select->bindParam(':password', sha1($_POST["password"]), PDO::PARAM_STR);
@@ -22,7 +22,7 @@ $app->group('/auth', function () {
         $count = $select->rowCount();
         $data = $select->fetch(PDO::FETCH_ASSOC);
         if($count == 1){
-            $this->session->set('user_id', $data["user_id"]);
+            $this->session->set('user_id', $data["id"]);
             return $res->withStatus(302)->withHeader('Location', $this->router->pathFor((isset($_POST["lastpage"]) ? $_POST["lastpage"] : 'admin-dashboard')));
         }else{
             return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('pre-login')."/error");
