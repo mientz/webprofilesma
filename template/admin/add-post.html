@@ -1,9 +1,8 @@
 {% extends "admin/base.html" %} {% block head %} {{ parent() }}
 <link href="public/assets/css/bootstrap-tagsinput.css" rel="stylesheet">
-<link href="public/assets/css/croppie.css" rel="stylesheet">
-{% endblock %} {% block title %} Pos {% endblock %} {% block content %}
+<link href="public/assets/css/croppie.css" rel="stylesheet"> {% endblock %} {% block title %} Pos {% endblock %} {% block content %}
 <div class="container-fluid">
-    <form>
+    <form method="post">
         <div class="row">
             <div class="col-md-12 no-gutter">
                 <div class="col-md-8 no-gutter">
@@ -17,8 +16,12 @@
                         <input type="text" class="form-control" name="title" placeholder="Masukkan Judul Disini">
                     </div>
                 </div>
+                <div class="col-md-12 hidden">
+                    <img src class="img-header-featured">
+                </div>
                 <div class="col-md-12 no-gutter">
                     <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target="#header-select"><i class="fa fa-picture-o fa-fw"></i> Tambahkan Gambar Fitur</a>
+                    <a role="button" class="btn btn-danger btn-sm hidden" id="remove-croppie"><i class="fa fa-picture-o fa-fw"></i> Hapus Gambar Fitur</a>
                 </div>
                 <div class="col-md-12 no-gutter editor" style="padding-top:10px;color:">
                     <textarea name="content" id="editor1" rows="10" cols="80">
@@ -33,7 +36,8 @@
                     <div class="panel-body collapse in terbitkan">
                         <button type="button" class="btn btn-default btn-sm pull-left" value=""><i class="fa fa-floppy-o fa-fw"></i> Simpan Konsep</button>
                         <a href="" class="btn btn-default btn-sm pull-right"><i class="fa fa-eye fa-fw"></i> Pratinjau</a>
-                        <br><br>
+                        <br>
+                        <br>
                         <ul class="list-unstyled">
                             <li><i class="fa fa-info-circle fa-fw"></i> Status: <span class="text-info">Konsep</span></li>
                             <li><i class="fa fa-eye fa-fw"></i> Kenampakan: <a href="#" class="text-info">Umum <i class="fa fa-pencil"></i></a></li>
@@ -74,51 +78,246 @@
                 <h4 class="modal-title">Pilih Gambar Fitur</h4>
             </div>
             <div class="modal-body">
-                <ul class="nav nav-tabs">
-                    <li><a href="#upload" data-toggle="tab">Upload</a></li>
-                    <li class="active"><a href="#select" data-toggle="tab">Pustaka Gambar Fitur</a></li>
-                </ul>
-                <div id="myTabContent" class="tab-content">
-                    <div class="tab-pane fade active in" id="upload">
-                        <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
-                    </div>
-                    <div class="tab-pane fade" id="select">
-                        <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul class="nav nav-tabs">
+                            <li><a href="#upload" data-toggle="tab">Upload</a></li>
+                            <li class=""><a href="#select" data-toggle="tab">Pustaka Gambar Fitur</a></li>
+                        </ul>
+                        <div id="myTabContent" class="tab-content" style="border-top:1px solid #fff;">
+                            <div class="tab-pane fade" id="upload">
+                                <div id="image-uploader" class="col-md-12 text-center" style="min-height:500px; border: 10px dashed #777">
+                                    <h3 style="margin-top:260px;">Klik atau Tarik gambar di sini untuk meng-upload</h3>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="select">
+                                <div class="col-md-9" id="list-images" style="border-right:1px solid white">
+                                    <div class="form-inline" style="padding:20px 15px;">
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                <label for="exampleInputEmail2">Tahun</label>
+                                                <select class="form-control input-sm search" id="img-year">
+                                                    <option>Semua Tahun</option>
+                                                </select>
+                                            </div>
+                                            <label for="exampleInputName2">Bulan</label>
+                                            <select class="form-control input-sm search" id="img-month">
+                                                <option>Semua Bulan</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="image-list-div" style="max-height:600px; overflow-y: auto;">
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3" id="post-image-detail">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary  disabled choose-this"  data-dismiss="modal">Pilih Gambar</button>
+            </div>
         </div>
     </div>
 </div>
-{% endblock %} {% block js %} {{ parent() }}
-{% verbatim %}
+{% endblock %} {% block js %} {{ parent() }} {% verbatim %}
 <script id="category-tmpl" type="x-tmpl-mustache">
-<div class="radio radio-primary">
-    <input type="radio" name="category" id="radio{{id}}" value="{{id}}" {{checked}}>
-    <label for="radio{{id}}">
-        {{name}}
-    </label>
-</div>
+    <div class="radio radio-primary">
+        <input type="radio" name="category" id="radio{{id}}" value="{{id}}" {{checked}}>
+        <label for="radio{{id}}">
+            {{name}}
+        </label>
+    </div>
+</script>
+<script id="upload-preview-tmpl" type="x-tmpl-mustache">
+    <div class="dz-preview dz-file-preview">
+        <div class="dz-details">
+            <div class="dz-filename"><span data-dz-name></span></div>
+            <div class="dz-size" data-dz-size></div>
+            <img data-dz-thumbnail />
+        </div>
+        <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+        <div class="dz-error-message"><span data-dz-errormessage></span></div>
+    </div>
+</script>
+<script id="list-upload-preview-tmpl" type="x-tmpl-mustache">
+    <a role="button" class="col-md-3 postimage-selectthis" data-img="{{file}}" data-size="{{size}}" data-year="{{year}}" data-month="{{month}}" data-day="{{day}}" data-pixel="{{pixel}}">
+        <img src="public/content/{{thumb}}" class="img-responsive" alt="">
+    </a>
+</script>
+<script id="list-upload-preview-detail-tmpl" type="x-tmpl-mustache">
+    <img src="public/content/{{image}}" class="img-responsive" alt="">
+    <p>
+        {{image}}
+        <br> {{time}}
+        <br> {{size}}
+        <br> {{pixel}}
+        <a href="#" class="btn btn-danger btn-xs">Hapus Gambar</a>
+    </p>
 </script>
 {% endverbatim %}
 <script src="public/assets/ckeditor/ckeditor.js"></script>
 <script src="public/assets/js/bootstrap-tagsinput.js"></script>
 <script src="public/assets/js/croppie.min.js"></script>
+<script src="public/assets/js/dropzone.js"></script>
 <script>
-    CKEDITOR.replace( 'editor1');
-    function loadCategory(){
-        $.getJSON("{{ path_for('admin-category-json') }}", {}, function(data){
-            $.each(data, function(key, val){
-                if (key == 0){
+    CKEDITOR.replace('editor1');
+    var basic = $('.img-header-featured')
+    function loadCategory() {
+        $.getJSON("{{ path_for('admin-category-json') }}", {}, function (data) {
+            $.each(data, function (key, val) {
+                if (key == 0) {
                     val.checked = 'checked'
                 }
                 $('.category-select').append(Mustache.render($('#category-tmpl').html(), val));
             });
         });
     }
-    $(document).ready(function(){
+    $(document).ready(function () {
         loadCategory();
+        Dropzone.autoDiscover = false;
+        $('#header-select').find('#image-uploader').dropzone({
+            url: "{{ path_for('admin-postmedia-uploader') }}",
+            maxFileSize: 2,
+            createImageThumbnails: true,
+            aceptedFiles: 'image/*,',
+            previewTemplate: Mustache.render($('#upload-preview-tmpl').html()),
+            init: function () {
+                this.on('complete', function (file) {
+                    $('#header-select').find('li a[href="#select"]').tab('show')
+                    $('#header-select').find('.dz-preview').html('');
+                })
+            }
+        });
     });
+    $('#header-select').on('show.bs.modal', function (event) {
+        var modal = $(this);
+        modal.find('li a[href="#select"]').on('shown.bs.tab', function (e) {
+            e.target // newly activated tab
+            e.relatedTarget // previous active tab
+            $.getJSON("{{ path_for('admin-postmedia-list') }}", {
+                year: 'all',
+                month: 'all'
+            }, function (data) {
+                modal.find('#img-year').html('<option value="all">Semua Tahun</option>');
+                populate_gallery('all', 'all')
+                $.each(data.time, function (key, val) {
+                    modal.find('#img-year').append('<option value="' + key + '">' + key + '</option>');
+                });
+                modal.find('#img-year').on('change', function () {
+                    populate_gallery($(this).val(), 'all')
+                    modal.find('#img-month').html('<option value="all">Semua Bulan</option>');
+                    var year = $(this).val();
+                    $.each(data.time[year], function (key, val) {
+                        modal.find('#img-month').append('<option value="' + val + '">' + month_replacer(val) + '</option>');
+                    });
+                    modal.find('#img-month').on('change', function () {
+                        populate_gallery($('#img-year').val(), $(this).val())
+                    });
+                });
+            });
+        });
+
+        function populate_gallery(year, month) {
+            $.getJSON("{{ path_for('admin-postmedia-list') }}", {
+                year: year,
+                month: month
+            }, function (data) {
+                modal.find('#image-list-div').html('')
+                $.each(data.image, function (key, val) {
+                    modal.find('#image-list-div').append(Mustache.render($('#list-upload-preview-tmpl').html(), val))
+                })
+                modal.find('.postimage-selectthis').on('click', function () {
+                    modal.find('.postimage-selectthis').css('border', 'none');
+                    modal.find('.postimage-selectthis').css('background', 'none');
+                    $(this).css('border', '1px solid #31b0d5')
+                    $(this).css('background', '#31b0d5')
+                    var elm = $(this)
+                    modal.find('#post-image-detail').html(Mustache.render($('#list-upload-preview-detail-tmpl').html(), {
+                            image: elm.data('img'),
+                            size: elm.data('size'),
+                            time: elm.data('day') + ' ' + month_replacer(elm.data('month')) + ', ' + elm.data('year'),
+                            'pixel': elm.data('pixel')
+                    }));
+                    modal.find('.choose-this').removeClass('disabled');
+                    modal.find('.choose-this').data('image', elm.data('img'));
+                });
+            });
+        }
+        modal.find('li a[href="#select"]').tab('show');
+    });
+    $('#header-select').on('hide.bs.modal', function (event) {
+        var modal = $(this);
+        modal.find('#image-uploader').dropzone = false;
+        modal.find('.choose-this').addClass('disabled');
+
+        var parent = $('.img-header-featured').parent()
+        parent.removeClass('hidden')
+        basic.croppie({
+            viewport: {
+                width: 342,
+                height: 213
+            },
+            boundary: { width: parent.width(), height: 250 },
+            update: function(data){
+                console.log(data)
+            }
+        })
+        basic.croppie('bind', {
+            url: 'public/content/' + $('.choose-this').data('image')
+        });
+
+        $('#remove-croppie').removeClass('hidden');
+    });
+
+    $('#remove-croppie').on('click', function(){
+        basic.croppie('destroy');
+        $(this).addClass('hidden');
+    })
+    function month_replacer(month) {
+        var day = ''
+        switch (month) {
+        case '01':
+            day = "Januari";
+            break;
+        case '02':
+            day = "Februari";
+            break;
+        case '03':
+            day = "Maret";
+            break;
+        case '04':
+            day = "April";
+            break;
+        case '05':
+            day = "Mei";
+            break;
+        case '06':
+            day = "Juni";
+            break;
+        case '07':
+            day = "Juli";
+            break;
+        case '08':
+            day = "Agustus";
+            break;
+        case '09':
+            day = "September";
+            break;
+        case '10':
+            day = "Oktober";
+            break;
+        case '11':
+            day = "November";
+            break;
+        case '12':
+            day = "Desember";
+        }
+        return day;
+    }
 </script>
 {% endblock %}

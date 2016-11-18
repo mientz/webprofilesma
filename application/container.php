@@ -46,3 +46,13 @@ $container['session'] = function ($c) {
 $container['flash'] = function () {
     return new \Slim\Flash\Messages();
 };
+
+/*
+ * Flash message register
+ */
+$container['manager'] = function () {
+    return new \Intervention\Image\ImageManager(array('driver' => 'gd'));
+};
+
+
+
