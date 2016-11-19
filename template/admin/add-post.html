@@ -20,7 +20,8 @@
                     <img src class="img-header-featured">
                 </div>
                 <div class="col-md-12 no-gutter">
-                    <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target="#header-select"><i class="fa fa-picture-o fa-fw"></i> Tambahkan Gambar Fitur</a>
+                    <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target="#header-select" data-type="featured"><i class="fa fa-picture-o fa-fw"></i> Tambahkan Gambar Fitur</a>
+                    <a href="#" id="ckeditor-image-selector" class="btn btn-info btn-sm hidden" data-toggle="modal" data-target="#header-select" data-type="ckeditor"><i class="fa fa-picture-o fa-fw"></i> Tambahkan Gambar Fitur</a>
                     <a role="button" class="btn btn-danger btn-sm hidden" id="remove-croppie"><i class="fa fa-picture-o fa-fw"></i> Hapus Gambar Fitur</a>
                 </div>
                 <div class="col-md-12 no-gutter editor" style="padding-top:10px;color:">
@@ -165,7 +166,10 @@
 <script src="public/assets/js/croppie.min.js"></script>
 <script src="public/assets/js/dropzone.js"></script>
 <script>
-    CKEDITOR.replace('editor1');
+    CKEDITOR.replace('editor1',{
+        filebrowserBrowseUrl: "{{ path_for('admin-addpost') }}#header-select",
+        filebrowserUploadUrl: '/uploader/upload.php'
+    });
     var basic = $('.img-header-featured')
     function loadCategory() {
         $.getJSON("{{ path_for('admin-category-json') }}", {}, function (data) {
@@ -196,6 +200,11 @@
     });
     $('#header-select').on('show.bs.modal', function (event) {
         var modal = $(this);
+        var button = $(event.relatedTarget)
+        var ckeditor = true;
+        if(button.data('type') == 'featured'){
+            ckeditor = false;
+        }
         modal.find('li a[href="#select"]').on('shown.bs.tab', function (e) {
             e.target // newly activated tab
             e.relatedTarget // previous active tab
@@ -222,7 +231,7 @@
             });
         });
 
-        function populate_gallery(year, month) {
+        function populate_gallery(year, month, cked) {
             $.getJSON("{{ path_for('admin-postmedia-list') }}", {
                 year: year,
                 month: month
@@ -245,6 +254,26 @@
                     }));
                     modal.find('.choose-this').removeClass('disabled');
                     modal.find('.choose-this').data('image', elm.data('img'));
+                    modal.find('.choose-this').on('click', function(){
+                        var parent = $('.img-header-featured').parent()
+                        parent.removeClass('hidden')
+                        basic.croppie('destroy');
+                        basic.croppie({
+                            viewport: {
+                                width: 342,
+                                height: 213
+                            },
+                            boundary: { width: parent.width(), height: 250 },
+                            /*update: function(data){
+                                console.log(data)
+                            }*/
+                        })
+                        basic.croppie('bind', {
+                            url: 'public/content/' + $('.choose-this').data('image')
+                        });
+                        $('#remove-croppie').removeClass('hidden');
+                    })
+
                 });
             });
         }
@@ -255,23 +284,7 @@
         modal.find('#image-uploader').dropzone = false;
         modal.find('.choose-this').addClass('disabled');
 
-        var parent = $('.img-header-featured').parent()
-        parent.removeClass('hidden')
-        basic.croppie({
-            viewport: {
-                width: 342,
-                height: 213
-            },
-            boundary: { width: parent.width(), height: 250 },
-            update: function(data){
-                console.log(data)
-            }
-        })
-        basic.croppie('bind', {
-            url: 'public/content/' + $('.choose-this').data('image')
-        });
 
-        $('#remove-croppie').removeClass('hidden');
     });
 
     $('#remove-croppie').on('click', function(){

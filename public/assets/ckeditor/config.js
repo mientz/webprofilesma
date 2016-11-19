@@ -9,7 +9,8 @@ CKEDITOR.editorConfig = function( config ) {
     config.extraPlugins = 'autogrow';
     config.autoGrow_minHeight = 250;
     config.autoGrow_maxHeight = 6000;
-    config.toolbarGroups = [
+    config.extraPlugins = 'fileman';
+    /*config.toolbarGroups = [
         { name: 'clipboard', groups: [ 'undo', 'clipboard' ] },
         { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
         { name: 'links', groups: [ 'links' ] },
@@ -24,7 +25,7 @@ CKEDITOR.editorConfig = function( config ) {
         { name: 'colors', groups: [ 'colors' ] },
         { name: 'others', groups: [ 'others' ] },
         { name: 'about', groups: [ 'about' ] }
-    ];
+    ];*/
 
-    config.removeButtons = 'Flash,Smiley,Anchor,Language,Superscript,Subscript,HiddenField,Select,Textarea,TextField,Radio,Checkbox,Form,Scayt,SelectAll,Replace,Find,Save,NewPage,Preview,Templates,Cut,Copy,About,Maximize,Font,BidiLtr,BidiRtl,Styles,Print,CreateDiv,Button,ImageButton';
+    /*config.removeButtons = 'Flash,Smiley,Anchor,Language,Superscript,Subscript,HiddenField,Select,Textarea,TextField,Radio,Checkbox,Form,Scayt,SelectAll,Replace,Find,Save,NewPage,Preview,Templates,Cut,Copy,About,Maximize,Font,BidiLtr,BidiRtl,Styles,Print,CreateDiv,Button,ImageButton';*/
 };
