@@ -103,7 +103,7 @@ $app->group('/admin/api', function () {
                             "day" => $image_data[4],
                             "pixel" => $img->width().' x '.$img->width(),
                             "file" => $file,
-                            "thumb" => $image_data[0].'-'.$image_data[1].'-'.$image_data[2].'-'.$image_data[3].'-'.$image_data[4].'-'.$image_data[5].'-'.$image_data[6].'-'.$image_data[7].'-'.explode('.', $image_data[8])[0].'-thumbnail.'.explode('.', $image_data[8])[1],
+                            "thumb" => $this->router->pathFor('postmedia-thumbnail', ['img'=>$file]),
                             "size" => $file_size
                         ]);
                     }
@@ -118,4 +118,6 @@ $app->group('/admin/api', function () {
 
 
     })->setName('admin-postmedia-list');
+
+
 })->add($session);
