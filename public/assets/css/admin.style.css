@@ -27,6 +27,7 @@
  * Custom Checkbox and radio
  */
 
+/*
 .checkbox {
     padding-left: 20px;
 }
@@ -200,6 +201,7 @@
     border-color: #5cb85c; }
 .radio-success input[type="radio"]:checked + label::after {
     background-color: #5cb85c; }
+*/
 
 #wrapper {
     padding-left: 0;
@@ -355,15 +357,15 @@
     font-size: 13px;
 }
 
-.post-list .post-title + .form-inline{
+.post-list .post-title .form-inline a{
+    font-weight: 600;
+}
+
+.post-list .post-title .form-inline{
     display: none;
 }
 
-.post-list .post-title .form-inline a{
-    font-weight: 800;
-}
-
-.post-list .post-title:hover + .form-inline{
+.post-list .post-title:hover .form-inline{
     display: block;
 }
 

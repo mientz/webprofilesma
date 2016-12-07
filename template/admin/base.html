@@ -116,7 +116,7 @@
                         <li class=""><a href="#">Data Guru</a></li>
                     </ul>
                 </li>
-                <li class=""><a href="#"><i class="fa fa-comments-o fa-fw"></i>Komentar</a></li>
+<!--                <li class=""><a href="#"><i class="fa fa-comments-o fa-fw"></i>Komentar</a></li>-->
                 <li class="">
                     <a href="#"><i class="fa fa-picture-o fa-fw"></i>Galeri</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
@@ -181,6 +181,11 @@
     <script src="public/assets/js/bootstrap.min.js"></script>
     <script src="public/assets/js/mustache.min.js"></script>
     <script src="public/assets/js/admin.app.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        })
+    </script>
     {% endblock %}
 </body>
 

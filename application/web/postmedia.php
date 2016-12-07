@@ -32,4 +32,4 @@ $app->get('/test', function ($req, $res, $args) {
         echo $author['date'];
     }
 //    return $res;
-})->setName('postmedia');
+})->setName('aa');

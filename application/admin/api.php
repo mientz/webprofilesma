@@ -13,6 +13,29 @@ $app->group('/admin/api', function () {
         $res = $res->withJson($select->fetchAll(PDO::FETCH_NAMED));
         return $res;
     })->setName('admin-category-json');
+
+    $this->post('/category', function ($req, $res, $args) {
+        /*
+        * list all category from current group data
+        */
+        $group_data = $req->getAttribute('current_group_data');
+        $name = $_POST['name'];
+        $name_url = preg_replace('/\s+/', '-', strtolower($name));;
+        $insert = $this->db->prepare("insert into post_category(group_id, name, name_url, deleted) values(:group_id, :name, :name_url, 0)");
+        $insert->bindParam(':group_id', $group_data['group_id'], PDO::PARAM_INT);
+        $insert->bindParam(':name', $name, PDO::PARAM_STR);
+        $insert->bindParam(':name_url', $name_url, PDO::PARAM_STR);
+        if($insert->execute()){
+            $res = $res->withJson([
+                'inserted'=>true
+            ]);
+        }else{
+            $res = $res->withJson([
+                'inserted'=>false
+            ]);
+        }
+        return $res;
+    })->setName('admin-add-category');
     /**
      * [[api post media uploader]]
      */
@@ -29,13 +52,6 @@ $app->group('/admin/api', function () {
                 $image_path = "public/content/".$file.'.'.$ext;
                 $thumb_path = "public/content/".$file.'-thumbnail.'.$ext;
                 $img->save($image_path);
-                if($thumb->width() > $thumb->height()){
-                    $thumb->crop($thumb->height(), $thumb->height());
-                }elseif($thumb->width() < $thumb->height()){
-                    $thumb->crop($thumb->width(), $thumb->width());
-                }
-                $img->resize(300, 300);
-                $thumb->save($thumb_path);
             }
         }
         return $res;
