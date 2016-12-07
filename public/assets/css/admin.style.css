@@ -385,3 +385,15 @@ a.cke_dialog_tab_selected {
 a.cke_dialog_tab {
     color:#000 !important;
 }
+
+.typeahead.dropdown-menu {
+	background: #fff !important;
+}
+
+.typeahead.dropdown-menu li.active a{
+    background: #5bc0de !important;
+}
+
+.typeahead.dropdown-menu li a{
+    color:#000 !important;
+}

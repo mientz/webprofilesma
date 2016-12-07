@@ -126,7 +126,7 @@
                         Tag
                     </a>
                     <div class="panel-body collapse in tag" data-toggle="tooltip" data-placement="left" title="" data-original-title="Untuk memasukkan tag lebih dari satu gunakan tombol 'Enter'">
-                        <input type="text" class="form-control input-sm" data-role="tagsinput" name="tag" value="{{post_data.tags}}">
+                        <input type="text" class="form-control input-sm tags-input-elm" name="tag" value="{{post_data.tags}}">
                     </div>
                 </div>
             </div>
@@ -279,6 +279,7 @@
 {% endverbatim %}
 <script src="public/assets/js/jquery.form.min.js"></script>
 <script src="public/assets/js/bootstrap-tagsinput.js"></script>
+<script src="public/assets/js/bootstrap3-typeahead.min.js"></script>
 <script src="public/assets/js/croppie.min.js"></script>
 <script src="public/assets/js/dropzone.js"></script>
 <script src="public/assets/summernote/summernote.min.js"></script>
@@ -311,8 +312,23 @@
                     $btn.button('reset')
                 }
             })
-
         })
+
+        $('.tags-input-elm').tagsinput({
+            typeahead:{
+                source: function(query) {
+                    return $.get("{{ path_for('admin-tags-json') }}", function(data){
+                        return data;
+                    }, 'json');
+                }
+            },
+            freeInput: true
+        });
+        $('.tags-input-elm').on('itemAdded', function(event) {
+            setTimeout(function(){
+                $(">input[type=text]",".bootstrap-tagsinput").val("");
+            }, 1);
+        });
 
         localStorage.removeItem("save_type");
         localStorage.removeItem("post_id");

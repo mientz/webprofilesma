@@ -228,6 +228,76 @@ $app->group('/admin/post', function () {
         return $this->view->render($res, 'admin/edit-post.html', $req->getAttributes());
     })->setName('admin-editpost');
 
+    $this->post('/change[/{id}[/{action}]]', function ($req, $res, $args) {
+        if($args['action']=='draft'){
+            $update = $this->db->prepare('update post set status=:status where id=:id');
+            $update->bindParam(':id', $args['id'], PDO::PARAM_INT);
+            $update->bindValue(':status', 0, PDO::PARAM_INT);
+            if($update->execute()){
+                $res->withJSON([
+                    'success'=>true
+                ]);
+            }else{
+                $res->withJSON([
+                    'success'=>false
+                ]);
+            }
+        }elseif($args['action']=='publish'){
+            $update = $this->db->prepare('update post set status=:status where id=:id');
+            $update->bindParam(':id', $args['id'], PDO::PARAM_INT);
+            $update->bindValue(':status', 1, PDO::PARAM_INT);
+            if($update->execute()){
+                $res->withJSON([
+                    'success'=>true
+                ]);
+            }else{
+                $res->withJSON([
+                    'success'=>false
+                ]);
+            }
+        }elseif($args['action']=='trash'){
+            $update = $this->db->prepare('update post set deleted=:status where id=:id');
+            $update->bindParam(':id', $args['id'], PDO::PARAM_INT);
+            $update->bindValue(':status', 1, PDO::PARAM_INT);
+            if($update->execute()){
+                $res->withJSON([
+                    'success'=>true
+                ]);
+            }else{
+                $res->withJSON([
+                    'success'=>false
+                ]);
+            }
+        }elseif($args['action']=='revert'){
+            $update = $this->db->prepare('update post set deleted=:status where id=:id');
+            $update->bindParam(':id', $args['id'], PDO::PARAM_INT);
+            $update->bindValue(':status', 0, PDO::PARAM_INT);
+            if($update->execute()){
+                $res->withJSON([
+                    'success'=>true
+                ]);
+            }else{
+                $res->withJSON([
+                    'success'=>false
+                ]);
+            }
+        }elseif($args['action']=='delete'){
+            $update = $this->db->prepare('update post set deleted=:status where id=:id');
+            $update->bindParam(':id', $args['id'], PDO::PARAM_INT);
+            $update->bindValue(':status', 2, PDO::PARAM_INT);
+            if($update->execute()){
+                $res->withJSON([
+                    'success'=>true
+                ]);
+            }else{
+                $res->withJSON([
+                    'success'=>false
+                ]);
+            }
+        }
+        return $res;
+    })->setName('admin-change');
+
     $this->post('/update/{id}', function ($req, $res, $args) {
         $id = $args['id'];
         $title = $_POST['title'];

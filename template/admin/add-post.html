@@ -1,7 +1,8 @@
 {% extends "admin/base.html" %} {% block head %} {{ parent() }}
 <link href="public/assets/css/bootstrap-tagsinput.css" rel="stylesheet">
 <link href="public/assets/summernote/summernote.css" rel="stylesheet">
-<link href="public/assets/css/croppie.css" rel="stylesheet"> {% endblock %} {% block title %} Pos {% endblock %} {% block content %}
+<link href="public/assets/css/croppie.css" rel="stylesheet">
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet"> {% endblock %} {% block title %} Pos {% endblock %} {% block content %}
 <div class="container-fluid">
     <form method="post" id="form-post">
         <div class="row">
@@ -101,7 +102,7 @@
                         Tag
                     </a>
                     <div class="panel-body collapse in tag" data-toggle="tooltip" data-placement="left" title="" data-original-title="Untuk memasukkan tag lebih dari satu gunakan tombol 'Enter'">
-                        <input type="text" class="form-control input-sm" data-role="tagsinput" name="tag">
+                        <input type="text" class="form-control input-sm tags-input-elm" name="tag">
                     </div>
                 </div>
             </div>
@@ -254,6 +255,7 @@
 {% endverbatim %}
 <script src="public/assets/js/jquery.form.min.js"></script>
 <script src="public/assets/js/bootstrap-tagsinput.js"></script>
+<script src="public/assets/js/bootstrap3-typeahead.min.js"></script>
 <script src="public/assets/js/croppie.min.js"></script>
 <script src="public/assets/js/dropzone.js"></script>
 <script src="public/assets/summernote/summernote.min.js"></script>
@@ -285,6 +287,22 @@
             })
 
         })
+
+        $('.tags-input-elm').tagsinput({
+            typeahead:{
+                source: function(query) {
+                    return $.get("{{ path_for('admin-tags-json') }}", function(data){
+                        return data;
+                    }, 'json');
+                }
+            },
+            freeInput: true
+        });
+        $('.tags-input-elm').on('itemAdded', function(event) {
+            setTimeout(function(){
+                $(">input[type=text]",".bootstrap-tagsinput").val("");
+            }, 1);
+        });
 
         localStorage.removeItem("save_type");
         localStorage.removeItem("post_id");
@@ -574,35 +592,35 @@
     }, 180000);
 
     function save_post(type, submit){
-//        if(localStorage.getItem("save_type") === null || localStorage.getItem("save_type") == "new"){
-//            $('#form-post').ajaxSubmit({
-//                data:{status:type},
-//                success:function(res, status, xhr, jq){
-//                    console.log(res);
-//                    localStorage.save_type = 'update';
-//                    localStorage.post_id = res.id;
-//                    if(res.status != 'failed' && submit){
-//                        localStorage.removeItem('save_type');
-//                        localStorage.removeItem('post_id');
-//                        $('#form-post').resetForm();
-//                        window.location.replace("{{ path_for('admin-allpost') }}");
-//                    }
-//                }
-//            });
-//        }else if(localStorage.getItem("save_type") === "update"){
-//            $('#form-post').ajaxSubmit({
-//                url:"{{ path_for('admin-addpost-update', {'id':''}) }}"+localStorage.post_id,
-//                data:{status:type},
-//                success:function(res, status, xhr, jq){
-//                    if(res.status != 'failed' && submit){
-//                        localStorage.removeItem('save_type');
-//                        localStorage.removeItem('post_id');
-//                        $('#form-post').resetForm();
-//                        window.location.replace("{{ path_for('admin-allpost') }}");
-//                    }
-//                }
-//            });
-//        }
+        if(localStorage.getItem("save_type") === null || localStorage.getItem("save_type") == "new"){
+            $('#form-post').ajaxSubmit({
+                data:{status:type},
+                success:function(res, status, xhr, jq){
+                    console.log(res);
+                    localStorage.save_type = 'update';
+                    localStorage.post_id = res.id;
+                    if(res.status != 'failed' && submit){
+                        localStorage.removeItem('save_type');
+                        localStorage.removeItem('post_id');
+                        $('#form-post').resetForm();
+                        window.location.replace("{{ path_for('admin-allpost') }}");
+                    }
+                }
+            });
+        }else if(localStorage.getItem("save_type") === "update"){
+            $('#form-post').ajaxSubmit({
+                url:"{{ path_for('admin-addpost-update', {'id':''}) }}"+localStorage.post_id,
+                data:{status:type},
+                success:function(res, status, xhr, jq){
+                    if(res.status != 'failed' && submit){
+                        localStorage.removeItem('save_type');
+                        localStorage.removeItem('post_id');
+                        $('#form-post').resetForm();
+                        window.location.replace("{{ path_for('admin-allpost') }}");
+                    }
+                }
+            });
+        }
     }
     $('#draft-save').on('click', function() {
         save_post('draft', true);
