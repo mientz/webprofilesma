@@ -390,11 +390,6 @@ $app->group('/admin/post', function () {
         }
     })->setName('admin-addpost-update');
 
-    $this->get('/postmedia', function ($req, $res, $args) {
-        $req = $req->withAttribute('postmedia', 'active');
-        return $this->view->render($res, 'admin/postmedia.html', $req->getAttributes());
-    })->setName('admin-allpostmedia');
-
     $this->get('/category[/{id}]', function ($req, $res, $args) {
         $group_data = $req->getAttribute('current_group_data');
         $req = $req->withAttribute('category', 'active');

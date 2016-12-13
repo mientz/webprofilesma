@@ -18,15 +18,12 @@
                         <input type="text" class="form-control" name="title" placeholder="Masukkan Judul Disini" value="{{post_data.title}}">
                     </div>
                 </div>
-                {% if post_data.header_image %}
-                <div class="col-md-12 postmedia-raw">
-                    <center>
-                        <img src="public/header/{{post_data.header_image}}" style="height:200px;" class="img-header-raw">
-                    </center>
-                </div>
-                {% endif %}
-                <div class="col-md-12 hidden">
-                    <img src class="img-header-featured">
+                <div class="col-md-12 {% if post_data.header_image %}  {% else %} hidden {% endif %}" id="image-header-cropit" align="center">
+                    <div id="image-cropper">
+                        <div class="cropit-preview"></div>
+                        <input type="range" class="cropit-image-zoom-input form-range" />
+                        <br>
+                    </div>
                 </div>
                 <div class="col-md-12 no-gutter">
                     <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target="#header-select" data-type="featured"><i class="fa fa-picture-o fa-fw"></i> Ganti Gambar Fitur</a>
@@ -280,13 +277,42 @@
 <script src="public/assets/js/jquery.form.min.js"></script>
 <script src="public/assets/js/bootstrap-tagsinput.js"></script>
 <script src="public/assets/js/bootstrap3-typeahead.min.js"></script>
-<script src="public/assets/js/croppie.min.js"></script>
+<script src="public/assets/js/jquery.cropit.js"></script>
 <script src="public/assets/js/dropzone.js"></script>
 <script src="public/assets/summernote/summernote.min.js"></script>
 <script src="public/assets/summernote/lang/summernote-id-ID.min.js"></script>
 <script>
-    var basic = $('.img-header-featured')
-
+    var basic = $('#image-header-cropit')
+    $('#image-cropper').cropit({
+        imageBackground: true,
+        imageBackgroundBorderWidth: [100, 30, 100, 30],
+        width: 342,
+        height: 213,
+        allowDragNDrop:false,
+        onImageLoaded: function(){
+            $('#form-post').data('zoom', '0');
+            $('#form-post').data('width', $('#image-cropper').cropit('previewSize')['width']);
+            $('#form-post').data('height', $('#image-cropper').cropit('previewSize')['height']);
+            $('#form-post').data('x', '0');
+            $('#form-post').data('y', '0');
+        },
+        onImageError: function(err, code, message){
+            alert(err);
+        },
+        onZoomChange: function(zoom){
+            $('#form-post').data('zoom', zoom);
+        },
+        onOffsetChange: function(offset){
+            $('#form-post').data('x', offset.x);
+            $('#form-post').data('y', offset.y);
+        }
+    });
+    {% if post_data.header_image %}
+    var firstImage = "{{post_data.header_image}}"
+    var firstImage_param = firstImage.split('?')[1].split('&');
+    $('#image-cropper').cropit('imageSrc', 'public/content/'+firstImage.split('?')[0]);
+     $('#image-cropper').cropit('previewSize', { width: firstImage_param[0], height: 450 });
+    {% endif %}
     function loadCategory() {
         $('.category-select').html('');
         $.getJSON("{{ path_for('admin-category-json') }}", {}, function (data) {
@@ -459,29 +485,8 @@
                     modal.find('.choose-this').removeClass('disabled');
                     modal.find('.choose-this').data('image', elm.data('img'));
                     modal.find('.choose-this').on('click', function () {
-                        $('.postmedia-raw').html('')
-                        var parent = $('.img-header-featured').parent()
-                        parent.removeClass('hidden')
-                        basic.croppie('destroy');
-                        basic.croppie({
-                            viewport: {
-                                width: 342,
-                                height: 213
-                            },
-                            boundary: {
-                                width: parent.width(),
-                                height: 250
-                            },
-                            update: function (data) {
-                                basic.croppie('result','base64').then(function(blob){
-                                    $('#image-crop-val').val(blob)
-                                })
-                                //$('#image-crop-val').val(image[2] + '?zoom=' + zoom + '&x=' + points[0] + '&y=' + points[1]);
-                            }
-                        })
-                        basic.croppie('bind', {
-                            url: 'public/content/' + $('.choose-this').data('image')
-                        });
+                        basic.removeClass('hidden')
+                        $('#image-cropper').cropit('imageSrc', 'public/content/'+elm.data('img'));
                         $('#remove-croppie').removeClass('hidden');
                     })
                 });
@@ -555,10 +560,10 @@
         modal.find('.choose-this').addClass('disabled');
     });
 
-    $('#remove-croppie').on('click', function () {
-        basic.croppie('destroy');
-        $(this).addClass('hidden');
-    })
+//    $('#remove-croppie').on('click', function () {
+//        basic.croppie('destroy');
+//        $(this).addClass('hidden');
+//    })
 
     $("input[name=title]").on('change', function () {
         localStorage.setItem("title", $(this).val())
