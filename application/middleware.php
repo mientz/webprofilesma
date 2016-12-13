@@ -47,14 +47,26 @@ $session = function ($req, $res, $next) {
     ");
     $select->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $select->execute();
+    $req = $req->withAttribute('user_group', $select->fetchAll(PDO::FETCH_ASSOC));
+    $group_id = ($this->session->group_id == null ? $req->getAttribute('user_group')[0]['group_id'] : $this->session->group_id);
+    $select = $this->db->prepare("
+        select *
+        from
+            groups
+        where
+            id=:group_id
+    ");
+    $select->bindParam(':group_id', $group_id, PDO::PARAM_INT);
+    $select->execute();
     $req = $req->withAttribute('current_group_data', $select->fetch(PDO::FETCH_ASSOC));
+    $req = $req->withAttribute('current_group_url', ($group_id == 1 ? null : $req->getAttribute('current_group_data')['name']));
 
 
 
     /*
      * list categorry by current group
      */
-
+    $this->flash->addMessage('lastpage_group_change', $route->getName());
     $res = $next($req, $res);
     return $res;
 };

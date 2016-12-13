@@ -4,16 +4,15 @@
     <div class="row">
         <div class="col-md-12 no-gutter">
             <div class="col-md-8 no-gutter">
-                <h3 class="page-title pull-left">Pos</h3>
-                <a href="{{ path_for('admin-addpost') }}" class="btn btn-info btn-xs pull-left" style="margin:8px;">Tambah Baru</a>
+                <h3 class="page-title pull-left">Halaman</h3>
+                <a href="{{ path_for('admin-addpost', {'group_page':''}) }}" class="btn btn-info btn-xs pull-left" style="margin:8px;">Tambah Baru</a>
             </div>
+
         </div>
         <div class="col-md-12 no-gutter">
             <ul id="myTabPost" class="nav nav-pills custom-nav-pills">
-                <li class="{{ post_all }}"><a href="{{ path_for('admin-allpost') }}">Semua <span class="badge">{{ mw_count_all }}</span></a></li>
-                <li class="{{ post_published }}"><a href="{{ path_for('admin-allpost-published') }}">Telah Terbit <span class="badge">{{ mw_count_published }}</span></a></li>
-                <li class="{{ post_draft }}"><a href="{{ path_for('admin-allpost-draft') }}">Konsep <span class="badge">{{ mw_count_draft }}</span></a></li>
-                <li class="{{ post_trash }}"><a href="{{ path_for('admin-allpost-trash') }}">Tong Sampah <span class="badge">{{ mw_count_deleted }}</span></a></li>
+                <li class="{{ page_all }}"><a href="{{ path_for('admin-allpage') }}">Semua <span class="badge">{{ mw_count_all }}</span></a></li>
+                <li class="{{ page_trash }}"><a href="{{ path_for('admin-allpage-trash') }}">Tong Sampah <span class="badge">{{ mw_count_deleted }}</span></a></li>
             </ul>
         </div>
         <br>
@@ -25,13 +24,9 @@
                             <div class="form-group">
                                 <select class="form-control input-sm" id="select-action">
                                     <option>Tindakan Masal</option>
-                                    {% if post_all or post_draft %}
-                                    <option value="publish">Terbitkan Semua</option>
-                                    {% endif %} {% if post_all or post_published %}
-                                    <option value="draft">jadikan Konsep</option>
-                                    {% endif %} {% if post_all or post_published or post_draft %}
+                                    {% if page_all %}
                                     <option value="trash">Masukan Tong Sampah</option>
-                                    {% endif %} {% if post_trash %}
+                                    {% endif %} {% if page_trash %}
                                     <option value="revert">Kembalikan</option>
                                     <option value="delete">Hapus Permanen</option>
                                     {% endif %}
@@ -47,16 +42,6 @@
                                     <option value="*">Semua Tanggal</option>
                                     {% for date in mw_date_groups %}
                                     <option value='{{date.date|date("m y")}}'>{{date.date|date("F Y")}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-inline pull-left" style="padding-left:20px;">
-                            <div class="form-group">
-                                <select class="form-control input-sm filter-category" id="select">
-                                    <option value="*">Seluruh Kategori</option>
-                                    {% for category in mw_category_list %}
-                                    <option value="{{category.name}}">{{category.name}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -79,8 +64,7 @@
                                     <th style="width:1em;"></th>
                                     <th>Judul</th>
                                     <th style="width:10em;">Penulis</th>
-                                    <th style="width:10em;">Kategori</th>
-                                    <th style="width:10em;">Tag</th>
+                                    <th style="width:10em;">Deskripsi</th>
                                     <th style="width:10em;">Tanggal</th>
                                 </tr>
                             </thead>
@@ -96,12 +80,10 @@
                                     <td class="post-title">
                                         <strong class="title">
                                             {{post.title}}
-                                        </strong> {% if post.visibility == 0 %}
-                                        <i class="fa fa-eye pull-right" data-toggle="tooltip" data-placement="top" title="" data-original-title="Pos ini tersembunyi dari umum"></i> {% elseif post.visibility == 2 %}
-                                        <i class="fa fa-lock pull-right" data-toggle="tooltip" data-placement="top" title="" data-original-title="Pos ini terlindungi password"></i> {% endif %}
+                                        </strong>
                                         <div class="form-inline">
-                                            {% if post_all or post_published or post_draft %}
-                                            <a href="{{ path_for('admin-editpost', {'id': ''}) }}{{post.id}}" class="btn btn-link btn-sm no-gutter"><span class="label label-info"><i class="fa fa-pencil"></i> Edit</span></a>
+                                            {% if page_all %}
+                                            <a href="{{ path_for('admin-addpage-edit', {'id': post.id}) }}" class="btn btn-link btn-sm no-gutter"><span class="label label-info"><i class="fa fa-pencil"></i> Edit</span></a>
                                             <a role="button" class="btn btn-link btn-sm no-gutter move-to-trash" data-id="{{post.id}}"><span class="label label-primary"><i class="fa fa-trash"></i> Hapus</span></a>
                                             <a href="" class="btn btn-link btn-sm no-gutter"><span class="label label-success"><i class="fa fa-external-link"></i> Partinjau</span></a> {% else %}
                                             <a role="button" class="btn btn-link btn-sm no-gutter move-back" data-id="{{post.id}}"><span class="label label-info"><i class="fa fa-undo"></i> Kembalikan</span></a>
@@ -109,12 +91,9 @@
                                         </div>
                                     </td>
                                     <td>{{post.author|last|first}}</td>
-                                    <td class="category">{{post.category}}</td>
-                                    <td>{{post.tags}}</td>
+                                    <td>{{post.description}}</td>
                                     <td>
-                                        {% if post.status == 1 %} Telah Terbit
-                                        <br> {% else %} Terakhir Diubah
-                                        <br> {% endif %} {{post.author|last|last|date("d M y")}}
+                                        Terakhir Diubah<br>{{post.author|last|last|date("d M y")}}
                                         <span class="date hidden">{{post.author|last|last|date("m y")}}</span>
                                     </td>
                                 </tr>
@@ -129,8 +108,7 @@
                                     <th></th>
                                     <th>Judul</th>
                                     <th>Penulis</th>
-                                    <th>Kategori</th>
-                                    <th>Tag</th>
+                                    <th>Deskripsi</th>
                                     <th>Tanggal</th>
                                 </tr>
                             </tfoot>
@@ -157,20 +135,6 @@
                 innerWindow: 2
             })]
         });
-
-        $('.filter-category').on('change', function () {
-            if ($(this).val() != '*') {
-                postlist.filter(function (item) {
-                    if (item.values().category == $('.filter-category').val()) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                });
-            } else {
-                postlist.filter();
-            }
-        })
 
         $('.filter-date').on('change', function () {
             if ($(this).val() != '*') {
@@ -254,32 +218,6 @@
                     closeButton: false
                 });
                 doAction(action);
-            }else if (action == 'delete') {
-                var list_delete = '';
-                $('.post-checkbox:checked').each(function (num, elm) {
-                    var current_html = $(this).parent().parent().parent().clone();
-                    current_html.find('.form-inline').remove();
-                    list_delete = list_delete+'<tr>'+current_html.html()+'</tr>';
-                })
-                bootbox.confirm({
-                    title: "Apakah Anda Yakin Akan Menghapus Permanent Pos ini?",
-                    message: '<table class="table table-striped post-list"><thead><tr class="info"><th style="width:1em;"></th><th>Judul</th><th style="width:10em;">Penulis</th><th style="width:10em;">Kategori</th><th style="width:10em;">Tag</th><th style="width:10em;">Tanggal</th></tr></thead><tbody class="list">' + list_delete + "</tbody></table>",
-                    size: 'large',
-                    buttons: {
-                        cancel: {
-                            label: '<i class="fa fa-times"></i> Batal'
-                        },
-                        confirm: {
-                            label: '<i class="fa fa-check"></i> Hapus Permanen',
-                            className: 'btn-danger'
-                        }
-                    },
-                    callback: function (result) {
-                        if (result) {
-                            doAction(action);
-                        }
-                    }
-                });
             }
         });
 
@@ -296,7 +234,7 @@
         }
 
         function change_post(action, id) {
-            $.post("{{ path_for('admin-change', {'group_page':''}) }}/" + id + "/" + action, function (data) {
+            $.post("{{ path_for('admin-page-change') }}/" + id + "/" + action, function (data) {
                 if (data.success) {
                     window.location.reload();
                 }

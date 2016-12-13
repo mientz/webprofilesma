@@ -23,6 +23,7 @@ $app->group('/auth', function () {
         $data = $select->fetch(PDO::FETCH_ASSOC);
         if($count == 1){
             $this->session->set('user_id', $data["id"]);
+            $this->session->set('group_id', null);
             return $res->withStatus(302)->withHeader('Location', $this->router->pathFor((isset($_POST["lastpage"]) ? $_POST["lastpage"] : 'admin-dashboard')));
         }else{
             return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('pre-login')."/error");
@@ -38,6 +39,12 @@ $app->group('/auth', function () {
     return $res;
 });
 
+
+$app->get('/change_group/{id}', function ($req, $res, $args) {
+    $this->session->set('group_id', $args['id']);
+    $last_page = $this->flash->getMessages();
+    return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('admin-dashboard'));
+})->setName('change-group');
 
 /*
  * [[logout]]

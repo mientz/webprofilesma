@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-md-12 no-gutter">
                 <div class="col-md-8 no-gutter">
-                    <h3 class="page-title pull-left">Tambahkan Pos Baru</h3>
+                    <h3 class="page-title pull-left">Tambahkan Halaman Baru</h3>
                 </div>
             </div>
             <div class="col-md-9 no-gutter" style="padding:10px 10px 0 0;">
@@ -21,12 +21,6 @@
                 <div class="col-md-12 hidden">
                     <img src class="img-header-featured">
                 </div>
-                <div class="col-md-12 no-gutter">
-                    <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target="#header-select" data-type="featured"><i class="fa fa-picture-o fa-fw"></i> Tambahkan Gambar Fitur</a>
-                    <a href="#" id="ckeditor-image-selector" class="btn btn-info btn-sm hidden" data-toggle="modal" data-target="#postmedia-select" data-type="ckeditor"><i class="fa fa-picture-o fa-fw"></i> Tambahkan Gambar Fitur</a>
-                    <a role="button" class="btn btn-danger btn-sm hidden" id="remove-croppie"><i class="fa fa-picture-o fa-fw"></i> Hapus Gambar Fitur</a>
-                    <input id="image-crop-val" type="hidden" name="image" value="">
-                </div>
                 <div class="col-md-12 no-gutter editor" style="padding-top:10px;color:">
                     <div id="summernote"><p><br></p></div>
                     <input type="hidden" id="textarea-editor" name="content">
@@ -38,71 +32,16 @@
                         Terbitkan
                     </a>
                     <div class="panel-body collapse in terbitkan">
-                        <button id="draft-save" type="button" class="btn btn-default btn-sm pull-left" value=""><i class="fa fa-floppy-o fa-fw"></i> Simpan Konsep</button>
-                        <a href="" class="btn btn-default btn-sm pull-right"><i class="fa fa-eye fa-fw"></i> Pratinjau</a>
-                        <br>
-                        <br>
-                        <ul class="list-unstyled">
-                            <li><i class="fa fa-info-circle fa-fw"></i> Status: <span class="text-info">Konsep</span></li>
-                            <li>
-                                <i class="fa fa-eye fa-fw"></i> Kenampakan:
-                                <a role="button" class="text-info"  data-toggle="collapse" href=".Kenampakan" aria-expanded="false" aria-controls="collapseExample">
-                                    Umum <i class="fa fa-pencil"></i>
-                                </a>
-                                <div class="form-horizontal collapse Kenampakan">
-                                    <div class="radio radio-primary">
-                                        <input type="radio" name="visibility" id="public" value="1" checked>
-                                        <label for="public" onclick="$('input[name=password]').addClass('hidden')">
-                                            Umum
-                                        </label>
-                                    </div>
-                                    <div class="radio radio-primary">
-                                        <input type="radio" name="visibility" id="password" value="2">
-                                        <label for="password" onclick="$('input[name=password]').removeClass('hidden')">
-                                            Terlindungi Password
-                                            <input type="password" name="password" class="form-control hidden" style="border-color:#000;" placeholder="password">
-                                        </label>
-                                    </div>
-                                    <div class="radio radio-primary">
-                                        <input type="radio" name="visibility" id="private" value="0">
-                                        <label for="private" onclick="$('input[name=password]').addClass('hidden')">
-                                            Tersembunyi
-                                        </label>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
+                        <a id="preview-page" href="" class="btn btn-default btn-sm pull-right hidden"><i class="fa fa-eye fa-fw"></i> Pratinjau</a>
+                        <div class="form-group has-success">
+                            <label for="textArea" class="control-label">Deskripsi Halaman</label>
+                            <textarea class="form-control" rows="3" id="textArea" name="descriptions"></textarea>
+                            <span class="help-block">Deskripsi ini tidak tampil dalam situs. Deskripsi ini hanya untuk memudahkan dalam pencarian</span>
+                        </div>
                     </div>
                     <div class="panel-footer collapse in terbitkan">
                         <button type="button" class="btn btn-link">&nbsp;</button>
                         <button type="submit" class="btn btn-info pull-right" name="status" value="Draft">Terbitkan</button>
-                    </div>
-                </div>
-                <div class="panel panel-default" style="background:#fff; color:#4e5d6c; ">
-                    <a class="panel-heading" role="button" data-toggle="collapse" href=".kategori" aria-expanded="true" aria-controls="collapseExample" style="display:block;">
-                        Kategori
-                    </a>
-                    <div class="panel-body collapse in kategori">
-                        <div class="col-md-12 no-gutter category-select">
-                        </div>
-                        <a class="btn btn-default btn-xs pull-right" role="button" data-toggle="collapse" href=".add-kategori" aria-expanded="false" aria-controls="collapseExample" ><i class="fa fa-plus fa-fw"></i> Tambah Kategori</a>
-                        <div class="form-group has-success collapse add-kategori pull-right">
-                            <label class="control-label">Tambahkan Kategori</label>
-                            <div class="input-group">
-                                <input type="text"class="form-control">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" id="add-category" >Simpan</button>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default" style="background:#fff; color:#4e5d6c;" >
-                    <a class="panel-heading" role="button" data-toggle="collapse" href=".tag" aria-expanded="true" aria-controls="collapseExample" style="display:block;">
-                        Tag
-                    </a>
-                    <div class="panel-body collapse in tag" data-toggle="tooltip" data-placement="left" title="" data-original-title="Untuk memasukkan tag lebih dari satu gunakan tombol 'Enter'">
-                        <input type="text" class="form-control input-sm tags-input-elm" name="tag">
                     </div>
                 </div>
             </div>
@@ -223,7 +162,7 @@
         <input type="radio" name="category" id="radio{{id}}" value="{{id}}" {{checked}}>
         <label for="radio{{id}}">
             {{name}}
-        </label>
+    </label>
     </div>
 </script>
 <script id="upload-preview-tmpl" type="x-tmpl-mustache">
@@ -232,7 +171,7 @@
             <div class="dz-filename"><span data-dz-name></span></div>
             <div class="dz-size" data-dz-size></div>
             <img data-dz-thumbnail />
-        </div>
+    </div>
         <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
         <div class="dz-error-message"><span data-dz-errormessage></span></div>
     </div>
@@ -421,10 +360,10 @@
                     $(this).css('background', '#31b0d5')
                     var elm = $(this)
                     modal.find('#post-image-detail').html(Mustache.render($('#list-upload-preview-detail-tmpl').html(), {
-                            image: elm.data('img'),
-                            size: elm.data('size'),
-                            time: elm.data('day') + ' ' + month_replacer(elm.data('month')) + ', ' + elm.data('year'),
-                            'pixel': elm.data('pixel')
+                        image: elm.data('img'),
+                        size: elm.data('size'),
+                        time: elm.data('day') + ' ' + month_replacer(elm.data('month')) + ', ' + elm.data('year'),
+                        'pixel': elm.data('pixel')
                     }));
                     modal.find('.choose-this').removeClass('disabled');
                     modal.find('.choose-this').data('image', elm.data('img'));
@@ -439,7 +378,11 @@
                             },
                             boundary: { width: parent.width(), height: 250 },
                             update: function(data){
-//                                $('#image-crop-val').val(image[2]+'?zoom='+zoom+'&x='+points[0]+'&y='+points[1]);
+                                image_file = $('.cr-image').attr('src')
+                                var points = data.points;
+                                var zoom = data.zoom;
+                                var image = image_file.split('/');
+                                $('#image-crop-val').val(image[2]+'?zoom='+zoom+'&x='+points[0]+'&y='+points[1]);
                             }
                         })
                         basic.croppie('bind', {
@@ -498,10 +441,10 @@
                     $(this).css('background', '#31b0d5')
                     var elm = $(this)
                     modal.find('#post-image-detail').html(Mustache.render($('#list-upload-preview-detail-tmpl').html(), {
-                            image: elm.data('img'),
-                            size: elm.data('size'),
-                            time: elm.data('day') + ' ' + month_replacer(elm.data('month')) + ', ' + elm.data('year'),
-                            'pixel': elm.data('pixel')
+                        image: elm.data('img'),
+                        size: elm.data('size'),
+                        time: elm.data('day') + ' ' + month_replacer(elm.data('month')) + ', ' + elm.data('year'),
+                        'pixel': elm.data('pixel')
                     }));
                     modal.find('.select-this').removeClass('disabled');
                     modal.find('.select-this').on('click', function(){
@@ -549,13 +492,9 @@
     }, 180000);
 
     function save_post(type, submit){
-        var image = '';
-        basic.croppie('result','base64').then(function(blob){
-            image = blob
-        })
         if(localStorage.getItem("save_type") === null || localStorage.getItem("save_type") == "new"){
             $('#form-post').ajaxSubmit({
-                data:{status:type, image:image},
+                data:{status:type},
                 success:function(res, status, xhr, jq){
                     console.log(res);
                     localStorage.save_type = 'update';
@@ -564,20 +503,21 @@
                         localStorage.removeItem('save_type');
                         localStorage.removeItem('post_id');
                         $('#form-post').resetForm();
-                        //window.location.replace("{{ path_for('admin-allpost') }}");
+                        window.location.replace("{{ path_for('admin-allpage') }}");
                     }
+                    $('#preview-page').removeClass('hidden');
                 }
             });
         }else if(localStorage.getItem("save_type") === "update"){
             $('#form-post').ajaxSubmit({
-                url:"{{ path_for('admin-addpost-update', {'id':''}) }}"+localStorage.post_id,
-                data:{status:type, image:image},
+                url:"{{ path_for('admin-addpage-update', {'id':''}) }}"+localStorage.post_id,
+                data:{status:type},
                 success:function(res, status, xhr, jq){
                     if(res.status != 'failed' && submit){
                         localStorage.removeItem('save_type');
                         localStorage.removeItem('post_id');
                         $('#form-post').resetForm();
-                        //window.location.replace("{{ path_for('admin-allpost') }}");
+                        window.location.replace("{{ path_for('admin-allpage') }}");
                     }
                 }
             });

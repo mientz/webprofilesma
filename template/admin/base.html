@@ -35,7 +35,17 @@
                 <div class="collapse navbar-collapse" id="profile-sm-menu">
                     <ul class="nav navbar-nav hidden-xs hidden-sm">
                         <li><a href="#" class="btn btn-default navbar-btn btn-lg"><i class="fa fa-envelope-o"></i>&nbsp;<span class="badge">42</span></a></li>
-                        <li><a href="{{ uri_base }}" target="_blank" class="btn btn-default navbar-btn btn-lg"><span class="badge">SMA Negeri 1 Bangkalan <i class="fa fa-external-link-square fa-fw"></i></span></a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{current_group_data.name}} <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                {% for user_group in user_group %}
+                                <li><a href="{{ path_for('change-group', {'id': user_group.id }) }}">{{user_group.name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{{ uri_base }}" target="_blank" class="btn btn-default navbar-btn btn-lg"><span class="badge">SMA Negeri 1 Bangkalan {% if current_group_url %} <i class="fa fa-chevron-right"></i> {{current_group_url}}{% endif %}<i class="fa fa-external-link-square fa-fw"></i></span></a>
+                        </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right hidden-md hidden-lg">
                         <li><a href="#">{{ user_data.nickname }} ({{ user_data.username }})</a></li>
@@ -97,21 +107,21 @@
                     <a href="{{ path_for('admin-dashboard') }}"><i class="fa fa-circle-o-notch fa-spin" style="padding:0;margin-right:10px;"></i>Dasbor</a>
                 </li>
                 {% if privilege.post_management %}
-                <li class="{{ post }}{{ addpost }}">
+                <li class="{{ post }}{{ addpost }}{{ postmedia }}{{ category }}">
                     <a href="{{ path_for('admin-allpost') }}"><i class="fa fa-thumb-tack fa-fw"></i>Pos</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
                         <li class="{{ post }}"><a href="{{ path_for('admin-allpost') }}">Semua Pos</a></li>
                         <li class="{{ addpost }}"><a href="{{ path_for('admin-addpost') }}">Tambah Baru</a></li>
-                        <li class=""><a href="#">Media</a></li>
-                        <li class=""><a href="#">Kategori</a></li>
-                        <li class=""><a href="#">Tags</a></li>
+                        <li class="{{ postmedia }}"><a href="{{ path_for('admin-allpostmedia') }}">Media</a></li>
+                        <li class="{{ category }}"><a href="{{ path_for('admin-allcategory') }}">Kategori</a></li>
+<!--                        <li class=""><a href="#">Tags</a></li>-->
                     </ul>
                 </li>
-                <li class="">
-                    <a href="#"><i class="fa fa-clone fa-fw"></i>Halaman</a>
+                <li class="{{ page }}">
+                    <a href="{{ path_for('admin-allpage') }}"><i class="fa fa-clone fa-fw"></i>Halaman</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
-                        <li class=""><a href="#">Semua Halaman</a></li>
-                        <li class=""><a href="#">Tambah Baru</a></li>
+                        <li class="{{ page }}"><a href="{{ path_for('admin-allpage') }}">Semua Halaman</a></li>
+                        <li class="{{ addpage }}"><a href="{{ path_for('admin-addpage') }}">Tambah Baru</a></li>
                         <li class=""><a href="#">Manager File</a></li>
                         <li class=""><a href="#">Data Guru</a></li>
                     </ul>

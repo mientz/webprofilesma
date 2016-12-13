@@ -1,0 +1,176 @@
+{% extends "admin/base.html" %}{% block head %} {{ parent() }}
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet"> {% endblock %} {% block title %} Pos {% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 no-gutter">
+            <div class="col-md-8 no-gutter">
+                <h3 class="page-title pull-left">Kategori</h3>
+<!--                <a class="btn btn-info btn-xs pull-left" role="button" data-toggle="collapse" href="#collapse-upload" aria-expanded="false" aria-controls="collapseExample" style="margin:8px;">Tambah Baru</a>-->
+            </div>
+        </div>
+        <br>
+        <div class="col-md-12 no-gutter" id="post-list" style="padding-top:20px;">
+            <div class="col-md-4 no-gutter">
+                <form action="{% if is_edit %}{{ path_for('admin-allcategory', {'id': is_edit}) }}{% endif %}" method="post">
+                    <legend><small>Tambah Kategori Baru</small></legend>
+                    <div class="form-group">
+                        <label for="inputPassword" class="control-label">Nama Kategori</label>
+                        <input type="text" class="form-control" id="inputname" placeholder="Nama Kategori" name="name" value="{{selected_category.name}}">
+                        <span class="help-block">Nama ini mencerminkan bagaimana tampil di situs Anda.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="textArea" class="control-label">Deskripsi Kategori</label>
+                        <textarea class="form-control" rows="3" id="textArea" name="description">{{selected_category.description}}</textarea>
+                        <span class="help-block">Deskripsi ini tidak tampil dalam situs</span>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-info">Tambahkan Kategori</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-8">
+                <div class="col-md-6 no-gutter">
+                    <div class="form-inline pull-left">
+                        <div class="form-group">
+                            <select class="form-control input-sm" id="select-action">
+                                <option>Tindakan Masal</option>
+                                <option value="delete">Hapus</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-info btn-sm" id="do-select-action">Terapkan</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 no-gutter">
+                    <div class="form-group">
+                        <div class="input-group" style="padding-left:20px;">
+                            <input type="text" class="form-control input-sm search" style="width:100%">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default btn-sm" type="button"><i class="mdi mdi-magnify"></i> Cari Kategori</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 no-gutter table-responsive">
+                    <table class="table table-striped post-list">
+                        <thead>
+                            <tr class="info">
+                                <th style="width:1em;"></th>
+                                <th>Nama</th>
+                                <th>Deskripsi</th>
+                                <th>Slug</th>
+                                <th style="text-align:right;">Jumlah</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list">
+                            {% for category in page_category %}
+                            <tr height='70'>
+                                <td>
+                                    <div class="checkbox">
+                                        <input type="checkbox" value="{{category.id}}" id="check{{category.id}}" class="post-checkbox">
+                                        <label for="check{{category.id}}"></label>
+                                    </div>
+                                </td>
+                                <td class="post-title">
+                                    <strong class="title">
+                                        {{category.name}}
+                                    </strong>
+                                    <div class="form-inline">
+                                        <a href="{{ path_for('admin-allcategory', {'id': category.id}) }}" class="btn btn-link btn-sm no-gutter"><span class="label label-info"><i class="fa fa-pencil"></i> Edit</span></a>
+                                        <a role="button" class="btn btn-link btn-sm no-gutter move-to-trash" data-id="{{category.id}}"><span class="label label-primary"><i class="fa fa-trash"></i> Hapus</span></a>
+                                    </div>
+                                </td>
+                                <td>{{category.description}}</td>
+                                <td>{{category.name_url}}</td>
+                                <td style="text-align:right;">{{category.post_count|raw}}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <th colspan="5"><center><h4>Tidak Ada Kategori</h4></center></th>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="info">
+                                <th style="width:1em;"></th>
+                                <th>Nama</th>
+                                <th>Deskripsi</th>
+                                <th>Slug</th>
+                                <th style="text-align:right;">Jumlah</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <small>
+                        <em><strong>Catatan:</strong><br>
+                            Menghapus sebuah kategori tidak akan menghapus pos-pos dalam kategori tsb. Namun, pos-pos yang tadinya hanya dimasukkan dalam kategori yang dihapus akan dipindahkan ke <strong>Tidak Berkategori</strong>.</em>
+                    </small>
+                    <ul class="pagination pagination-sm pull-right">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }} {% verbatim %}
+<script id="upload-preview-tmpl" type="x-tmpl-mustache">
+    <div class="dz-preview dz-file-preview">
+        <div class="dz-details">
+            <div class="dz-filename"><span data-dz-name></span></div>
+            <div class="dz-size" data-dz-size></div>
+            <img data-dz-thumbnail />
+    </div>
+        <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+        <div class="dz-error-message"><span data-dz-errormessage></span></div>
+    </div>
+</script>
+{% endverbatim %}
+<script src="public/assets/js/list.min.js"></script>
+<script src="public/assets/js/list.pagination.min.js"></script>
+<script src="public/assets/js/bootbox.min.js"></script>
+<script>
+    $(document).ready(function(){
+        var postlist = new List('post-list', {
+            valueNames: ['title'],
+            page: 10,
+            plugins: [ListPagination({
+                outerWindow: 1,
+                innerWindow: 2
+            })]
+        });
+
+        $('.move-to-trash').on('click', function () {
+            var post_button = $(this).parent().parent().parent().html();
+            var id = $(this).data('id');
+            bootbox.confirm({
+                title: "Apakah Anda Yakin Akan Menghapus Permanent Kategori ini?",
+                message: '<table class="table table-striped post-list"><thead><tr class="info"><th style="width:1em;"></th><th>Nama</th><th>Deskripsi</th><th>Slug</th><th style="text-align:right;">Jumlah</th></tr></thead><tbody class="list">' + post_button + "</tbody></table>",
+                size: 'large',
+                buttons: {
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> Batal'
+                    },
+                    confirm: {
+                        label: '<i class="fa fa-check"></i> Hapus Permanen',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        change_category(id);
+                    }
+                }
+            });
+        })
+
+        function change_category(id) {
+            $.post("{{ path_for('admin-allcategory-delete', {'id':''}) }}" + id, function (data) {
+                if (data.success) {
+                    window.location.reload();
+                }
+            }, "json");
+        }
+    })
+
+</script>
+{% endblock %}

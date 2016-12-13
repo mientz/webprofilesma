@@ -3,9 +3,10 @@ $app->group('/admin/post', function () {
     /**
      * [[post page]]
      */
-    $this->get('', function ($req, $res, $args) {
+    $this->get('/all', function ($req, $res, $args) {
         $req = $req->withAttribute('post', 'active');
         $req = $req->withAttribute('post_all', 'active');
+        $groups = $req->getAttribute('current_group_data');
         //all post
         $select = $this->db->prepare("
             SELECT
@@ -15,8 +16,9 @@ $app->group('/admin/post', function () {
                 post as post,
                 post_category
             WHERE
-                post.category_id = post_category.id and post.deleted ='0'  order by post.id desc
+                post.category_id = post_category.id and post.deleted ='0' and post_category.group_id=:group_id  order by post.id desc
         ");
+        $select->bindParam(':group_id', $groups['id'], PDO::PARAM_INT);
         $select->execute();
         $data = [];
         foreach($select->fetchAll(PDO::FETCH_ASSOC) as $post){
@@ -39,6 +41,8 @@ $app->group('/admin/post', function () {
     $this->get('/published', function ($req, $res, $args) {
         $req = $req->withAttribute('post', 'active');
         $req = $req->withAttribute('post_published', 'active');
+        $groups = $req->getAttribute('current_group_data');
+        //all post
         //all post
         $select = $this->db->prepare("
             SELECT
@@ -48,8 +52,9 @@ $app->group('/admin/post', function () {
                 post as post,
                 post_category
             WHERE
-                post.category_id = post_category.id and post.status='1' and post.deleted ='0'  order by post.id desc
+                post.category_id = post_category.id and post.status='1' and post.deleted ='0' and post_category.group_id=:group_id  order by post.id desc
         ");
+        $select->bindParam(':group_id', $groups['id'], PDO::PARAM_INT);
         $select->execute();
         $data = [];
         foreach($select->fetchAll(PDO::FETCH_ASSOC) as $post){
@@ -72,6 +77,8 @@ $app->group('/admin/post', function () {
     $this->get('/draft', function ($req, $res, $args) {
         $req = $req->withAttribute('post', 'active');
         $req = $req->withAttribute('post_draft', 'active');
+        $groups = $req->getAttribute('current_group_data');
+        //all post
         //all post
         $select = $this->db->prepare("
             SELECT
@@ -81,8 +88,9 @@ $app->group('/admin/post', function () {
                 post as post,
                 post_category
             WHERE
-                post.category_id = post_category.id and post.status='0' and post.deleted ='0'  order by post.id desc
+                post.category_id = post_category.id and post.status='0' and post.deleted ='0' and post_category.group_id=:group_id  order by post.id desc
         ");
+        $select->bindParam(':group_id', $groups['id'], PDO::PARAM_INT);
         $select->execute();
         $data = [];
         foreach($select->fetchAll(PDO::FETCH_ASSOC) as $post){
@@ -105,6 +113,8 @@ $app->group('/admin/post', function () {
     $this->get('/trash', function ($req, $res, $args) {
         $req = $req->withAttribute('post', 'active');
         $req = $req->withAttribute('post_trash', 'active');
+        $groups = $req->getAttribute('current_group_data');
+        //all post
         //all post
         $select = $this->db->prepare("
             SELECT
@@ -114,8 +124,9 @@ $app->group('/admin/post', function () {
                 post as post,
                 post_category
             WHERE
-                post.category_id = post_category.id and post.deleted ='1' order by post.id desc
+                post.category_id = post_category.id and post.deleted ='1' and post_category.group_id=:group_id order by post.id desc
         ");
+        $select->bindParam(':group_id', $groups['id'], PDO::PARAM_INT);
         $select->execute();
         $data = [];
         foreach($select->fetchAll(PDO::FETCH_ASSOC) as $post){
@@ -145,6 +156,14 @@ $app->group('/admin/post', function () {
     })->setName('admin-addpost');
 
     $this->post('/add', function ($req, $res, $args) {
+        $filename = "";
+        if(isset($_POST['image'])){
+            $img = $this->manager->make($_POST['image'])->encode('png');
+            $filename = 'post-header'.date("-Y-m-d-H-i-s-").rand().'-'.rand().'.png';
+            $image_path = "public/header/".$filename;
+            $img->save($image_path);
+            echo $_POST['image'];
+        }
         $id = $this->db->query("select IFNULL(max(id), 0) from post")->fetchColumn(PDO::FETCH_ASSOC)+1;
         $title = $_POST['title'];
         $title_url = preg_replace('/\s+/', '-', strtolower($_POST['title']));
@@ -154,7 +173,7 @@ $app->group('/admin/post', function () {
         $category = $_POST['category'];
         $tag = $_POST['tag'];
         $status = ( $_POST['status'] == 'draft' ? '0' : '1' );
-        $image = $_POST['image'];
+        $image = $filename;
         $user_id = $this->session->user_id;
         $insert = $this->db->prepare("
             insert into post
@@ -299,6 +318,14 @@ $app->group('/admin/post', function () {
     })->setName('admin-change');
 
     $this->post('/update/{id}', function ($req, $res, $args) {
+        $filename = "";
+        if(isset($_POST['image'])){
+            $img = $this->manager->make($_POST['image'])->encode('png');
+            $filename = 'post-header'.date("-Y-m-d-H-i-s-").$args['id'].'-'.rand().'.png';
+            $image_path = "public/header/".$filename;
+            $img->save($image_path);
+            echo $_POST['image'];
+        }
         $id = $args['id'];
         $title = $_POST['title'];
         $title_url = preg_replace('/\s+/', '-', strtolower($_POST['title']));
@@ -308,9 +335,9 @@ $app->group('/admin/post', function () {
         $category = $_POST['category'];
         $tag = $_POST['tag'];
         $status = ( $_POST['status'] == 'draft' ? '0' : '1' );
-        $image = $_POST['image'];
+        $image = $filename;
         $user_id = $this->session->user_id;
-        $authors = json_decode($this->db->query("select author from post where id='24'")->fetchColumn(), true);
+        $authors = json_decode($this->db->query("select author from post where id='".$id."'")->fetchColumn(), true);
         array_push($authors, ["author"=>$user_id, "date"=>date("Y-m-d H:i:s")]);
         $update = $this->db->prepare("
             update post
@@ -362,21 +389,108 @@ $app->group('/admin/post', function () {
             ]);
         }
     })->setName('admin-addpost-update');
+
+    $this->get('/postmedia', function ($req, $res, $args) {
+        $req = $req->withAttribute('postmedia', 'active');
+        return $this->view->render($res, 'admin/postmedia.html', $req->getAttributes());
+    })->setName('admin-allpostmedia');
+
+    $this->get('/category[/{id}]', function ($req, $res, $args) {
+        $group_data = $req->getAttribute('current_group_data');
+        $req = $req->withAttribute('category', 'active');
+        $default_id = $this->db->query("select id from post_category where name='Tidak Berkategori' and group_id='".$group_data['id']."'")->fetchColumn();
+        $select = $this->db->query("
+            select
+                id, group_id, name, name_url, description,
+                (select count(post.id) from post as post where post.category_id=category.id) as post_count
+            from post_category as category
+            where
+                group_id='".$req->getAttribute('current_group_data')['id']."' and id<>'".$default_id."' and deleted = '0'
+        ")->fetchAll(PDO::FETCH_ASSOC);
+        $req = $req->withAttribute('page_category', $select);
+        if(isset($args['id'])){
+            $select = $this->db->query("
+                select
+                    id, group_id, name, name_url, description
+                from post_category
+                where
+                    id='".$args['id']."'
+            ")->fetch(PDO::FETCH_ASSOC);
+            $req = $req->withAttribute('selected_category', $select);
+            $req = $req->withAttribute('is_edit', $args['id']);
+        }
+        return $this->view->render($res, 'admin/category.html', $req->getAttributes());
+    })->setName('admin-allcategory');
+
+    $this->post('/category[/{id}]', function ($req, $res, $args) {
+        /*
+        * list all category from current group data
+        */
+        if(isset($args['id'])){
+            $name = $_POST['name'];
+            $description = $_POST['description'];
+            $name_url = preg_replace('/\s+/', '-', strtolower($name));
+            $update = $this->db->prepare("update post_category set name=:name, name_url=:name_url, description=:description where id=:id");
+            $update->bindParam(':id', $args['id'], PDO::PARAM_INT);
+            $update->bindParam(':name', $name, PDO::PARAM_STR);
+            $update->bindParam(':name_url', $name_url, PDO::PARAM_STR);
+            $update->bindParam(':description', $description, PDO::PARAM_STR);
+            if($update->execute()){
+                return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('admin-allcategory'));
+            }
+        }else{
+            $group_data = $req->getAttribute('current_group_data');
+            $name = $_POST['name'];
+            $description = $_POST['description'];
+            $name_url = preg_replace('/\s+/', '-', strtolower($name));;
+            $insert = $this->db->prepare("insert into post_category(group_id, name, name_url, description, deleted) values(:group_id, :name, :name_url, :description, 0)");
+            $insert->bindParam(':group_id', $group_data['id'], PDO::PARAM_INT);
+            $insert->bindParam(':name', $name, PDO::PARAM_STR);
+            $insert->bindParam(':name_url', $name_url, PDO::PARAM_STR);
+            $insert->bindParam(':description', $description, PDO::PARAM_STR);
+            if($insert->execute()){
+                return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('admin-allcategory'));
+            }
+        }
+    })->setName('admin-allcategory-add');
+
+    $this->post('/category/delete/{id}', function ($req, $res, $args) {
+        /*
+        * list all category from current group data
+        */
+        if(isset($args['id'])){
+            $group_data = $req->getAttribute('current_group_data');
+            $update = $this->db->prepare("update post_category set deleted='1' where id=:old_id");
+            $update->bindParam(':old_id', $args['id'], PDO::PARAM_INT);
+            if($update->execute()){
+                $select = $this->db->query("select id from post_category where name='Tidak Berkategori' and group_id='".$group_data['id']."'")->fetchColumn();
+                $update = $this->db->prepare("update post set category_id=:new_id where category_id=:old_id");
+                $update->bindParam(':new_id', $select, PDO::PARAM_INT);
+                $update->bindParam(':old_id', $args['id'], PDO::PARAM_INT);
+                if($update->execute()){
+                    return $res->withJson([
+                        'success'=>true
+                    ]);
+                }
+            }
+        }
+    })->setName('admin-allcategory-delete');
+
 })->add(function ($req, $res, $next) {
-    $select = $this->db->query("select * from post_category where deleted = '0'")->fetchAll(PDO::FETCH_ASSOC);
+    $select = $this->db->query("select * from post_category where group_id='".$req->getAttribute('current_group_data')['id']."' and deleted = '0'")->fetchAll(PDO::FETCH_ASSOC);
     $req = $req->withAttribute('mw_category_list', $select);
     $res = $next($req, $res);
     return $res;
 })->add(function ($req, $res, $next) {
-    $select = $this->db->query("select date from post where deleted = '0' group by MONTH(date), year(date)")->fetchAll(PDO::FETCH_ASSOC);
+    $select = $this->db->query("select post.date from post, post_category, groups where post.category_id=post_category.id and post_category.group_id=groups.id and group_id='".$req->getAttribute('current_group_data')['id']."' and post.deleted = '0' group by MONTH(post.date), year(post.date)")->fetchAll(PDO::FETCH_ASSOC);
     $req = $req->withAttribute('mw_date_groups', $select);
     $res = $next($req, $res);
     return $res;
 })->add(function ($req, $res, $next) {
-    $all_post = $this->db->query("select count(id) from post where deleted = '0'")->fetchColumn();
-    $published_post = $this->db->query("select count(id) from post where status='1' and deleted = '0'")->fetchColumn();
-    $draft_post = $this->db->query("select count(id) from post where status='0' and deleted = '0'")->fetchColumn();
-    $trashed_post = $this->db->query("select count(id) from post where deleted = '1'")->fetchColumn();
+    $all_post = $this->db->query("select count(post.id) from post, post_category, groups where post.category_id=post_category.id and post_category.group_id=groups.id and group_id='".$req->getAttribute('current_group_data')['id']."' and post.deleted = '0'")->fetchColumn();
+    $published_post = $this->db->query("select count(post.id) from post, post_category, groups where post.category_id=post_category.id and post_category.group_id=groups.id and post.status='1' and group_id='".$req->getAttribute('current_group_data')['id']."' and post.deleted = '0'")->fetchColumn();
+    $draft_post = $this->db->query("select count(post.id) from post, post_category, groups where post.category_id=post_category.id and post_category.group_id=groups.id and post.status='0' and group_id='".$req->getAttribute('current_group_data')['id']."' and post.deleted = '0'")->fetchColumn();
+    $trashed_post = $this->db->query("select count(post.id) from post, post_category, groups where post.category_id=post_category.id and post_category.group_id=groups.id and group_id='".$req->getAttribute('current_group_data')['id']."' and post.deleted = '1'")->fetchColumn();
     $req = $req->withAttribute('mw_count_all', $all_post);
     $req = $req->withAttribute('mw_count_published', $published_post);
     $req = $req->withAttribute('mw_count_draft', $draft_post);
