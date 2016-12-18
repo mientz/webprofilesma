@@ -1,5 +1,5 @@
 <?php
-$app->group('/admin/post', function () {
+$app->group('/admin/post/old', function () {
     /**
      * [[post page]]
      */

@@ -119,6 +119,9 @@
                         {% for lastpage in flash.lastpage %}
                         <input type="hidden" name="lastpage" value="{{lastpage}}">
                         {% endfor %}
+                        {% for lastpage_attr in flash.lastpage_attr %}
+                        <input type="hidden" name="lastpage_attr" value="{{lastpage_attr}}">
+                        {% endfor %}
                         <button type="submit" class="btn btn-primary btn-lg btn-block login-button">Masuk</button>
                     </div>
                     <div class="login-register">

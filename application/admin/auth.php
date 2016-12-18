@@ -24,12 +24,13 @@ $app->group('/auth', function () {
         if($count == 1){
             $this->session->set('user_id', $data["id"]);
             $this->session->set('group_id', null);
-            return $res->withStatus(302)->withHeader('Location', $this->router->pathFor((isset($_POST["lastpage"]) ? $_POST["lastpage"] : 'admin-dashboard')));
+            return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('admin-dashboard'));
         }else{
-            return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('pre-login')."/error");
+            return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('pre-login', ['error'=>'error']));
         }
         return $res;
     })->setName('login');
+
 })->add(function ($req, $res, $next) {
     if(isset($this->session->user_id)){
         return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('admin-dashboard'));

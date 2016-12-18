@@ -10,6 +10,7 @@
     <title>{% block title %}{% endblock %} ‹ SMA N 3 Bangkalan - Admin </title>
     <link href="public/assets/css/admin.css" rel="stylesheet">
     <link href="public/assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="public/assets/css/image-picker.css" rel="stylesheet">
     <link href="public/assets/css/admin.style.css" rel="stylesheet"> {% endblock %} {% set privilege = user_data.privilege %}
 </head>
 
@@ -107,13 +108,13 @@
                     <a href="{{ path_for('admin-dashboard') }}"><i class="fa fa-circle-o-notch fa-spin" style="padding:0;margin-right:10px;"></i>Dasbor</a>
                 </li>
                 {% if privilege.post_management %}
-                <li class="{{ post }}{{ addpost }}{{ postmedia }}{{ category }}">
-                    <a href="{{ path_for('admin-allpost') }}"><i class="fa fa-thumb-tack fa-fw"></i>Pos</a>
+                <li class="{{ sidemenu.post ? 'active' }}">
+                    <a href="{{ path_for('getAdminPostListHTML') }}"><i class="fa fa-thumb-tack fa-fw"></i>Pos</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
-                        <li class="{{ post }}"><a href="{{ path_for('admin-allpost') }}">Semua Pos</a></li>
-                        <li class="{{ addpost }}"><a href="{{ path_for('admin-addpost') }}">Tambah Baru</a></li>
-                        <li class="{{ postmedia }}"><a href="{{ path_for('admin-allpostmedia') }}">Media</a></li>
-                        <li class="{{ category }}"><a href="{{ path_for('admin-allcategory') }}">Kategori</a></li>
+                        <li class="{{ sidemenu.post == 'all' ? 'active' }}"><a href="{{ path_for('getAdminPostListHTML') }}">Semua Pos</a></li>
+                        <li class="{{ sidemenu.post == 'add' ? 'active' }}"><a href="{{ path_for('admin-addpost') }}">Tambah Baru</a></li>
+                        <li class="{{ sidemenu.post == 'media' ? 'active' }}"><a href="{{ path_for('getAdminPostmediaHTML') }}">Media</a></li>
+                        <li class="{{ sidemenu.post == 'category' ? 'active' }}"><a href="{{ path_for('admin-allcategory') }}">Kategori</a></li>
 <!--                        <li class=""><a href="#">Tags</a></li>-->
                     </ul>
                 </li>
@@ -185,18 +186,130 @@
         </div>
         <!-- /#page-content-wrapper -->
     </div>
+    {% verbatim %}
+    <script id="global-postmedia-dialog" type="x-tmpl-mustache">
+        <div class="tab-content">
+            <div class="row tab-pane fade" id="global-postmedia-dialog-list-tab">
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <select class="form-control input-sm global-postmedia-image-list-short-date">
+                            <option>Semua Tanggal</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12 no-gutter limit-modal global-postmedia-image-list-container" style="overflow-y: auto;">
+                        <select class="image-picker show-html global-postmedia-image-list">
+                        <!-- image list -->
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 no-gutter">
+                    <div class="image-picker col-md-12" id="postmedia-image-detail-sidebar" style="overflow-y: auto;">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row tab-pane fade" id="global-postmedia-dialog-upload-tab">
+                <div class="col-md-12 global-postmedia-image-upload text-center" style="min-height:200px; border: 5px dashed #777">
+                    <h4 style="margin-top:40px;">Tarik Berkas ke sini untuk meng-unggah</h4>
+                    <small>Atau</small>
+                    <br>
+                    <br>
+                    <button class="btn btn-primary global-postmedia-image-upload">Pilih Berkas</button>
+                    <br>
+                </div>
+            </div>
+            <div class="row tab-pane fade" id="global-postmedia-dialog-url-tab">
+                <div class="col-md-12 global-postmedia-image-url" role="radiogroup">
+                    <div class="form-group">
+                        <label class="control-label" for="global-post-media-url-input">Masukan URL Berkas</label>
+                        <input class="form-control" id="global-post-media-url-input" type="text" value="http://">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script id="global-postmedia-dialog-header" type="x-tmpl-mustache">
+        <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">{{title}}</h4></div>
+        <ul class="nav nav-tabs">
+            <li><a href="#global-postmedia-dialog-upload-tab" data-toggle="tab" aria-expanded="false">Unggah Berkas</a></li>
+            <li class=""><a href="#global-postmedia-dialog-list-tab" data-toggle="tab" aria-expanded="false">Pustaka Media&nbsp;<span class="badge">42</span></a></li>
+            <li><a href="#global-postmedia-dialog-url-tab" data-toggle="tab" aria-expanded="false">Sisipkan dari URL</a></li>
+        </ul>
+    </script>
+    <script id="global-postmedia-image-list" type="x-tmpl-mustache">
+        {{#postmedia}}
+        <option data-img-class="lazy" data-img-src="{{thumbnail}}" data-img-alt="{{file}}" value="{{id}}">{{file}}</option>
+        {{/postmedia}}
+    </script>
+    <script id="global-postmedia-dialog-image-detail" type="x-tmpl-mustache">
+        <img src="public/content/{{postmedia.file}}" class="img-responsive" alt="">
+        <table class="table table-striped table-hover ">
+            <tr>
+                <td>Nama Berkas</td>
+                <td>:</td>
+                <td>{{postmedia.file}}</td>
+            </tr>
+            <tr>
+                <td>Tipe Berkas</td>
+                <td>:</td>
+                <td>{{exif.MimeType}}</td>
+            </tr>
+            <tr>
+                <td>Tanggal Diupload</td>
+                <td>:</td>
+                <td>{{postmedia.dateString}}</td>
+            </tr>
+            <tr>
+                <td>Ukuran File : </td>
+                <td>:</td>
+                <td>{{exif.FileSize}}</td>
+            </tr>
+            <tr>
+                <td>Ukuran Resolusi</td>
+                <td>:</td>
+                <td>{{exif.COMPUTED.Height}} X {{exif.COMPUTED.Width}}</td>
+            </tr>
+            <tr>
+                <td>Diunggah Oleh</td>
+                <td>:</td>
+                <td>{{postmedia.author}}</td>
+            </tr>
+        </table>
+    </script>
+    {% endverbatim %}
 
     {% block js %}
     <script src="public/assets/js/jquery.min.js"></script>
     <script src="public/assets/js/bootstrap.min.js"></script>
+    <script src="public/assets/js/jquery.lazyload.js"></script>
     <script src="public/assets/js/mustache.min.js"></script>
+    <script src="public/assets/js/image-picker.min.js"></script>
+    {% endblock %}
     <script src="public/assets/js/admin.app.js"></script>
     <script>
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
         })
+        var globalUrl = {
+            //admin postmedia url
+            postAdminPostmediaUploadJSON: "{{ path_for('postAdminPostmediaUploadJSON') }}",
+            getAdminPostmediaListJSON: "{{ path_for('getAdminPostmediaListJSON') }}",
+            getAdminPostmediaThumbnailIMAGE: "{{ path_for('getAdminPostmediaThumbnailIMAGE') }}",
+            getAdminPostmediaDeleteJSON: "{{ path_for('getAdminPostmediaDeleteJSON') }}",
+            getAdminPostmediaExifJSON: "{{ path_for('getAdminPostmediaExifJSON') }}",
+            getAdminPostmediaCropitJson: "{{ path_for('getAdminPostmediaCropitJson') }}",
+            //admin category url
+            getAdminCategoryListJSON: "{{ path_for('getAdminCategoryListJSON') }}",
+            postAdminCategoryShorthandInsertJSON: "{{ path_for('postAdminCategoryShorthandInsertJSON') }}",
+            //admin tags url
+            getAdminTagsListJSON: "{{ path_for('getAdminTagsListJSON') }}",
+            //admin save post url
+            postAdminPostSaveJSON: "{{ path_for('postAdminPostSaveJSON') }}",
+            postAdminPostChangeJSON: "{{ path_for('postAdminPostChangeJSON') }}",
+
+        }
     </script>
-    {% endblock %}
 </body>
 
 </html>

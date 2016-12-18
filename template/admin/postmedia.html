@@ -1,5 +1,5 @@
 {% extends "admin/base.html" %}{% block head %} {{ parent() }}
-<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet"> {% endblock %} {% block title %} Pos {% endblock %} {% block content %}
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet"> {% endblock %} {% block title %} Pos Media {% endblock %} {% block content %}
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12 no-gutter">
@@ -15,32 +15,21 @@
                     <div class="col-md-6 no-gutter">
                         <div class="form-inline pull-left" style="">
                             <div class="form-group">
-                                <select class="form-control input-sm filter-date" id="select-year">
-                                    <option value="*">Semua Tahun</option>
-                                    {% for date in mw_date_groups %}
-                                    <option value='{{date.date|date("m y")}}'>{{date.date|date("F Y")}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <select class="form-control input-sm filter-date" id="select-month">
-                                    <option value="*">Semua Bulan</option>
-                                    {% for date in mw_date_groups %}
-                                    <option value='{{date.date|date("m y")}}'>{{date.date|date("F Y")}}</option>
-                                    {% endfor %}
+                                <select class="form-control input-sm filter-date" id="postmedia-select-date">
+
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div id="collapse-upload" class="col-md-12 no-gutter collapse" style="padding-top:20px;">
-                        <div class="image-uploader col-md-12 text-center" style="min-height:200px; border: 5px dashed #777">
+                        <div class="postmedia-image-uploader col-md-12 text-center" style="min-height:200px; border: 5px dashed #777">
                             <h4 style="margin-top:40px;">Tarik Berkas ke sini untuk meng-unggah</h4>
                             <small>Atau</small><br><br>
-                            <button class="btn btn-primary image-uploader">Pilih Berkas</button><br>
+                            <button class="btn btn-primary postmedia-image-uploader">Pilih Berkas</button><br>
                         </div>
                     </div>
                     <div class="col-md-12 no-gutter" style="padding-top:20px;">
-                        <div class="col-md-12" id="list-images">
+                        <div class="col-md-12 no-gutter" id="postmedia-list-images">
 
                         </div>
                     </div>
@@ -50,7 +39,7 @@
     </div>
 </div>
 {% endblock %} {% block js %} {{ parent() }} {% verbatim %}
-<script id="upload-preview-tmpl" type="x-tmpl-mustache">
+<script id="postmedia-upload-preview-tmpl" type="x-tmpl-mustache">
     <div class="dz-preview dz-file-preview">
         <div class="dz-details">
             <div class="dz-filename"><span data-dz-name></span></div>
@@ -61,12 +50,14 @@
         <div class="dz-error-message"><span data-dz-errormessage></span></div>
     </div>
 </script>
-<script id="list-upload-preview-tmpl" type="x-tmpl-mustache">
-    <a role="button" class="col-md-3 postimage-selectthis" data-img="{{file}}" data-date="{{dateString}}" data-id="{{id}}" style="padding-bottom:20px;">
-        <img src="{{thumbnail}}" class="img-responsive lazy" alt="">
+<script id="postmedia-list-upload-preview-tmpl" type="x-tmpl-mustache">
+    {{#postmedia}}
+    <a role="button" class="col-md-2 postmedia-image-selector no-gutter" data-id="{{id}}"style="padding: 0 20px 20px 0;">
+        <img src="{{thumbnail}}" class="img-responsive" alt="" width="100%">
     </a>
+    {{/postmedia}}
 </script>
-<script id="image-preview" type="x-tmpl-mustache">
+<script id="postmedia-image-detail-preview" type="x-tmpl-mustache">
 <div class="row">
     <div class="col-md-12">
         <div class="row">
@@ -106,126 +97,18 @@
                         <td>{{postmedia.author}}</td>
                     </tr>
                 </table>
+                <a role="button" class="btn btn-danger btn-sm btn-block postmedia-image-delete-trigger">Hapus Permanen</a>
             </div>
         </div>
     </div>
 </div>
 </script>
 {% endverbatim %}
-<script src="public/assets/js/dropzone.js"></script>
-<script src="public/assets/js/jquery.lazyload.js"></script>
-<!--<script src="public/assets/js/list.pagination.min.js"></script>-->
 <script src="public/assets/js/bootbox.min.js"></script>
+<script src="public/assets/js/dropzone.js"></script>
 <script>
-    $(document).ready(function (e) {
-        $('.image-uploader').dropzone({
-            url: "{{ path_for('admin-postmedia-uploader') }}",
-            maxFileSize: 2,
-            createImageThumbnails: true,
-            aceptedFiles: 'image/*,',
-            previewTemplate: Mustache.render($('#upload-preview-tmpl').html()),
-            clickable: true,
-            previewContainer: '#collapse-upload',
-            init: function () {
-                this.on('complete', function (file) {
-                    this.removeFile(file)
-                    $('#collapse-upload').collapse('hide');
-                    populate_gallery('all', 'all');
-                })
-            }
-        });
-
-        function populateOption(){
-            $.getJSON("{{ path_for('admin-postmedia-list') }}", {
-                year: 'all',
-                month: 'all'
-            }, function (data) {
-                $('#select-year').html('<option value="all">Semua Tahun</option>');
-                populate_gallery('all', 'all')
-                $.each(data.time_group, function (key, val) {
-                    $('#select-year').append('<option value="' + key + '">' + key + '</option>');
-                });
-                $('#select-year').on('change', function () {
-                    populate_gallery($(this).val(), 'all')
-                    $('#select-month').html('<option value="all">Semua Bulan</option>');
-                    var year = $(this).val();
-                    $.each(data.time_group[year], function (key, val) {
-                        $('#select-month').append('<option value="' + val + '">' + val + '</option>');
-                    });
-                    $('#select-month').on('change', function () {
-                        populate_gallery($('#select-year').val(), $(this).val())
-                    });
-                });
-            });
-        }
-
-        function populate_gallery(year, month) {
-            $.getJSON("{{ path_for('admin-postmedia-list') }}", {
-                year: year,
-                month: month
-            }, function (data) {
-                console.log(data)
-                $('#list-images').html('')
-                $.each(data.postmedia, function (key, val) {
-                    $('#list-images').append(Mustache.render($('#list-upload-preview-tmpl').html(), val))
-                });
-                $('.postimage-selectthis').on('click', function () {
-                    var elm = $(this)
-                    var dialog = bootbox.dialog({
-                        title: 'Detil Media',
-                        size: 'large',
-                        message:"Loading",
-                        buttons: {
-                            buttonName: {
-                                label: 'Hapus Secara Permanen ?',
-                                className: 'btn-danger',
-                                callback: function() {
-                                    dialog.modal('hide');
-                                    bootbox.confirm({
-                                        title: "Hapus Gambar Permanen ?",
-                                        message: "<img src='{{ path_for('postmedia', {'img':''}) }}" + elm.data('img')+"' width='100%'>",
-                                        size: 'small',
-                                        buttons: {
-                                            cancel: {
-                                                label: '<i class="fa fa-times"></i> Batal'
-                                            },
-                                            confirm: {
-                                                label: '<i class="fa fa-check"></i> Hapus'
-                                            }
-                                        },
-                                        callback: function (result) {
-                                            if(result){
-                                                $.getJSON("{{ path_for('admin-postmedia-delete') }}/"+elm.data('id'), function(data){
-                                                    if(data.status=="success"){
-                                                        populateOption()
-                                                        populate_gallery('all', 'all')
-                                                    }else{
-                                                        bootbox.alert(data.cause);
-                                                    }
-                                                })
-                                            }
-                                        }
-                                    });
-                                }
-                            },
-                            cancel: {
-                                label: 'Tutup',
-                                className: 'btn-default'
-                            }
-                        },
-                    });
-                    dialog.init(function(){
-                        $.getJSON("{{ path_for('admin-postmedia-exif') }}/"+elm.data('id'), function(data){
-                            dialog.find('.bootbox-body').html(Mustache.render($('#image-preview').html(), data));
-                        });
-                    })
-                });
-            });
-        }
-        populateOption()
-        populate_gallery('all', 'all')
-        $("img.lazy").lazyload();
-    });
-
+    $(document).ready(function(){
+        postmediaPage();
+    })
 </script>
 {% endblock %}

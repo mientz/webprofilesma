@@ -2,9 +2,10 @@
 <link href="public/assets/css/bootstrap-tagsinput.css" rel="stylesheet">
 <link href="public/assets/summernote/summernote.css" rel="stylesheet">
 <link href="public/assets/css/croppie.css" rel="stylesheet">
-<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet"> {% endblock %} {% block title %} Pos {% endblock %} {% block content %}
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet">
+{% endblock %} {% block title %} Pos {% endblock %} {% block content %}
 <div class="container-fluid">
-    <form method="post" id="form-post">
+    <form method="post" id="edit-post-form">
         <div class="row">
             <div class="col-md-12 no-gutter">
                 <div class="col-md-8 no-gutter">
@@ -18,22 +19,40 @@
                         <input type="text" class="form-control" name="title" placeholder="Masukkan Judul Disini" value="{{post_data.title}}">
                     </div>
                 </div>
-                <div class="col-md-12 {% if post_data.header_image %}  {% else %} hidden {% endif %}" id="image-header-cropit" align="center">
-                    <div id="image-cropper">
-                        <div class="cropit-preview"></div>
-                        <input type="range" class="cropit-image-zoom-input form-range" />
+                <label class="text-left">Gambar Fitur </label>
+                <a role="button" class="btn btn-info btn-xs  {% if post_data.header_image %} hidden {% else %}  {% endif %}" id="edit-post-header-select-add"><i class="fa fa-picture-o fa-fw"></i> Pilih Gambar Fitur</a>
+                <input id="edit-post-header-value" type="hidden" name="image" value="">
+                <div class="col-md-12 no-gutter {% if post_data.header_image %}  {% else %} hidden {% endif %}" id="edit-post-header" align="center" data-heade="{{post_data.header_image}}">
+                    <div id="edit-post-header-image-cropper" class="col-md-12 no-gutter">
+                        <div class="cropit-preview col-md-8" style="cursor: move;"></div>
+                        <div class="col-md-4 no-gutter" style="padding-left:20px;">
+                            <div class="btn-group btn-group-justified">
+                                <a role="button" class="btn btn-info btn-sm" id="edit-post-header-select-change"><i class="fa fa-picture-o fa-fw"></i> Ganti Gambar</a>
+                                <a role="button" class="btn btn-danger btn-sm" id="edit-post-header-select-remove"><i class="fa fa-times fa-fw"></i> Hapus Gambar</a>
+                            </div>
+                            <div class="form-group" style="text-align:left;">
+                                <label class="control-label">Perbesar</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-picture-o fa-fw"></i></span>
+                                    <div class="form-control">
+                                        <input type="range" class="cropit-image-zoom-input" min="0" max="1" step="0.01">
+                                    </div>
+                                    <span class="input-group-addon"><i class="fa fa-picture-o fa-lg fa-fw"></i></span>
+                                </div>
+                                <span class="help-block">
+                                    Geser slider diatas untuk mengatur perbesaran gambar.
+                                </span>
+                                <span class="help-block">
+                                    Geser gambar disamping untuk menentukan area yang ingin ditampilkan.
+                                </span>
+                            </div>
+                        </div>
                         <br>
                     </div>
                 </div>
-                <div class="col-md-12 no-gutter">
-                    <a href="#" class="btn btn-info btn-sm" data-toggle="modal" data-target="#header-select" data-type="featured"><i class="fa fa-picture-o fa-fw"></i> Ganti Gambar Fitur</a>
-                    <a href="#" id="ckeditor-image-selector" class="btn btn-info btn-sm hidden" data-toggle="modal" data-target="#postmedia-select" data-type="ckeditor"><i class="fa fa-picture-o fa-fw"></i> Tambahkan Gambar Fitur</a>
-                    <a role="button" class="btn btn-danger btn-sm hidden" id="remove-croppie"><i class="fa fa-picture-o fa-fw"></i> Hapus Gambar Fitur</a>
-                    <input id="image-crop-val" type="hidden" name="image" value="">
-                </div>
                 <div class="col-md-12 no-gutter editor" style="padding-top:10px;color:">
-                    <div id="summernote">{{post_data.content|raw}}</div>
-                    <input type="hidden" id="textarea-editor" name="content">
+                    <div id="edit-post-content-editor">{{post_data.content|raw}}</div>
+                    <input type="hidden" id="edit-post-content-value" name="content">
                 </div>
             </div>
             <div class="col-md-3 no-gutter" style="padding:35px 0 0 10px;">
@@ -73,7 +92,7 @@
                                 <div class="form-horizontal collapse Kenampakan">
                                     <div class="radio radio-primary">
                                         <input type="radio" name="visibility" id="public" value="1" {% if post_data.visibility == 1 %}checked{% endif %}>
-                                        <label for="public" onclick="$('input[name=password]').addClass('hidden')">
+                                        <label for="public" onclick="$('input[name=password]').addClass('hidden')" onload="$('input[name=password]').addClass('hidden')">
                                             Umum
                                         </label>
                                     </div>
@@ -96,7 +115,7 @@
                     </div>
                     <div class="panel-footer collapse in terbitkan">
                         <button type="button" class="btn btn-link">&nbsp;</button>
-                        <button type="submit" class="btn btn-info pull-right" name="status" value="Draft">Simpan</button>
+                        <button type="button" class="btn btn-info pull-right" id="edit-post-save-trigger">Simpan</button>
                     </div>
                 </div>
                 <div class="panel panel-default" style="background:#fff; color:#4e5d6c; ">
@@ -104,15 +123,15 @@
                         Kategori
                     </a>
                     <div class="panel-body collapse in kategori">
-                        <div class="col-md-12 no-gutter category-select" data-category="{{post_data.category_id}}">
+                        <div class="col-md-12 no-gutter" id="edit-post-category-list" data-category="{{post_data.category_id}}">
                         </div>
                         <a class="btn btn-default btn-xs pull-right" role="button" data-toggle="collapse" href=".add-kategori" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-plus fa-fw"></i> Tambah Kategori</a>
                         <div class="form-group has-success collapse add-kategori pull-right">
                             <label class="control-label">Tambahkan Kategori</label>
                             <div class="input-group">
-                                <input type="text" class="form-control">
+                                <input type="text" class="form-control" id="edit-post-category-add-input">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" id="add-category" >Simpan</button>
+                                    <button class="btn btn-default" type="button" id="edit-post-category-add-trigger" >Simpan</button>
                                 </span>
                             </div>
                         </div>
@@ -123,131 +142,23 @@
                         Tag
                     </a>
                     <div class="panel-body collapse in tag" data-toggle="tooltip" data-placement="left" title="" data-original-title="Untuk memasukkan tag lebih dari satu gunakan tombol 'Enter'">
-                        <input type="text" class="form-control input-sm tags-input-elm" name="tag" value="{{post_data.tags}}">
+                        <input type="text" class="form-control input-sm" id="edit-post-tags-input" name="tag" value="{{post_data.tags}}">
                     </div>
                 </div>
             </div>
         </div>
     </form>
 </div>
-<div class="modal fade" id="header-select" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Pilih Gambar Fitur</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <ul class="nav nav-tabs">
-                            <li><a href="#upload" data-toggle="tab">Upload</a></li>
-                            <li class=""><a href="#select" data-toggle="tab">Pustaka Gambar Fitur</a></li>
-                        </ul>
-                        <div id="myTabContent" class="tab-content" style="border-top:1px solid #fff;">
-                            <div class="tab-pane fade" id="upload">
-                                <div id="image-uploader" class="col-md-12 text-center" style="min-height:500px; border: 10px dashed #777">
-                                    <h3 style="margin-top:260px;">Klik atau Tarik gambar di sini untuk meng-upload</h3>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="select">
-                                <div class="col-md-9" id="list-images" style="border-right:1px solid white">
-                                    <div class="form-inline" style="padding:20px 15px;">
-                                        <div class="form-group">
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail2">Tahun</label>
-                                                <select class="form-control input-sm search" id="img-year">
-                                                    <option>Semua Tahun</option>
-                                                </select>
-                                            </div>
-                                            <label for="exampleInputName2">Bulan</label>
-                                            <select class="form-control input-sm search" id="img-month">
-                                                <option>Semua Bulan</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row" id="image-list-div" style="max-height:600px; overflow-y: auto;">
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3" id="post-image-detail">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary  disabled choose-this" data-dismiss="modal">Pilih Gambar</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="postmedia-select" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Pilih Gambar</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <ul class="nav nav-tabs">
-                            <li><a href="#upload-postmedia" data-toggle="tab">Upload</a></li>
-                            <li class=""><a href="#select-postmedia" data-toggle="tab">Pustaka Gambar</a></li>
-                        </ul>
-                        <div id="myTabContent" class="tab-content" style="border-top:1px solid #fff;">
-                            <div class="tab-pane fade" id="upload-postmedia">
-                                <div id="image-uploader" class="col-md-12 text-center" style="min-height:500px; border: 10px dashed #777">
-                                    <h3 style="margin-top:260px;">Klik atau Tarik gambar di sini untuk meng-upload</h3>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="select-postmedia">
-                                <div class="col-md-9" id="list-images" style="border-right:1px solid white">
-                                    <div class="form-inline" style="padding:20px 15px;">
-                                        <div class="form-group">
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail2">Tahun</label>
-                                                <select class="form-control input-sm search img-year">
-                                                    <option>Semua Tahun</option>
-                                                </select>
-                                            </div>
-                                            <label for="exampleInputName2">Bulan</label>
-                                            <select class="form-control input-sm search img-month">
-                                                <option>Semua Bulan</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row" id="image-list-div" style="max-height:600px; overflow-y: auto;">
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3" id="post-image-detail">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary  disabled select-this" data-dismiss="modal">Pilih Gambar</button>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %} {% block js %} {{ parent() }} {% verbatim %}
-<script id="category-tmpl" type="x-tmpl-mustache">
+<script id="edit-post-category-list-tmpl" type="x-tmpl-mustache">
     <div class="radio radio-primary">
         <input type="radio" name="category" id="radio{{id}}" value="{{id}}" {{checked}}>
         <label for="radio{{id}}">
             {{name}}
-        </label>
+    </label>
     </div>
 </script>
-<script id="upload-preview-tmpl" type="x-tmpl-mustache">
+<script id="edit-post-postmedia-upload-preview" type="x-tmpl-mustache">
     <div class="dz-preview dz-file-preview">
         <div class="dz-details">
             <div class="dz-filename"><span data-dz-name></span></div>
@@ -258,12 +169,14 @@
         <div class="dz-error-message"><span data-dz-errormessage></span></div>
     </div>
 </script>
-<script id="list-upload-preview-tmpl" type="x-tmpl-mustache">
-    <a role="button" class="col-md-3 postimage-selectthis" data-img="{{file}}" data-size="{{size}}" data-year="{{year}}" data-month="{{month}}" data-day="{{day}}" data-pixel="{{pixel}}" style="padding-bottom:20px;">
-        <img src="{{thumb}}" class="img-responsive" alt="">
+<script id="edit-post-postmedia-list-preview" type="x-tmpl-mustache">
+    {{#postmedia}}
+    <a role="button" class="col-md-3 postimage-selectthis no-gutter" data-img="{{file}}" data-size="{{size}}" data-year="{{year}}" data-month="{{month}}" data-day="{{day}}" data-pixel="{{pixel}}" style="padding-bottom:20px;">
+        <center><img src="{{thumbnail}}" class="img-responsive lazy" alt=""></center>
     </a>
+    {{/postmedia}}
 </script>
-<script id="list-upload-preview-detail-tmpl" type="x-tmpl-mustache">
+<script id="edit-post-postmedia-detail" type="x-tmpl-mustache">
     <img src="public/content/{{image}}" class="img-responsive" alt="">
     <p>
         {{image}}
@@ -281,437 +194,11 @@
 <script src="public/assets/js/dropzone.js"></script>
 <script src="public/assets/summernote/summernote.min.js"></script>
 <script src="public/assets/summernote/lang/summernote-id-ID.min.js"></script>
+<script src="public/assets/js/bootbox.min.js"></script>
 <script>
-    var basic = $('#image-header-cropit')
-    $('#image-cropper').cropit({
-        imageBackground: true,
-        imageBackgroundBorderWidth: [100, 30, 100, 30],
-        width: 342,
-        height: 213,
-        allowDragNDrop:false,
-        onImageLoaded: function(){
-            $('#form-post').data('zoom', '0');
-            $('#form-post').data('width', $('#image-cropper').cropit('previewSize')['width']);
-            $('#form-post').data('height', $('#image-cropper').cropit('previewSize')['height']);
-            $('#form-post').data('x', '0');
-            $('#form-post').data('y', '0');
-        },
-        onImageError: function(err, code, message){
-            alert(err);
-        },
-        onZoomChange: function(zoom){
-            $('#form-post').data('zoom', zoom);
-        },
-        onOffsetChange: function(offset){
-            $('#form-post').data('x', offset.x);
-            $('#form-post').data('y', offset.y);
-        }
-    });
-    {% if post_data.header_image %}
-    var firstImage = "{{post_data.header_image}}"
-    var firstImage_param = firstImage.split('?')[1].split('&');
-    $('#image-cropper').cropit('imageSrc', 'public/content/'+firstImage.split('?')[0]);
-     $('#image-cropper').cropit('previewSize', { width: firstImage_param[0], height: 450 });
-    {% endif %}
-    function loadCategory() {
-        $('.category-select').html('');
-        $.getJSON("{{ path_for('admin-category-json') }}", {}, function (data) {
-            $.each(data, function (key, val) {
-                if (val.id == $('.category-select').data('category')) {
-                    val.checked = 'checked'
-                }
-                $('.category-select').append(Mustache.render($('#category-tmpl').html(), val));
-            });
-        });
-    }
-    $(document).ready(function () {
-        $('#add-category').on('click', function () {
-            var input = $(this).parent().prev();
-            var $btn = $(this).button('loading')
-            $.post("{{ path_for('admin-add-category') }}", {
-                name: input.val()
-            }, function (data) {
-                if (data.inserted) {
-                    loadCategory();
-                    $('.add-kategori').collapse('hide');
-                    input.val('');
-                    $btn.button('reset')
-                }
-            })
-        })
-
-        $('.tags-input-elm').tagsinput({
-            typeahead:{
-                source: function(query) {
-                    return $.get("{{ path_for('admin-tags-json') }}", function(data){
-                        return data;
-                    }, 'json');
-                }
-            },
-            freeInput: true
-        });
-        $('.tags-input-elm').on('itemAdded', function(event) {
-            setTimeout(function(){
-                $(">input[type=text]",".bootstrap-tagsinput").val("");
-            }, 1);
-        });
-
-        localStorage.removeItem("save_type");
-        localStorage.removeItem("post_id");
-        var HelloButton = function (context) {
-            var ui = $.summernote.ui;
-
-            // create button
-            var button = ui.button({
-                contents: '<i class="note-icon-picture"></i>',
-                tooltip: 'hello',
-                click: function () {
-                    $('#ckeditor-image-selector').click();
-                }
-            });
-
-            return button.render(); // return button as jquery object
-        }
-
-        $('#summernote').summernote({
-            height: null, // set editor height
-            minHeight: 300, // set minimum height of editor
-            maxHeight: null, // set maximum height of editor
-            lang: 'id-ID',
-            toolbar: [
-                // [groupName, [list of button]]
-                ['misc', ['codeview', 'undo', 'redo']],
-                ['style', ['style', 'bold', 'italic', 'underline', 'strikethrough', 'clear']],
-                ['text', ['ul', 'ol', 'paragraph', 'fontsize', 'color', 'height']],
-                ['insert', ['hello', 'link', 'video', 'hr']]
-            ],
-            buttons: {
-                hello: HelloButton
-            },
-            callbacks: {
-                onChange: function (contents, $editable) {
-                    localStorage.setItem("content", contents);
-                    $('#textarea-editor').val(contents);
-                },
-                onInit: function () {
-                    $('#textarea-editor').val($('#summernote').html());
-                }
-            }
-        });
-
-        loadCategory();
-        Dropzone.autoDiscover = false;
-        $('#header-select').find('#image-uploader').dropzone({
-            url: "{{ path_for('admin-postmedia-uploader') }}",
-            maxFileSize: 2,
-            createImageThumbnails: true,
-            aceptedFiles: 'image/*,',
-            previewTemplate: Mustache.render($('#upload-preview-tmpl').html()),
-            init: function () {
-                this.on('complete', function (file) {
-                    $('#header-select').find('li a[href="#select"]').tab('show')
-                    $('#header-select').find('.dz-preview').html('');
-                })
-            }
-        });
-        $('#postmedia-select').find('#image-uploader').dropzone({
-            url: "{{ path_for('admin-postmedia-uploader') }}",
-            maxFileSize: 2,
-            createImageThumbnails: true,
-            aceptedFiles: 'image/*,',
-            previewTemplate: Mustache.render($('#upload-preview-tmpl').html()),
-            init: function () {
-                this.on('complete', function (file) {
-                    $('#header-select').find('li a[href="#select"]').tab('show')
-                    $('#header-select').find('.dz-preview').html('');
-                })
-            }
-        });
-    });
-    $('#header-select').on('show.bs.modal', function (event) {
-        var modal = $(this);
-        var button = $(event.relatedTarget)
-        var ckeditor = true;
-        if (button.data('type') == 'featured') {
-            ckeditor = false;
-        }
-        modal.find('li a[href="#select"]').on('shown.bs.tab', function (e) {
-            e.target // newly activated tab
-            e.relatedTarget // previous active tab
-            $.getJSON("{{ path_for('admin-postmedia-list') }}", {
-                year: 'all',
-                month: 'all'
-            }, function (data) {
-                modal.find('#img-year').html('<option value="all">Semua Tahun</option>');
-                populate_gallery('all', 'all', ckeditor)
-                $.each(data.time, function (key, val) {
-                    modal.find('#img-year').append('<option value="' + key + '">' + key + '</option>');
-                });
-                modal.find('#img-year').on('change', function () {
-                    populate_gallery($(this).val(), 'all', ckeditor)
-                    modal.find('#img-month').html('<option value="all">Semua Bulan</option>');
-                    var year = $(this).val();
-                    $.each(data.time[year], function (key, val) {
-                        modal.find('#img-month').append('<option value="' + val + '">' + month_replacer(val) + '</option>');
-                    });
-                    modal.find('#img-month').on('change', function () {
-                        populate_gallery($('#img-year').val(), $(this).val(), ckeditor)
-                    });
-                });
-            });
-        });
-
-        function populate_gallery(year, month, cked) {
-            $.getJSON("{{ path_for('admin-postmedia-list') }}", {
-                year: year,
-                month: month
-            }, function (data) {
-                modal.find('#image-list-div').html('')
-                $.each(data.image, function (key, val) {
-                    modal.find('#image-list-div').append(Mustache.render($('#list-upload-preview-tmpl').html(), val))
-                })
-                modal.find('.postimage-selectthis').on('click', function () {
-                    modal.find('.postimage-selectthis').css('border', 'none');
-                    modal.find('.postimage-selectthis').css('background', 'none');
-                    $(this).css('border', '1px solid #31b0d5')
-                    $(this).css('background', '#31b0d5')
-                    var elm = $(this)
-                    modal.find('#post-image-detail').html(Mustache.render($('#list-upload-preview-detail-tmpl').html(), {
-                        image: elm.data('img'),
-                        size: elm.data('size'),
-                        time: elm.data('day') + ' ' + month_replacer(elm.data('month')) + ', ' + elm.data('year'),
-                        'pixel': elm.data('pixel')
-                    }));
-                    modal.find('.choose-this').removeClass('disabled');
-                    modal.find('.choose-this').data('image', elm.data('img'));
-                    modal.find('.choose-this').on('click', function () {
-                        basic.removeClass('hidden')
-                        $('#image-cropper').cropit('imageSrc', 'public/content/'+elm.data('img'));
-                        $('#remove-croppie').removeClass('hidden');
-                    })
-                });
-            });
-        }
-        modal.find('li a[href="#select"]').tab('show');
-    });
-
-    $('#postmedia-select').on('show.bs.modal', function (event) {
-        var modal = $(this);
-        var button = $(event.relatedTarget)
-        modal.find('li a[href="#select-postmedia"]').on('shown.bs.tab', function (e) {
-            e.target // newly activated tab
-            e.relatedTarget // previous active tab
-            $.getJSON("{{ path_for('admin-postmedia-list') }}", {
-                year: 'all',
-                month: 'all'
-            }, function (data) {
-                modal.find('.img-year').html('<option value="all">Semua Tahun</option>');
-                populate_gallery('all', 'all')
-                $.each(data.time, function (key, val) {
-                    modal.find('.img-year').append('<option value="' + key + '">' + key + '</option>');
-                });
-                modal.find('.img-year').on('change', function () {
-                    populate_gallery($(this).val(), 'all')
-                    modal.find('.img-month').html('<option value="all">Semua Bulan</option>');
-                    var year = $(this).val();
-                    $.each(data.time[year], function (key, val) {
-                        modal.find('.img-month').append('<option value="' + val + '">' + month_replacer(val) + '</option>');
-                    });
-                    modal.find('.img-month').on('change', function () {
-                        populate_gallery($('.img-year').val(), $(this).val())
-                    });
-                });
-            });
-        });
-
-        function populate_gallery(year, month) {
-            $.getJSON("{{ path_for('admin-postmedia-list') }}", {
-                year: year,
-                month: month
-            }, function (data) {
-                modal.find('#image-list-div').html('')
-                $.each(data.image, function (key, val) {
-                    modal.find('#image-list-div').append(Mustache.render($('#list-upload-preview-tmpl').html(), val))
-                })
-                modal.find('.postimage-selectthis').on('click', function () {
-                    modal.find('.postimage-selectthis').css('border', 'none');
-                    modal.find('.postimage-selectthis').css('background', 'none');
-                    $(this).css('border', '1px solid #31b0d5')
-                    $(this).css('background', '#31b0d5')
-                    var elm = $(this)
-                    modal.find('#post-image-detail').html(Mustache.render($('#list-upload-preview-detail-tmpl').html(), {
-                        image: elm.data('img'),
-                        size: elm.data('size'),
-                        time: elm.data('day') + ' ' + month_replacer(elm.data('month')) + ', ' + elm.data('year'),
-                        'pixel': elm.data('pixel')
-                    }));
-                    modal.find('.select-this').removeClass('disabled');
-                    modal.find('.select-this').on('click', function () {
-                        $('#summernote').summernote('insertImage', 'public/content/' + elm.data('img'), elm.data('img'));
-                    })
-                });
-            });
-        }
-        modal.find('li a[href="#select-postmedia"]').tab('show');
-    });
-    $('#header-select').on('hide.bs.modal', function (event) {
-        var modal = $(this);
-        modal.find('#image-uploader').dropzone = false;
-        modal.find('.choose-this').addClass('disabled');
-    });
-
-//    $('#remove-croppie').on('click', function () {
-//        basic.croppie('destroy');
-//        $(this).addClass('hidden');
-//    })
-
-    $("input[name=title]").on('change', function () {
-        localStorage.setItem("title", $(this).val())
+    $(document).ready(function(){
+        globalSummernote($('#edit-post-content-editor'));
+        editPostPage(JSON.parse('{{post_data|json_encode|e('js')}}'));
     })
-
-    function month_replacer(month) {
-        var day = ''
-        switch (month) {
-        case '01':
-            day = "Januari";
-            break;
-        case '02':
-            day = "Februari";
-            break;
-        case '03':
-            day = "Maret";
-            break;
-        case '04':
-            day = "April";
-            break;
-        case '05':
-            day = "Mei";
-            break;
-        case '06':
-            day = "Juni";
-            break;
-        case '07':
-            day = "Juli";
-            break;
-        case '08':
-            day = "Agustus";
-            break;
-        case '09':
-            day = "September";
-            break;
-        case '10':
-            day = "Oktober";
-            break;
-        case '11':
-            day = "November";
-            break;
-        case '12':
-            day = "Desember";
-        }
-        return day;
-    }
-</script>
-<script>
-    // timer to save post as if draft or publihsed
-    $(document).ready(function () {
-        $('#form-post').ajaxForm();
-    })
-    var post_changed = false;
-    $('input[name=title]').on('change', function () {
-        post_changed = true;
-    })
-    $('#summernote').on('summernote.enter', function () {
-        post_changed = true;
-    });
-
-    setInterval(function () {
-        if (post_changed) {
-            save_post('draft', false)
-        }
-    }, 180000);
-
-    function save_post(type, submit) {
-        $('#form-post').ajaxSubmit({
-            url:"{{ path_for('admin-addpost-update', {'id':''}) }}"+'{{post_data.id}}',
-            data:{status:type},
-            success:function(res, status, xhr, jq){
-                if(res.status != 'failed' && submit){
-                    localStorage.removeItem('save_type');
-                    localStorage.removeItem('post_id');
-                    $('#form-post').resetForm();
-                    window.location.replace("{{ path_for('admin-allpost') }}");
-                }
-            }
-        });
-    }
-    $('#draft-save').on('click', function () {
-        {% if post_data.status == 0 %}
-        save_post('published', true);
-        {% else %}
-        save_post('draft', true);
-        {% endif %}
-    });
-    $('#form-post').submit(function () {
-        {% if post_data.status == 0 %}
-        save_post('draft', true);
-        {% else %}
-        save_post('published', true);
-        {% endif %}
-        return false;
-    });
-         function month_replacer(month) {
-             var day = ''
-             switch (month) {
-                 case '01':
-                 case 1:
-                     day = "Januari";
-                     break;
-                 case '02':
-                 case 2:
-                     day = "Februari";
-                     break;
-                 case '03':
-                 case 3:
-                     day = "Maret";
-                     break;
-                 case '04':
-                 case 4:
-                     day = "April";
-                     break;
-                 case '05':
-                 case 5:
-                     day = "Mei";
-                     break;
-                 case '06':
-                 case 6:
-                     day = "Juni";
-                     break;
-                 case '07':
-                 case 7:
-                     day = "Juli";
-                     break;
-                 case '08':
-                 case 8:
-                     day = "Agustus";
-                     break;
-                 case '09':
-                 case 9:
-                     day = "September";
-                     break;
-                 case '10':
-                 case 10:
-                     day = "Oktober";
-                     break;
-                 case '11':
-                 case 11:
-                     day = "November";
-                     break;
-                 case '12':
-                 case 12:
-                     day = "Desember";
-             }
-             return day;
-         }
-
 </script>
 {% endblock %}

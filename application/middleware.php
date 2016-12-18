@@ -18,6 +18,7 @@ $session = function ($req, $res, $next) {
     $route = $req->getAttribute('route');
     if(!isset($this->session->user_id)){
         $this->flash->addMessage('lastpage', $route->getName());
+        $this->flash->addMessage('lastpage_attr', $route->getArguments());
         return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('pre-login'));
     }
 

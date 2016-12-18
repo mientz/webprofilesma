@@ -6,9 +6,9 @@ $app->group('/admin/postmedia', function () {
     $this->get('', function ($req, $res, $args) {
         $req = $req->withAttribute('postmedia', 'active');
         return $this->view->render($res, 'admin/postmedia.html', $req->getAttributes());
-    })->setName('admin-allpostmedia');
+    })->setName('getAdminPostmediaHTML');
 
-    $this->post('', function ($req, $res, $args) {
+    $this->post('/upload', function ($req, $res, $args) {
         if(isset($_FILES["file"])){
             if ($_FILES["file"]["type"] == "image/bmp" || $_FILES["file"]["type"] == "image/png" || $_FILES["file"]["type"] == "image/jpeg" || $_FILES["file"]["type"] == "image/gif"){
                 // read image from temporary file
@@ -50,42 +50,42 @@ $app->group('/admin/postmedia', function () {
             "failed" => true
         ]);
 //        return $res;
-    })->setName('admin-postmedia-uploader');
+    })->setName('postAdminPostmediaUploadJSON');
 
     $this->get('/list', function ($req, $res, $args) {
         $path = 'public/content';
         $json = [];
         $query = "select * from postmedia where group_id=:group_id ";
-        $query = $query.($_GET['year'] == 'all' ?" and year(date)<>:year ":" and year(date)=:year ");
-        $query = $query.($_GET['month'] == 'all' ?" and month(date)<>:month ":" and month(date)=:month ");
+        $query = $query.($_GET['date'] == 'all' ?" and year(date)<>:year and month(date)<>:month ":" and year(date)=:year and month(date)=:month");
+        $query = $query." order by date desc";
         $select = $this->db->prepare($query);
         $select->bindParam(':group_id', $req->getAttribute('current_group_data')['id'], PDO::PARAM_INT);
-        $select->bindParam(':year', date("Y", strtotime($_GET['year'])), PDO::PARAM_INT);
-        $select->bindParam(':month', date("n", strtotime($_GET['month'])), PDO::PARAM_INT);
+        $select->bindParam(':year', date("Y", strtotime($_GET['date'])), PDO::PARAM_INT);
+        $select->bindParam(':month', date("n", strtotime($_GET['date'])), PDO::PARAM_INT);
         if($select->execute()){
             $file = [];
-            $time = [];
             foreach($select->fetchAll(PDO::FETCH_ASSOC) as $data){
                 $data['dateString'] = date("d F Y", strtotime($data['date']));
                 $data['author'] = $this->db->query("select nickname from users where id='".$data['author']."'")->fetchColumn();
-                $data['thumbnail'] = $this->router->pathFor('admin-postmedia-thumbnail', ["img"=>$data['file']]);
+                $data['thumbnail'] = $this->router->pathFor('getAdminPostmediaThumbnailIMAGE', ["img"=>$data['file']]);
                 array_push($file, $data);
-                if(!array_key_exists(date("Y", strtotime($data['date'])), $time)){
-                    $time[date("Y", strtotime($data['date']))] = [];
-                }
-                if(!in_array(date("F", strtotime($data['date'])), $time[date("Y", strtotime($data['date']))])){
-                    array_push($time[date("Y", strtotime($data['date']))], date("F", strtotime($data['date'])));
-                }
             }
-            $res = $res->withJson([
-                "postmedia" =>$file,
-                "time_group" =>$time
-            ]);
+            $json["postmedia"]=$file;
         }
+        $select = $this->db->prepare("select date from postmedia where group_id=:group_id group by year(date), month(date)");
+        $select->bindParam(':group_id', $req->getAttribute('current_group_data')['id'], PDO::PARAM_INT);
+        if($select->execute()){
+            $time = [];
+            foreach($select->fetchAll(PDO::FETCH_ASSOC) as $data){
+                array_push($time,date("F Y", strtotime($data['date'])));
+            }
+            $json["time"]=$time;
+        }
+        $res = $res->withJson($json);
         return $res;
-    })->setName('admin-postmedia-list');
+    })->setName('getAdminPostmediaListJSON');
 
-    $this->get('/thumbnail/{img}', function ($req, $res, $args) {
+    $this->get('/thumbnail[/{img}]', function ($req, $res, $args) {
         $imgData = $this->manager->make('public/content/'.$args['img'])->exif();
         $res = $res->withHeader('Content-type', $imgData['MimeType']);
         $img = $this->manager->make('public/content/'.$args['img']);
@@ -97,7 +97,7 @@ $app->group('/admin/postmedia', function () {
         $img->resize(187, 187);
         $res->write($img->response('png'));
         return $res;
-    })->setName('admin-postmedia-thumbnail');
+    })->setName('getAdminPostmediaThumbnailIMAGE');
 
     $this->get('/exif[/{id}]', function ($req, $res, $args) {
         $select = $this->db->query("select * from postmedia where id='".$args['id']."'")->fetch(PDO::FETCH_ASSOC);
@@ -110,7 +110,7 @@ $app->group('/admin/postmedia', function () {
             "postmedia"=>$select
         ]);
         return $res;
-    })->setName('admin-postmedia-exif');
+    })->setName('getAdminPostmediaExifJSON');
 
     $this->get('/delete[/{id}]', function ($req, $res, $args) {
         if(isset($args['id'])){
@@ -128,5 +128,37 @@ $app->group('/admin/postmedia', function () {
             ]);
         }
         return $res;
-    })->setName('admin-postmedia-delete');
+    })->setName('getAdminPostmediaDeleteJSON');
+
+    $this->get('/croped[/{img}]', function ($req, $res, $args) {
+        $imgData = $this->manager->make('public/content/'.$args['img'])->exif();
+        $res = $res->withHeader('Content-type', $imgData['MimeType']);
+        $img = $this->manager->make('public/content/'.$args['img']);
+        if($img->width() > $img->height()){
+            $img->crop($img->width(), $img->width());
+        }elseif($img->width() < $img->height()){
+            $img->crop($img->height(), $img->height());
+        }
+        $img->resize(187, 187);
+        $res->write($img->response('png'));
+        return $res;
+    })->setName('getAdminPostmediaCropedIMAGE');
+
+    $this->get('/cropit[/{params:.*}]', function ($req, $res, $args) {
+        if(isset($args['params'])){
+            $param = explode('/',$args["params"]);
+            $imgData = [];
+            $imgData["width"] = $param[0];
+            $imgData["height"] = $param[1];
+            $imgData["x"] = $param[2];
+            $imgData["y"] = $param[3];
+            $imgData["zoom"] = $param[4];
+            $imgData["image"] = $param[5];
+            $res = $res->withJson($imgData);
+        }else{
+            $res = $res->withJson(["image"=>"no-image"]);
+        }
+        return $res;
+    })->setName('getAdminPostmediaCropitJson');
+
 })->add($session);
