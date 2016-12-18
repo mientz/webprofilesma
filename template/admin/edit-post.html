@@ -5,11 +5,22 @@
 <link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet">
 {% endblock %} {% block title %} Pos {% endblock %} {% block content %}
 <div class="container-fluid">
-    <form method="post" id="edit-post-form">
+    <form method="post" id="edit-post-form" data-id="{{post_data.id}}" data-status="{% if post_data.status == 1 %}draft{% else %}publish{% endif %}">
         <div class="row">
             <div class="col-md-12 no-gutter">
-                <div class="col-md-8 no-gutter">
-                    <h3 class="page-title pull-left">Sunting Pos</h3>
+                <div class="col-md-12 no-gutter">
+                    <h3 class="page-title pull-left">Sunting Pos <small><i class="fa fa-spinner fa-spin hidden"></i></small></h3>
+                </div>
+                <div class="col-md-12 no-gutter">
+                    {% if post_data_autosave %}
+                    <div class="alert alert-dismissible alert-success">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <strong>Opps!!</strong> Terdapat cadangan post yang berbeda dengan versi dibawah <a role="button" id="edit-post-recover-autosave" class="btn btn-default btn-xs" data-recover='{{ post_data_autosave|json_encode() }}'>Kembalikan Cadangan</a><br>
+                        <small> - <em>terdapat cadangan pos ini dikarenakan anda tidak meyimpan perubahan pada terakhir kali anda merubah pos ini</em></small><br>
+                        <small> - <em>Ini akan mengubah konten dalam editor saat ini dengan versi cadangan sebelumnya</em></small><br>
+                        <small> - <em>Cadangan akan tergantikan dengan versi dibawah ketika anda melakukan refresh / menutup halaman ini</em></small>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="col-md-9 no-gutter" style="padding:10px 10px 0 0;">
@@ -21,9 +32,9 @@
                 </div>
                 <label class="text-left">Gambar Fitur </label>
                 <a role="button" class="btn btn-info btn-xs  {% if post_data.header_image %} hidden {% else %}  {% endif %}" id="edit-post-header-select-add"><i class="fa fa-picture-o fa-fw"></i> Pilih Gambar Fitur</a>
-                <input id="edit-post-header-value" type="hidden" name="image" value="">
+                <input id="edit-post-header-value" type="hidden" name="image" value="{{post_data.header_image}}">
                 <div class="col-md-12 no-gutter {% if post_data.header_image %}  {% else %} hidden {% endif %}" id="edit-post-header" align="center" data-heade="{{post_data.header_image}}">
-                    <div id="edit-post-header-image-cropper" class="col-md-12 no-gutter">
+                    <div id="edit-post-header-image-cropper" class="col-md-12 no-gutter" data-rawimage="{{post_data.header_image}}">
                         <div class="cropit-preview col-md-8" style="cursor: move;"></div>
                         <div class="col-md-4 no-gutter" style="padding-left:20px;">
                             <div class="btn-group btn-group-justified">
@@ -52,27 +63,35 @@
                 </div>
                 <div class="col-md-12 no-gutter editor" style="padding-top:10px;color:">
                     <div id="edit-post-content-editor">{{post_data.content|raw}}</div>
-                    <input type="hidden" id="edit-post-content-value" name="content">
+                    <input type="hidden" id="edit-post-content-value" name="content" value="{{post_data.content|raw}}">
+                </div>
+                <div class="col-md-12 no-gutter" style="padding-top:10px;color:">
+                    <div class="panel panel-default" style="background:#fff; color:#4e5d6c; ">
+                        <div class="panel-heading">Terakhir Diedit</div>
+                        <div class="panel-body">
+                            <ul class="list-unstyled">
+                                {% for revision in post_data_revisions %}
+                                <li>
+                                    <p style="color:#000;font-size:12px;"><img src="public/profile/{{revision.authors.image}}" width="30px"> {{ revision.authors.nickname }} | {{ revision.date|time_diff }} (<a href="{{ path_for('getAdminPostDiffHTML', {'id': post_data.id}) }}" class="text-info">{{ revision.date|date('d F Y \\@ H:i:s') }}</a>)</p>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+
             <div class="col-md-3 no-gutter" style="padding:35px 0 0 10px;">
                 <div class="panel panel-default" style="background:#fff; color:#4e5d6c; ">
                     <a class="panel-heading" role="button" data-toggle="collapse" href=".terbitkan" aria-expanded="true" aria-controls="collapseExample" style="display:block;">
                         Simpan Perubahan
                     </a>
                     <div class="panel-body collapse in terbitkan">
-                        {% if post_data.status == 0 %}
-                        <button id="draft-save" type="button" class="btn btn-default btn-sm pull-left" value=""><i class="fa fa-floppy-o fa-fw"></i> Terbitkan</button>
-                        {% else %}
-                        <button id="draft-save" type="button" class="btn btn-default btn-sm pull-left" value=""><i class="fa fa-floppy-o fa-fw"></i> Jadikan Konsep</button>
-                        {% endif %}
-                        <a href="" class="btn btn-default btn-sm pull-right"><i class="fa fa-eye fa-fw"></i> Pratinjau</a>
-                        <br>
-                        <br>
                         <ul class="list-unstyled">
                             <li>
                                 <i class="fa fa-info-circle fa-fw"></i> Status:
-                                {% if post_data.status == 0 %}
+                                {% if post_data.status == 1 %}
                                 <span class="text-info">Konsep</span>
                                 {% else %}
                                 <span class="text-info">Telah Terbit</span>
@@ -112,10 +131,16 @@
                                 </div>
                             </li>
                         </ul>
+                        <a href="" class="btn btn-default btn-xs"><i class="fa fa-eye"></i> Pratinjau</a>
                     </div>
                     <div class="panel-footer collapse in terbitkan">
-                        <button type="button" class="btn btn-link">&nbsp;</button>
-                        <button type="button" class="btn btn-info pull-right" id="edit-post-save-trigger">Simpan</button>
+                        {% if post_data.status == 1 %}
+                        <button class="btn btn-default edit-post-draft-trigger">Simpan Konsep</button>
+                        <button class="btn btn-info pull-right edit-post-publish-trigger">Terbitkan</button>
+                        {% else %}
+                        <button class="btn btn-default edit-post-draft-trigger">Jadikan Konsep</button>
+                        <button class="btn btn-info pull-right edit-post-publish-trigger">Simpan</button>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="panel panel-default" style="background:#fff; color:#4e5d6c; ">

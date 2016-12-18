@@ -5,7 +5,7 @@
         <div class="col-md-12 no-gutter">
             <div class="col-md-8 no-gutter">
                 <h3 class="page-title pull-left">Pos</h3>
-                <a href="{{ path_for('admin-addpost') }}" class="btn btn-info btn-xs pull-left" style="margin:8px;">Tambah Baru</a>
+                <a href="{{ path_for('getAdminPostAddHTML') }}" class="btn btn-info btn-xs pull-left" style="margin:8px;">Tambah Baru</a>
             </div>
         </div>
         <div class="col-md-12 no-gutter">
@@ -100,14 +100,14 @@
                                         <i class="fa fa-eye pull-right" data-toggle="tooltip" data-placement="top" title="" data-original-title="Pos ini tersembunyi dari umum"></i> {% elseif post.visibility == 2 %}
                                         <i class="fa fa-lock pull-right" data-toggle="tooltip" data-placement="top" title="" data-original-title="Pos ini terlindungi password"></i> {% endif %}
                                         <div class="form-inline">
-                                            <a href="{{ path_for('admin-editpost', {'id': ''}) }}{{post.id}}" class="btn btn-link btn-sm no-gutter {{ post_tab != 'deleted' ?:'hidden' }}"><span class="label label-info"><i class="fa fa-pencil"></i> Edit</span></a>
+                                            <a href="{{ path_for('getAdminPostListHTML', {'id': post.id}) }}" class="btn btn-link btn-sm no-gutter {{ post_tab != 'deleted' ?:'hidden' }}"><span class="label label-info"><i class="fa fa-pencil"></i> Edit</span></a>
                                             <a role="button" class="btn btn-link btn-sm no-gutter post-trash-sub {{ post_tab != 'deleted' ?:'hidden' }}" data-id="{{post.id}}"><span class="label label-primary"><i class="fa fa-trash"></i> Hapus</span></a>
                                             <a href="" class="btn btn-link btn-sm no-gutter {{ post_tab != 'deleted' ?:'hidden' }}"><span class="label label-success"><i class="fa fa-external-link"></i> Partinjau</span></a>
                                             <a role="button" class="btn btn-link btn-sm no-gutter post-revert-sub {{ post_tab == 'deleted' ?:'hidden' }}" data-id="{{post.id}}"><span class="label label-info"><i class="fa fa-undo"></i> Kembalikan</span></a>
                                             <a role="button" class="btn btn-link btn-sm no-gutter post-delete-sub {{ post_tab == 'deleted' ?:'hidden' }}" data-id="{{post.id}}"><span class="label label-danger"><i class="fa fa-trash"></i> Hapus Permanen</span></a>
                                         </div>
                                     </td>
-                                    <td>{{post.author|last|first}}</td>
+                                    <td>{{post.author}}</td>
                                     <td class="category">{{post.category}}</td>
                                     <td>
                                         {% for tag in post.tags %}

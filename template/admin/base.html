@@ -112,7 +112,7 @@
                     <a href="{{ path_for('getAdminPostListHTML') }}"><i class="fa fa-thumb-tack fa-fw"></i>Pos</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
                         <li class="{{ sidemenu.post == 'all' ? 'active' }}"><a href="{{ path_for('getAdminPostListHTML') }}">Semua Pos</a></li>
-                        <li class="{{ sidemenu.post == 'add' ? 'active' }}"><a href="{{ path_for('admin-addpost') }}">Tambah Baru</a></li>
+                        <li class="{{ sidemenu.post == 'add' ? 'active' }}"><a href="{{ path_for('getAdminPostAddHTML') }}">Tambah Baru</a></li>
                         <li class="{{ sidemenu.post == 'media' ? 'active' }}"><a href="{{ path_for('getAdminPostmediaHTML') }}">Media</a></li>
                         <li class="{{ sidemenu.post == 'category' ? 'active' }}"><a href="{{ path_for('admin-allcategory') }}">Kategori</a></li>
 <!--                        <li class=""><a href="#">Tags</a></li>-->
@@ -304,9 +304,13 @@
             postAdminCategoryShorthandInsertJSON: "{{ path_for('postAdminCategoryShorthandInsertJSON') }}",
             //admin tags url
             getAdminTagsListJSON: "{{ path_for('getAdminTagsListJSON') }}",
-            //admin save post url
+            //admin post url
             postAdminPostSaveJSON: "{{ path_for('postAdminPostSaveJSON') }}",
             postAdminPostChangeJSON: "{{ path_for('postAdminPostChangeJSON') }}",
+            getAdminPostAddHTML: "{{ path_for('getAdminPostAddHTML') }}",
+            getAdminPostListHTML: "{{ path_for('getAdminPostListHTML') }}",
+            getAdminPostEditHTML: "{{ path_for('getAdminPostEditHTML') }}",
+            getAdminPostDiffHTML: "{{ path_for('getAdminPostDiffHTML') }}",
 
         }
     </script>

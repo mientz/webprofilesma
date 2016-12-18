@@ -25,11 +25,11 @@ $container['view'] = function ($container) {
     }else{
         $view = new \Slim\Views\Twig('template');
     }
+    $view->addExtension(new Twig_Extensions_Extension_Date());
     $view->addExtension(new \Slim\Views\TwigExtension(
         $container['router'],
         $container['request']->getUri()
     ));
-
     return $view;
 };
 
@@ -52,6 +52,13 @@ $container['flash'] = function () {
  */
 $container['manager'] = function () {
     return new \Intervention\Image\ImageManager(array('driver' => 'gd'));
+};
+
+/*
+ * cogpower text diff plugin register
+ */
+$container['diff'] = function () {
+    return new Qazd\TextDiff;
 };
 
 /*

@@ -79,6 +79,10 @@ class ComposerStaticInit3395cd736a09978f5e65a8517b556d01
     public static $prefixesPsr0 = array (
         'T' =>
         array (
+            'Twig_Extensions_' =>
+            array (
+                0 => __DIR__ . '/..' . '/twig/extensions/lib',
+            ),
             'Twig_' =>
             array (
                 0 => __DIR__ . '/..' . '/twig/twig/lib',
@@ -93,6 +97,10 @@ class ComposerStaticInit3395cd736a09978f5e65a8517b556d01
         ),
     );
 
+    public static $classMap = array (
+        'Qazd\\TextDiff' => __DIR__ . '/..' . '/qazd/text-diff/src/TextDiff.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
@@ -100,6 +108,7 @@ class ComposerStaticInit3395cd736a09978f5e65a8517b556d01
             $loader->prefixDirsPsr4 = ComposerStaticInit3395cd736a09978f5e65a8517b556d01::$prefixDirsPsr4;
             $loader->fallbackDirsPsr4 = ComposerStaticInit3395cd736a09978f5e65a8517b556d01::$fallbackDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit3395cd736a09978f5e65a8517b556d01::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit3395cd736a09978f5e65a8517b556d01::$classMap;
 
         }, null, ClassLoader::class);
     }

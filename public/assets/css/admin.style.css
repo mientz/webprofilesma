@@ -612,3 +612,20 @@ a.cke_dialog_tab {
 .typeahead.dropdown-menu li a{
     color:#000 !important;
 }
+
+.well del{
+    background: #faa;
+    text-decoration: none;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 5px;
+}
+.well ins{
+    background: #afa;
+    text-decoration: none;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 5px;
+}
+
+

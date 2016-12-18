@@ -6,4 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Qazd\\TextDiff' => $vendorDir . '/qazd/text-diff/src/TextDiff.php',
 );

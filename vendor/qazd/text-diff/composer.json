@@ -1,0 +1,16 @@
+{
+    "name": "qazd/text-diff",
+    "description": "A simple text differences visualization library",
+    "authors": [
+        {
+            "name": "Dmitry",
+            "email": "qazd.dev@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "classmap": ["src/TextDiff.php"]
+    }
+}
