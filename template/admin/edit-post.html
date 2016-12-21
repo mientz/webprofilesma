@@ -63,7 +63,7 @@
                 </div>
                 <div class="col-md-12 no-gutter editor" style="padding-top:10px;color:">
                     <div id="edit-post-content-editor">{{post_data.content|raw}}</div>
-                    <input type="hidden" id="edit-post-content-value" name="content" value="{{post_data.content|raw}}">
+                    <textarea class="hidden" id="edit-post-content-value" name="content">{{post_data.content|raw}}</textarea>
                 </div>
                 <div class="col-md-12 no-gutter" style="padding-top:10px;color:">
                     <div class="panel panel-default" style="background:#fff; color:#4e5d6c; ">
@@ -222,7 +222,7 @@
 <script src="public/assets/js/bootbox.min.js"></script>
 <script>
     $(document).ready(function(){
-        globalSummernote($('#edit-post-content-editor'));
+        globalSummernote($('#edit-post-content-editor'), $('#edit-post-content-value'));
         editPostPage(JSON.parse('{{post_data|json_encode|e('js')}}'));
     })
 </script>

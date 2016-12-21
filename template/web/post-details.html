@@ -1,109 +1,54 @@
-{% extends "web/base.html" %} {% block title %} Home {% endblock %} {% block content %} {% include 'web/header.html' %}
+{% extends "web/base.html" %} {% block title %} {{post.title}} {% endblock %} {% block content %} {% include 'web/header.html' %}
 <div class="col-md-12 col-xs-12 page-wrapper-area">
     <div class="col-md-12">
         <div class="col-md-10 col-md-offset-1">
             <ul class="breadcrumb">
                 <li><a href="#">Beranda</a></li>
-                <li class="active">Berita</li>
+                <li class="active">{{ post.category }}</li>
             </ul>
             <div class="col-md-9 news-list">
                 <div class="col-md-12 news-item">
                     <div class="col-md-12 news-title news-title-detail">
-                        <h1>Olympiade Sains Kabupaten 2015</h1>
+                        <h1>{{post.title}}</h1>
                         <div class="col-md-12 news-subtitle">
                             <ul class="nav nav-pills">
                                 <li role="presentation">
                                     Diposting
-                                    <a href="#">ANTHONY</a>
+                                    <a href="#">{{post.authors}}</a>
                                 </li>
                                 <li role="presentation">
                                     Kategori
-                                    <a href="#">Pengumuman</a>
+                                    <a href="{{ path_for('getPostByCategoryHTML', {'category': post.category, 'ext':'/'}) }}">{{ post.category }}</a>
                                 </li>
                                 <li role="presentation">
                                     Tanggal
-                                    <a href="#">20/01/2016</a>
+                                    <a href="{{ path_for('getPostByDateHTML', {'year' : post.date|date('y'), 'month': post.date|date('m')})}}">{{ post.date|date('d/m/Y') }}</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                    <img class="news-header" src="res/img/814858osn.jpg">
+                    {% if post.header_image != '' %}
+                    <img class="news-header" src="{{ path_for('getPostmediaHeaderIMAGE', {'img': post.header_image}) }}">
+                    {% endif %}
                     <div class="col-md-12 news-summary">
-                        <p>Syukur Alhamdulillah kami curahkan kepada Allah SWT yang telah memberikan rahmat dan hidayah kepada kita semua.</p>
-                        <p>11 Februari 2015 merupakan waktu yang sangat berarti bagi Smansaba karena lewat perwakilannya, Smansaba dapat memborong <strong>4 Emas</strong>, <strong>4 Perak</strong> dan <strong>2 Perunggu</strong> pada <strong>Olimpiade Sains Kab.Bangkalan (OSK)</strong>. Tak lupa kami sampaikan banyak terimakasih atas dukungan, bantuan dan doa dari segala pihak yang terlibat.</p>
-                        <p>Berikut hasil Olimpiade Sains Kabupaten (OSK) yang dilaksanakan oleh Dinas Pendidikan Kabupaten Bangkalan</p>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr class="active">
-                                    <td>Nama Peserta</td>
-                                    <td>Hasil</td>
-                                    <td>Mata Pelajaran</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>I Made Bayu Dimaswara P.</td>
-                                    <td>Juara 1</td>
-                                    <td>Fisika</td>
-                                </tr>
-                                <tr>
-                                    <td>Rizki Amaliya</td>
-                                    <td>Juara 3</td>
-                                    <td>Fisika</td>
-                                </tr>
-                                <tr>
-                                    <td>Andy Nur Rosihun Al Fajri</td>
-                                    <td>Juara 3</td>
-                                    <td>Kimia</td>
-                                </tr>
-                                <tr>
-                                    <td>Riski Sriwijayati</td>
-                                    <td>Juara 1</td>
-                                    <td>Komputer</td>
-                                </tr>
-                                <tr>
-                                    <td>Robiatul Fadhila</td>
-                                    <td>Juara 2</td>
-                                    <td>Astronomi</td>
-                                </tr>
-                                <tr>
-                                    <td>Aditya Tri Ananda</td>
-                                    <td>Juara 3</td>
-                                    <td>Astronomi</td>
-                                </tr>
-                                <tr>
-                                    <td>Mutiara Balqis S</td>
-                                    <td>Juara 2</td>
-                                    <td>Kebumian</td>
-                                </tr>
-                                <tr>
-                                    <td>Ratih Bahari</td>
-                                    <td>Juara 1</td>
-                                    <td>Ekonomi</td>
-                                </tr>
-                                <tr>
-                                    <td>Firman Assiddiqi</td>
-                                    <td>Juara 1</td>
-                                    <td>Geografi</td>
-                                </tr>
-                                <tr>
-                                    <td>M. Rizky Firdaus</td>
-                                    <td>Juara 2</td>
-                                    <td>Geografi</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p>Selamat kepada para pemenang !. Kami&nbsp;&nbsp;berharap semoga Smansaba selalu meraih prestasi yang gemilang di tahun-tahun yang akan datang. Amin.</p>
+                        {{ post.content|raw }}
                     </div>
                 </div>
                 <ul class="pagination pagination-sm">
                     <b>tag : </b>
-                    <span class="label label-default">Juara</span>
-                    <span class="label label-primary">Berita</span>
-                    <span class="label label-success">2015</span>
-                    <span class="label label-info">sains</span>
-                    <span class="label label-warning">olimpiade</span>
-                    <span class="label label-danger">Danger</span>
+                    {% for tag in post.tags %}
+                    {% if loop.index is divisible by(4) %}
+                    <span class="label label-warning">{{ tag.name }}</span>
+                    {% elseif loop.index is divisible by(3) %}
+                    <span class="label label-success">{{ tag.name }}</span>
+                    {% elseif loop.index is divisible by(2) %}
+                    <span class="label label-info">{{ tag.name }}</span>
+                    {% elseif loop.index is divisible by(5) %}
+                    <span class="label label-danger">{{ tag.name }}</span>
+                    {% else %}
+                    <span class="label label-primary">{{ tag.name }}</span>
+                    {% endif %}
+                    {% endfor %}
                 </ul>
                 <ul class="pagination pagination-sm pull-right">
                     <li><a>Share</a></li>

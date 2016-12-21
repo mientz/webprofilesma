@@ -1,0 +1,289 @@
+{% extends "admin/base.html" %} {% block head %} {{ parent() }}
+<link href="public/assets/css/croppie.css" rel="stylesheet">
+<link href="public/assets/css/ekko-lightbox.min.css" rel="stylesheet">
+{% endblock %} {% block title %} Guru dan Staff {% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 no-gutter">
+            <div class="col-md-8 no-gutter">
+                <h3 class="page-title pull-left">Data Guru Dan Staff</h3>
+                <a role="button" id="admin-teacher-add-trigger" class="btn btn-info btn-xs pull-left" style="margin:8px;">Tambah Baru</a>
+            </div>
+        </div>
+        <div class="col-md-12 no-gutter" style="padding-top:20px">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#admin-teachers-tab" data-toggle="tab">Guru</a></li>
+                <li><a href="#admin-staff-tab" data-toggle="tab">Staff</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade active in" id="admin-teachers-tab">
+                    {% for teacher in teachers %}
+                    {% if teacher.type == 0 %}
+                    <div class="col-md-12 no-gutter">
+                        <div class="col-md-12 no-gutter" style="padding-top:10px">
+                            <div class="media">
+                                <div class="media-left">
+                                    <a role="button" data-remote="{{ teacher.photo }}" class="teacher-preview">
+                                        <img class="media-object" src="{{ teacher.photo }}" width="70px;" alt="...">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading">{{ teacher.name }}</h4>
+                                    <p>
+                                        <small>{{ teacher.field }} - {{ teacher.number }}</small><br>
+                                        <q><em>{{ teacher.quote }}</em></q>
+                                    </p>
+                                </div>
+                                <div class="media-right">
+                                    <a role="button" class="btn btn-info btn-sm btn-block teacher-edit" data-teacher="{{ teacher|json_encode() }}"><i class="fa fa-pencil-square-o fa-fw"></i></a>
+                                    <a role="button" class="btn btn-danger btn-sm btn-block teacher-delete" data-teacher="{{ teacher|json_encode() }}"><i class="fa fa-trash-o fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="tab-pane fade" id="admin-staff-tab">
+                    {% for teacher in teachers %}
+                    {% if teacher.type == 1 %}
+                    <div class="col-md-6 no-gutter">
+                        <div class="col-md-12 no-gutter" style="padding-top:10px">
+                            <div class="media" style="border-top:1px solid #fff; padding-top:5px;">
+                                <div class="media-left">
+                                    <a href="#">
+                                        <img class="media-object" src="{{ teacher.photo }}" width="70px;" alt="...">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading">{{ teacher.name }}</h4>
+                                    <p>
+                                        <small>{{ teacher.field }} - {{ teacher.number }}</small><br>
+                                        <q><em>{{ teacher.quote }}</em></q>
+                                    </p>
+                                </div>
+                                <div class="media-right">
+                                    <a role="button" class="btn btn-info btn-sm btn-block teacher-edit" data-teacher="{{ teacher|json_encode() }}"><i class="fa fa-pencil-square-o fa-fw"></i></a>
+                                    <a role="button" class="btn btn-danger btn-sm btn-block teacher-edit" data-teacher="{{ teacher|json_encode() }}"><i class="fa fa-trash-o fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% block js %} {{ parent() }} {% verbatim %}
+<script id="teachers-add-new-tmpl" type="x-tmpl-mustache">
+    <div class="row">
+        <div class="col-md-7" id="teacher-image-cropper">
+            <center>
+                <div class="cropit-preview" style="cursor: move; width:300px; height:300px;"></div>
+                <div class="no-gutter" style="width:300px;">
+                    <div class="form-group" style="text-align:left;">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <a role="button" class="btn btn-info" id="teacher-cropper-select"><i class="fa fa-picture-o fa-fw"></i></a>
+                             </span>
+                            <div class="form-control">
+                                <input type="range" class="cropit-image-zoom-input" min="0" max="1" step="0.01">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="file" class="cropit-image-input hidden" />
+            </center>
+        </div>
+        <div class="col-md-5">
+            <form method="post" id="teachers-add-form">
+                <div class="form-group">
+                    <label class="control-label">Nama</label>
+                    <input type="text" name="name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Bidang</label>
+                    <input type="text" name="field" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Nomor Induk</label>
+                    <input type="text" name="number" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Motto</label>
+                    <input type="text" name="quote" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Kategori</label>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="type" id="optionsRadios1" value="0" checked=""> Guru
+                        </label>
+                        <label style="margin-left:20px;">
+                            <input type="radio" name="type" id="optionsRadios2" value="1"> Staff
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>
+{% endverbatim %}
+<script src="public/assets/js/jquery.cropit.js"></script>
+<script src="public/assets/js/bootbox.min.js"></script>
+<script src="public/assets/js/jquery.form.min.js"></script>
+<script src="public/assets/js/ekko-lightbox.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.teacher-preview').on('click', function(){
+            bootbox.dialog({
+                message: '<img src="'+$(this).data('remote')+'" width="100%">',
+                backdrop: true,
+                onEscape: true,
+            })
+        })
+        $('#admin-teacher-add-trigger').on('click', function(){
+            var dialog = bootbox.dialog({
+                title: 'Tambah Guru & Staff',
+                message: Mustache.render($('#teachers-add-new-tmpl').html()),
+                buttons:{
+                    btnSave : {
+                        label: 'Simpan',
+                        className: "btn-info",
+                        callback: function() {
+                            var imageCropper = dialog.find('#teacher-image-cropper');
+                            dialog.find('#teachers-add-form').ajaxSubmit({
+                                url: globalUrl.postAdminCustomPageTeachersJSON,
+                                data:{
+                                    photo:imageCropper.cropit('export')
+                                },
+                                dataType: 'json',
+                                success:function(res, status, xhr, jq){
+                                    location.reload();
+                                }
+                            });
+                        }
+                    },
+                    btnCancel : {
+                        label: 'Batal',
+                        className: "btn-default",
+                        callback: function() {
+
+                        }
+                    }
+                }
+            });
+            dialog.init(function(){
+                var imageCropper = dialog.find('#teacher-image-cropper')
+                imageCropper.cropit();
+                imageCropper.cropit('imageSrc', 'public/teachers/no-photo.png');
+                $('#teacher-cropper-select').click(function() {
+                    $('.cropit-image-input').click();
+                });
+            });
+        });
+
+        $('.teacher-edit').on('click', function(){
+            var val = $(this).data('teacher');
+            var dialog = bootbox.dialog({
+                title: 'Edit Data Guru & Staff',
+                message: Mustache.render($('#teachers-add-new-tmpl').html()),
+                buttons:{
+                    btnSave : {
+                        label: 'Simpan',
+                        className: "btn-info",
+                        callback: function() {
+                            var imageCropper = dialog.find('#teacher-image-cropper');
+                            dialog.find('#teachers-add-form').ajaxSubmit({
+                                url: globalUrl.postAdminCustomPageTeachersJSON+'/edit/'+val.id,
+                                data:{
+                                    photo:imageCropper.cropit('export')
+                                },
+                                dataType: 'json',
+                                success:function(res, status, xhr, jq){
+                                    location.reload();
+                                }
+                            });
+                        }
+                    },
+                    btnCancel : {
+                        label: 'Batal',
+                        className: "btn-default",
+                        callback: function() {
+
+                        }
+                    }
+                }
+            });
+            dialog.init(function(){
+                var imageCropper = dialog.find('#teacher-image-cropper')
+                imageCropper.cropit();
+                imageCropper.cropit('imageSrc', val.photo);
+                dialog.find('input[name=name]').val(val.name);
+                dialog.find('input[name=field]').val(val.field);
+                dialog.find('input[name=number]').val(val.number);
+                dialog.find('input[name=quote]').val(val.quote);
+                dialog.find('input:radio[name=type]').filter('[value="'+val.type+'"]').attr('checked', true);
+                $('#teacher-cropper-select').click(function() {
+                    $('.cropit-image-input').click();
+                });
+            });
+        });
+
+        $('.teacher-delete').on('click', function(){
+            var val = $(this).data('teacher');
+            var dialog = bootbox.dialog({
+                title: 'Apakah Anda Yakin Akan Menghapus Data ini ?',
+                message: Mustache.render($('#teachers-add-new-tmpl').html()),
+                buttons:{
+                    btnSave : {
+                        label: 'Hapus',
+                        className: "btn-danger",
+                        callback: function() {
+                            var imageCropper = dialog.find('#teacher-image-cropper');
+                            dialog.find('#teachers-add-form').ajaxSubmit({
+                                url: globalUrl.postAdminCustomPageTeachersJSON+'/delete/'+val.id,
+                                data:{
+                                    photo:imageCropper.cropit('export')
+                                },
+                                dataType: 'json',
+                                success:function(res, status, xhr, jq){
+                                    location.reload();
+                                }
+                            });
+                        }
+                    },
+                    btnCancel : {
+                        label: 'Batal',
+                        className: "btn-default",
+                        callback: function() {
+
+                        }
+                    }
+                }
+            });
+            dialog.init(function(){
+                var imageCropper = dialog.find('#teacher-image-cropper')
+                imageCropper.cropit();
+                imageCropper.cropit('imageSrc', val.photo);
+                dialog.find('.modal-header').css('background', '#d9534f');
+                dialog.find('input[name=name]').val(val.name);
+                dialog.find('input[name=name]').attr('readonly', 'readonly');
+                dialog.find('input[name=field]').val(val.field);
+                dialog.find('input[name=field]').attr('readonly', 'readonly');
+                dialog.find('input[name=number]').val(val.number);
+                dialog.find('input[name=number]').attr('readonly', 'readonly');
+                dialog.find('input[name=quote]').val(val.quote);
+                dialog.find('input[name=quote]').attr('readonly', 'readonly');
+                dialog.find('input:radio[name=type]').filter('[value="'+val.type+'"]').attr('checked', true);
+                dialog.find('input:radio[name=type]').attr('disabled', 'disabled');
+                dialog.find('input[type=range]').attr('disabled', 'disabled');
+            });
+        });
+    })
+</script>
+{% endblock %}

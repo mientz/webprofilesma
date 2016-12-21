@@ -59,9 +59,9 @@ $app->group('/admin/postmedia', function () {
         $query = $query.($_GET['date'] == 'all' ?" and year(date)<>:year and month(date)<>:month ":" and year(date)=:year and month(date)=:month");
         $query = $query." order by date desc";
         $select = $this->db->prepare($query);
-        $select->bindParam(':group_id', $req->getAttribute('current_group_data')['id'], PDO::PARAM_INT);
-        $select->bindParam(':year', date("Y", strtotime($_GET['date'])), PDO::PARAM_INT);
-        $select->bindParam(':month', date("n", strtotime($_GET['date'])), PDO::PARAM_INT);
+        $select->bindValue(':group_id', $req->getAttribute('current_group_data')['id'], PDO::PARAM_INT);
+        $select->bindValue(':year', date("Y", strtotime($_GET['date'])), PDO::PARAM_INT);
+        $select->bindValue(':month', date("n", strtotime($_GET['date'])), PDO::PARAM_INT);
         if($select->execute()){
             $file = [];
             foreach($select->fetchAll(PDO::FETCH_ASSOC) as $data){

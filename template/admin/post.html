@@ -100,7 +100,7 @@
                                         <i class="fa fa-eye pull-right" data-toggle="tooltip" data-placement="top" title="" data-original-title="Pos ini tersembunyi dari umum"></i> {% elseif post.visibility == 2 %}
                                         <i class="fa fa-lock pull-right" data-toggle="tooltip" data-placement="top" title="" data-original-title="Pos ini terlindungi password"></i> {% endif %}
                                         <div class="form-inline">
-                                            <a href="{{ path_for('getAdminPostListHTML', {'id': post.id}) }}" class="btn btn-link btn-sm no-gutter {{ post_tab != 'deleted' ?:'hidden' }}"><span class="label label-info"><i class="fa fa-pencil"></i> Edit</span></a>
+                                            <a href="{{ path_for('getAdminPostEditHTML', {'id': post.id}) }}" class="btn btn-link btn-sm no-gutter {{ post_tab != 'deleted' ?:'hidden' }}"><span class="label label-info"><i class="fa fa-pencil"></i> Edit</span></a>
                                             <a role="button" class="btn btn-link btn-sm no-gutter post-trash-sub {{ post_tab != 'deleted' ?:'hidden' }}" data-id="{{post.id}}"><span class="label label-primary"><i class="fa fa-trash"></i> Hapus</span></a>
                                             <a href="" class="btn btn-link btn-sm no-gutter {{ post_tab != 'deleted' ?:'hidden' }}"><span class="label label-success"><i class="fa fa-external-link"></i> Partinjau</span></a>
                                             <a role="button" class="btn btn-link btn-sm no-gutter post-revert-sub {{ post_tab == 'deleted' ?:'hidden' }}" data-id="{{post.id}}"><span class="label label-info"><i class="fa fa-undo"></i> Kembalikan</span></a>

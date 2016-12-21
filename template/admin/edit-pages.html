@@ -1,0 +1,90 @@
+{% extends "admin/base.html" %} {% block head %} {{ parent() }}
+<link href="public/assets/css/bootstrap-tagsinput.css" rel="stylesheet">
+<link href="public/assets/summernote/summernote.css" rel="stylesheet">
+<link href="public/assets/css/croppie.css" rel="stylesheet">
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet">
+{% endblock %} {% block title %} Halaman {{pages_data.title}} {% endblock %} {% block content %}
+<div class="container-fluid">
+    <form method="post" id="edit-pages-form" data-id="{{pages_data.id}}">
+        <div class="row">
+            <div class="col-md-12 no-gutter">
+                <div class="col-md-8 no-gutter">
+                    <h3 class="page-title pull-left">Ubah Halaman</h3>
+                </div>
+                <div class="col-md-12 no-gutter">
+                    {% if pages_data_autosave %}
+                    <div class="alert alert-dismissible alert-success">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <strong>Opps!!</strong> Terdapat cadangan halaman yang berbeda dengan versi dibawah <a role="button" id="edit-pages-recover-autosave" class="btn btn-default btn-xs" data-recover='{{ pages_data_autosave|json_encode() }}'>Kembalikan Cadangan</a><br>
+                        <small> - <em>terdapat cadangan halaman ini dikarenakan anda tidak meyimpan perubahan pada terakhir kali anda merubah halaman ini</em></small><br>
+                        <small> - <em>Ini akan mengubah konten dalam editor saat ini dengan versi cadangan sebelumnya</em></small><br>
+                        <small> - <em>Cadangan akan tergantikan dengan versi dibawah ketika anda melakukan refresh / menutup halaman ini</em></small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-9 no-gutter" style="padding:10px 10px 0 0;">
+                <div class="col-md-12 no-gutter">
+                    <div class="form-group">
+                        <label>Judul</label>
+                        <input type="text" class="form-control" name="title" placeholder="Masukkan Judul Disini" value="{{ pages_data.title }}">
+                    </div>
+                </div>
+                <div class="col-md-12 no-gutter editor" style="padding-top:10px;color:">
+                    <div id="add-pages-content-editor"> {{ pages_data.content|raw }} </div>
+                    <textarea id="edit-pages-content-value"  name="content" class="hidden">{{ pages_data.content|raw }}</textarea>
+                </div>
+                <div class="col-md-12 no-gutter" style="padding-top:10px;color:">
+                    <div class="panel panel-default" style="background:#fff; color:#4e5d6c; ">
+                        <div class="panel-heading">Terakhir Diedit</div>
+                        <div class="panel-body">
+                            <ul class="list-unstyled">
+                                {% for revision in pages_data_revisions %}
+                                <li>
+                                    <p style="color:#000;font-size:12px;"><img src="public/profile/{{revision.authors.image}}" width="30px"> {{ revision.authors.nickname }} | {{ revision.date|time_diff }} (<a href="{{ path_for('getAdminPagesDiffHTML', {'id': pages_data.id}) }}" class="text-info">{{ revision.date|date('d F Y \\@ H:i:s') }}</a>)</p>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 no-gutter" style="padding:35px 0 0 10px;">
+                <div class="panel panel-default" style="background:#fff; color:#4e5d6c; ">
+                    <a class="panel-heading" role="button" data-toggle="collapse" href=".terbitkan" aria-expanded="true" aria-controls="collapseExample" style="display:block;">
+                        Simpan Halaman
+                    </a>
+                    <div class="panel-body collapse in terbitkan">
+                        <a id="preview-page" href="" class="btn btn-default btn-sm pull-right hidden"><i class="fa fa-eye fa-fw"></i> Pratinjau</a>
+                        <div class="form-group has-success">
+                            <label for="textArea" class="control-label">Deskripsi Halaman</label>
+                            <textarea class="form-control" rows="3" id="edit-pages-descriptions-value" name="descriptions"> {{ pages_data.description }}"</textarea>
+                            <span class="help-block">Deskripsi ini tidak tampil dalam situs. Deskripsi ini hanya untuk memudahkan dalam pencarian</span>
+                        </div>
+                    </div>
+                    <div class="panel-footer collapse in terbitkan">
+                        <button type="button" class="btn btn-link">&nbsp;</button>
+                        <button class="btn btn-info pull-right" id="edit-pages-publish-trigger">Terbitkan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %} {% block js %} {{ parent() }} {% verbatim %}
+{% endverbatim %}
+<script src="public/assets/js/jquery.form.min.js"></script>
+<script src="public/assets/js/bootstrap-tagsinput.js"></script>
+<script src="public/assets/js/bootstrap3-typeahead.min.js"></script>
+<script src="public/assets/js/croppie.min.js"></script>
+<script src="public/assets/js/dropzone.js"></script>
+<script src="public/assets/summernote/summernote.min.js"></script>
+<script src="public/assets/summernote/lang/summernote-id-ID.min.js"></script>
+<script src="public/assets/js/bootbox.min.js"></script>
+<script>
+    $(document).ready(function(){
+        globalSummernote($('#add-pages-content-editor'), $('#add-pages-content-value'));
+        editPagesPage();
+    })
+</script>
+{% endblock %}

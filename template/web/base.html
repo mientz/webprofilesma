@@ -76,12 +76,12 @@
                                         <li><a href="download.html">Materi Pelajaran</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="{{ path_for('postby-category', {'category':'berita', 'ext':'/'}) }}">Berita</a></li>
+                                <li><a href="{{ path_for('getPostByCategoryHTML', {'category':'berita', 'ext':'/'}) }}">Berita</a></li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Komunitas</a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li><a href="{{ path_for('postby-date', {'year':'2016', 'month':'01'}) }}">OSIS</a></li>
-                                        <li><a href="{{ path_for('post-detail', {'year':'2016', 'month':'01', 'day':'12', 'post':'lala', 'ext':'html'}) }}">MPK</a></li>
+                                        <li><a href="{{ path_for('getPostByDateHTML', {'year':'2016', 'month':'01'}) }}">OSIS</a></li>
+                                        <li><a href="{{ path_for('getPostDetailHTML', {'category':'berita', 'post':'coba-c', 'ext':'html'}) }}">MPK</a></li>
                                         <li><a href="komunitas.html">Pencinta Alam</a></li>
                                         <li><a href="komunitas.html">Pramuka</a></li>
                                         <li><a href="komunitas.html">Futsal</a></li>

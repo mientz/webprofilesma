@@ -118,22 +118,18 @@
 <!--                        <li class=""><a href="#">Tags</a></li>-->
                     </ul>
                 </li>
-                <li class="{{ page }}">
-                    <a href="{{ path_for('admin-allpage') }}"><i class="fa fa-clone fa-fw"></i>Halaman</a>
+                <li class="{{ sidemenu.pages ? 'active' }}">
+                    <a href="{{ path_for('getAdminPagesListHTML') }}"><i class="fa fa-clone fa-fw"></i>Halaman</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
-                        <li class="{{ page }}"><a href="{{ path_for('admin-allpage') }}">Semua Halaman</a></li>
-                        <li class="{{ addpage }}"><a href="{{ path_for('admin-addpage') }}">Tambah Baru</a></li>
+                        <li class="{{ sidemenu.pages == 'all' ? 'active' }}"><a href="{{ path_for('getAdminPagesListHTML') }}">Semua Halaman</a></li>
+                        <li class="{{ sidemenu.pages == 'add' ? 'active' }}"><a href="{{ path_for('getAdminPagesAddHTML') }}">Tambah Baru</a></li>
                         <li class=""><a href="#">Manager File</a></li>
-                        <li class=""><a href="#">Data Guru</a></li>
+                        <li class="{{ sidemenu.pages == 'teachers' ? 'active' }}"><a href="{{ path_for('getAdminCustomPageTeachersHTML') }}">Data Guru</a></li>
                     </ul>
                 </li>
 <!--                <li class=""><a href="#"><i class="fa fa-comments-o fa-fw"></i>Komentar</a></li>-->
-                <li class="">
-                    <a href="#"><i class="fa fa-picture-o fa-fw"></i>Galeri</a>
-                    <ul class="nav nav-pills nav-stacked nav-sub">
-                        <li class=""><a href="#">Pustaka</a></li>
-                        <li class=""><a href="#">Tambah Album</a></li>
-                    </ul>
+                <li class="{{ sidemenu.gallery ? 'active' }}">
+                    <a href="{{ path_for('getAdminCustomGalleryHTML') }}"><i class="fa fa-picture-o fa-fw"></i>Galeri</a>
                 </li>
                 {% endif %}
             </ul>
@@ -152,9 +148,9 @@
                 <li class="">
                     <a href="#"><i class="fa fa-paint-brush fa-fw"></i>Tampilan</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
+                        <li class=""><a href="#">Menu</a></li>
                         <li class=""><a href="#">Pengaturan Tampilan</a></li>
                         <li class=""><a href="#">Halaman Depan</a></li>
-                        <li class=""><a href="#">Menu</a></li>
                     </ul>
                 </li>
                 {% endif %} {% if privilege.user_management %}
@@ -311,6 +307,18 @@
             getAdminPostListHTML: "{{ path_for('getAdminPostListHTML') }}",
             getAdminPostEditHTML: "{{ path_for('getAdminPostEditHTML') }}",
             getAdminPostDiffHTML: "{{ path_for('getAdminPostDiffHTML') }}",
+            //admin pages url
+            postAdminPagesSaveJSON: "{{ path_for('postAdminPagesSaveJSON') }}",
+            postAdminPagesChangeJSON: "{{ path_for('postAdminPagesChangeJSON') }}",
+            getAdminPagesAddHTML: "{{ path_for('getAdminPagesAddHTML') }}",
+            getAdminPagesListHTML: "{{ path_for('getAdminPagesListHTML') }}",
+            getAdminPagesEditHTML: "{{ path_for('getAdminPagesEditHTML') }}",
+            getAdminPagesDiffHTML: "{{ path_for('getAdminPagesDiffHTML') }}",
+            //admin custom page
+            getAdminCustomPageTeachersHTML: "{{ path_for('getAdminCustomPageTeachersHTML') }}",
+            postAdminCustomPageTeachersJSON: "{{ path_for('postAdminCustomPageTeachersJSON') }}",
+            getAdminCustomGalleryHTML: "{{ path_for('getAdminCustomGalleryHTML') }}",
+            postAdminCustomGalleryJSON: "{{ path_for('postAdminCustomGalleryJSON') }}",
 
         }
     </script>

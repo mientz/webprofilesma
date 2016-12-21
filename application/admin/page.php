@@ -1,5 +1,5 @@
 <?php
-$app->group('/admin/page', function () {
+$app->group('/admin/old-page', function () {
     /**
      * [[dashboard Page]]
      */

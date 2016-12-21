@@ -1,0 +1,167 @@
+{% extends "admin/base.html" %} {% block head %} {{ parent() }}
+<link href="public/assets/css/croppie.css" rel="stylesheet">
+<link href="public/assets/css/ekko-lightbox.min.css" rel="stylesheet">
+{% endblock %} {% block title %} Galeri Foto {% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 no-gutter">
+            <h3 class="page-title pull-left">Galeri Foto {% if album %}<q class="text-info">{{ album.name }}</q>{% endif %}</h3>
+        </div>
+        {% if album %}
+        <a href="{{ path_for('getAdminCustomGalleryHTML') }}" class="text-success"><i class="fa fa-arrow-left"></i> Kembali Ke Daftar Album</a>
+        {% endif %}
+        <br>
+        {% if list_type == 'albums' %}
+        <div class="row col-md-12 gallery-album-list" style="padding-top:20px">
+            <button id="gallery-add-album" class="col-md-2 col-xs-6 btn btn-default gallery-album-container" style="border:1px dashed #fff;margin:5px;height:233px;">
+                <i class="fa fa-plus fa-fw fa-3x"></i><br>
+                Buat Album
+            </button>
+            {% for album in albums %}
+            <div class="col-md-2 col-xs-6 gallery-album-container no-gutter" style="margin:5px;">
+                <a href="{{ path_for('getAdminCustomGalleryHTML', {'album_id':album.id}) }}" class="album-image-thumb-container col-md-12 no-gutter" style="border:3px solid #fff;">
+                    {% for photo in album.photos %}
+                    <img src="public/gallery/{{ photo.file }}" height="190px" style="opacity:0">
+                    {% endfor %}
+                </a>
+                <div class="col-md-12 bg-info"></div>
+                <div class="col-md-12" style="background:#fff;">
+                    <div class="col-md-10 no-gutter">
+                        <a href="{{ path_for('getAdminCustomGalleryHTML', {'album_id':album.id}) }}" class="text-info"><small><b>{{ album.name }}</b></small><br></a>
+                        <span class="text-muted">{{ album.photos|length }} Foto</span>
+                    </div>
+                    <div class="col-md-2 no-gutter">
+                        <a  data-toggle="dropdown" class="btn dropdown-toggle no-gutter pull-right" style="background:#fff;color:#434343;">
+                            {% if album.visibility %}
+                            <i class="fa fa-globe"></i> <span class="caret"></span>
+                            {% else %}
+                            <i class="fa fa-lock"></i> <span class="caret"></span>
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a role="button" class="gallery-album-change-public" data-id="{{ album.id }}"><i class="fa fa-globe"></i> Umum</a></li>
+                            <li><a role="button" class="gallery-album-change-hidden" data-id="{{ album.id }}"><i class="fa fa-lock"></i> Tersembunyi</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% elseif list_type == 'photos' %}
+
+
+
+
+        <div class="panel panel-info" style="margin-top:20px">
+            <div class="panel-heading text-right">
+                <div class="btn-group btn-xs">
+                    <a role="button" class="btn btn-default btn-sm gallery-album-rename" data-id="{{ album.id }}" data-name="{{ album.name }}">
+                        <i class="fa fa-pencil fa-fw"></i>
+                    </a>
+                    <div class="btn-group">
+                        <a  data-toggle="dropdown" class="btn btn-sm btn-success dropdown-toggle">
+                            {% if album.visibility %}
+                            <i class="fa fa-globe"></i> Umum <span class="caret"></span>
+                            {% else %}
+                            <i class="fa fa-lock"></i> Tersembunyi <span class="caret"></span>
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a role="button" class="gallery-album-change-public" data-id="{{ album.id }}"><i class="fa fa-globe"></i> Umum</a></li>
+                            <li><a role="button" class="gallery-album-change-hidden" data-id="{{ album.id }}"><i class="fa fa-lock"></i> Tersembunyi</a></li>
+                        </ul>
+                    </div>
+                    <a role="button" class="btn btn-danger btn-sm gallery-album-remove" data-id="{{ album.id }}" data-name="{{ album.name }}">
+                        <i class="fa fa-trash fa-fw"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row col-md-12 gallery-photo-list" data-id="{{ album.id }}">
+                    <button id="gallery-add-photo" class="col-md-2 col-xs-6 btn btn-default gallery-album-container" style="border:1px dashed #fff;margin:5px;height:230px;">
+                        <i class="fa fa-plus fa-fw fa-3x"></i><br>
+                        Tambah Foto
+                    </button>
+                    {% for photo in photos %}
+                    <div class="col-md-2 col-xs-6 gallery-album-container no-gutter" style="margin:5px;">
+                        <a href="public/gallery/{{ photo.file }}" data-toggle="lightbox" data-gallery="example-gallery" class="photo-image-thumb-container col-md-12 no-gutter" style="border:3px solid #fff;">
+                            <img src="public/gallery/{{ photo.file }}" height="190px">
+                        </a>
+                        <div class="col-md-12 bg-info"></div>
+                        <div class="col-md-12 no-gutter" style="background:#fff;">
+                            <a href="" class="col-md-10 no-gutter btn text-info no-gutter" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden; text-align:left;">
+                                <small style="padding:0 5px;">
+                                    <b>{{ photo.title }}</b>
+                                </small>
+                            </a>
+                            <div class="col-md-2 no-gutter">
+                                <a  data-toggle="dropdown" class="btn dropdown-toggle no-gutter pull-right" style="background:#fff;color:#434343;">
+                                    <i class="fa fa-cog"></i> <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a role="button" class="gallery-photo-rename" data-id="{{ photo.id }}" data-title="{{ photo.title }}"><i class="fa fa-arrows"></i> Ganti Nama Foto</a></li>
+                                    <li><a role="button" class="gallery-photo-move" data-id="{{ photo.id }}" data-title="{{ photo.title }}" data-albumId="{{ album.id }}" data-albums="{{albums|json_encode()}}"><i class="fa fa-arrows"></i> Pindahkan Ke Album Lain</a></li>
+                                    <li class="divider"></li>
+                                    <li><a role="button" class="gallery-photo-delete" data-id="{{ photo.id }}" data-title="{{ photo.title }}"><i class="fa fa-trash"></i> Hapus</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }} {% verbatim %}
+<script id="gallery-upload-preview-tmpl" type="x-tmpl-mustache">
+<div class="col-md-2 col-xs-6 gallery-album-container no-gutter dz-preview" style="margin:5px;">
+    <a href="" class="album-image-thumb-container col-md-12 no-gutter" data-toggle="lightbox" data-gallery="example-gallery" style="border:3px solid #fff;">
+        <img height="190px" data-dz-thumbnail style="position:absolute;">
+        <div style="position:absolute; z-index: 1000000; width:100%; height:100%; display: table;">
+            <div class="progress-container" style="display: table-cell; vertical-align: middle; padding-top:21px;">
+                <div class="progress progress-striped active" style="margin-left: auto;margin-right: auto;width:80%;">
+                    <div class="progress-bar progress-bar-info" data-dz-uploadprogress style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </a>
+    <div class="col-md-12 bg-info"></div>
+    <div class="col-md-12" style="background:#fff;">
+        <div class="col-md-10 no-gutter">
+            <a href="" class="btn no-gutter text-info"><small><b data-dz-name></b></small><br></a>
+        </div>
+        <div class="col-md-2 no-gutter">
+            <a data-toggle="dropdown" class="btn dropdown-toggle no-gutter pull-right" style="background:#fff;color:#434343;">
+                <i class="fa fa-cog"></i> <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a role="button" class="gallery-photo-rename" data-id=""><i class="fa fa-arrows"></i> Ganti Nama Foto</a></li>
+                <li><a role="button" class="gallery-photo-move" data-id=""><i class="fa fa-arrows"></i> Pindahkan Ke Album Lain</a></li>
+                <li class="divider"></li>
+                <li><a role="button" class="gallery-photo-delete" data-id=""><i class="fa fa-trash"></i> Hapus</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</script>
+{% endverbatim %}
+<script src="public/assets/js/jquery.cropit.js"></script>
+<script src="public/assets/js/bootbox.min.js"></script>
+<script src="public/assets/js/jquery.form.min.js"></script>
+<script src="public/assets/js/ekko-lightbox.min.js"></script>
+<script src="public/assets/js/dropzone.js"></script>
+<script src="public/assets/js/jquery.cycle.all.js"></script>
+<script>
+    $(document).ready(function(){
+        customPageGallery()
+    });
+    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+        event.preventDefault();
+        $(this).ekkoLightbox({
+            always_show_close: false
+        });
+    });
+</script>
+{% endblock %}

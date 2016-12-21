@@ -628,4 +628,20 @@ a.cke_dialog_tab {
     border-radius: 5px;
 }
 
+.album-image-thumb-container {
+    display: inline-block;
+    height: 190px;
+    overflow: hidden;
+}
+
+.photo-image-thumb-container {
+    display: inline-block;
+    height: 190px;
+    overflow: hidden;
+}
+
+.modal-danger .modal-header {
+    background-color: #d9534f;
+}
+
 
