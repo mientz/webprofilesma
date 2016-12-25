@@ -4,7 +4,7 @@ $app->group('/admin/postmedia', function () {
      * [[dashboard Page]]
      */
     $this->get('', function ($req, $res, $args) {
-        $req = $req->withAttribute('postmedia', 'active');
+        $req = $req->withAttribute('sidemenu', ['post'=>'media']);
         return $this->view->render($res, 'admin/postmedia.html', $req->getAttributes());
     })->setName('getAdminPostmediaHTML');
 

@@ -1,0 +1,135 @@
+{% extends "admin/base.html" %}{% block head %} {{ parent() }}
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet">
+{% endblock %} {% block title %} Pengguna {% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 no-gutter">
+            <div class="col-md-8 no-gutter">
+                <h3 class="page-title pull-left">Pengguna</h3>
+                <a href="{{ path_for('getAdminPagesAddHTML') }}" class="btn btn-info btn-xs pull-left" style="margin:8px;">Tambah Baru</a>
+            </div>
+        </div>
+        <div class="col-md-12 no-gutter">
+            <ul id="myTabpages" class="nav nav-pills custom-nav-pills">
+                <li class="{{ pages_tab == 'all' ? 'active' }}"><a href="{{ path_for('getAdminPagesListHTML') }}">Semua <span class="badge">{{ mw_count_all }}</span></a></li>
+                <li class="{{ pages_tab == 'deleted' ? 'active' }}"><a href="{{ path_for('getAdminPagesListHTML', {'type': 'deleted'}) }}">Tong Sampah <span class="badge">{{ mw_count_deleted }}</span></a></li>
+            </ul>
+        </div>
+        <br>
+        <div class="col-md-12 no-gutter" id="pages-list" style="padding-top:20px;">
+            <div class="tab-content">
+                <div class="tab-pane fade active in" id="all-pages">
+                    <div class="col-md-6 no-gutter">
+                        <div class="form-inline pull-left">
+                            <div class="form-group">
+                                <select class="form-control input-sm" id="pages-list-batch-action">
+                                    <option value="*">Tindakan Masal</option>
+                                    <option value="delete">Hapus Permanen</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-info btn-sm disabled" id="pages-list-batch-action-trigger">Terapkan</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 no-gutter">
+                        <div class="form-group">
+                            <div class="input-group" style="padding-left:20px;">
+                                <input type="text" class="form-control input-sm search" style="width:100%" placeholder="Masukkan Pengguna Yang Dicari">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default btn-sm" type="button"><i class="mdi mdi-magnify"></i> Cari Pengguna</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 no-gutter table-responsive">
+                        <table class="table table-striped" id="pages-list-table">
+                            <thead>
+                                <tr class="info">
+                                    <th style="width:1em;"></th>
+                                    <th style="width:55px;"></th>
+                                    <th style="min-width:15em;">Nama Pengguna</th>
+                                    <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Peranan</th>
+                                    <th>Hak Akses</th>
+                                </tr>
+                            </thead>
+                            <tbody class="list">
+                                {% for user in users %}
+                                {% set status = user.status %}
+                                {% set priv = user.privilege %}
+                                <tr height='65'>
+                                    <td id="id-container{{user.id}}">
+                                        <div class="checkbox">
+                                            <input type="checkbox" value="{{user.id}}" id="check{{user.id}}" class="pages-checkbox">
+                                            <label for="check{{user.id}}"></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <img src="public/profile/{{user.image}}" style="width:100%;">
+                                    </td>
+                                    <td class="table-list-hasbutton" data-title="{{user.username}}">
+                                        <strong class="username">
+                                            {{user.username}}
+                                        </strong>
+                                        <div class="form-inline">
+                                            <a href="" class="btn btn-link btn-sm no-gutter"><span class="label label-info"><i class="fa fa-external-link"></i> Moderasi</span></a>
+                                            <a role="button" class="btn btn-link btn-sm no-gutter users-delete-sub {{ priv.writer and priv.editor and priv.user and priv.setting and not priv.register ? 'hidden' }}" data-id="{{user.id}}"><span class="label label-danger"><i class="fa fa-trash"></i> Hapus Permanen</span></a>
+                                        </div>
+                                    </td>
+                                    <td>{{user.nickname}}</td>
+                                    <td>{{user.email}}</td>
+                                    <td>
+                                        {{ status.status == 'active' ? 'Aktif' }}
+                                    </td>
+                                    <td>
+                                        {{ priv.writer and priv.editor and priv.user and priv.setting and not priv.register ? 'Administrator' }}
+                                        {{ priv.writer and not priv.editor and not priv.user and not priv.setting and not priv.register ? 'Penulis' }}
+                                        {{ priv.writer and priv.editor and not priv.user and not priv.setting and not priv.register ? 'Penyuting' }}
+                                        {{ not priv.writer and not priv.editor and not priv.user and not priv.setting and priv.register ? 'Pendaftaran Siswa Baru' }}
+                                    </td>
+                                    <td>
+                                    {% for group in user.groups%}
+                                    {{group.name}}<br>
+                                    {% endfor %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <th colspan="6"><center><h4>Tidak Ada Pos</h4></center></th>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr class="info">
+                                    <th></th>
+                                    <th></th>
+                                    <th>Nama Pengguna</th>
+                                    <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Peranan</th>
+                                    <th>Hak Akses</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <ul class="pagination pagination-sm pull-right">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }}
+<script src="public/assets/js/list.min.js"></script>
+<script src="public/assets/js/list.pagination.min.js"></script>
+<script src="public/assets/js/bootbox.min.js"></script>
+<script>
+    $(document).ready(function(){
+//        pagesListPage();
+    })
+</script>
+{% endblock %}

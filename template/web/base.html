@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %} - SMA Negeri 1 Bangkalan</title>
     <link href="public/assets/css/web.css" rel="stylesheet">
+    <link href="public/assets/css/yamm.css" rel="stylesheet">
     <link href="public/assets/css/web.style.css" rel="stylesheet">
     <link href="public/assets/css/themes/theme-eb8a44.css" rel="stylesheet">
     <link href="public/assets/css/animate.css" rel="stylesheet">
@@ -34,7 +35,7 @@
             </div>
             <!--Navigationbar header (#2 Header)-->
             <div class="col-md-12 header">
-                <nav class="navbar navbar-default">
+                <nav class="navbar yamm navbar-default">
                     <div class="container-fluid">
                         <div class="navbar-header">
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -49,10 +50,113 @@
                         </div>
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="nav navbar-nav navbar-right">
+                                {% for menu in main_menu[0] %}
+
+                                {% if menu.type == 'parent' %}
+                                <li class="dropdown yamm-fw">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ menu.title }} </a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                            <div class="yamm-content">
+                                                <div class="row" style="display:flex;">
+                                                    {% if menu.children[0]|length > 0 %}
+                                                    <div class="panel panel-thm-primary" style="display:inline-block; float:left; min-width:25%; max-width:25%;">
+                                                        <div class="panel-body menu-list-pannel">
+                                                            <ul class="list-group">
+                                                                {% for child in menu.children[0]|slice(0, 5) %}
+                                                                <li class="list-group-item">
+                                                                    <a href=""> {{child.title}} </a>
+                                                                </li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if menu.children[0]|length > 5 %}
+                                                    <div class="panel panel-thm-primary" style="display:inline-block; float:left; min-width:25%; max-width:25%;">
+                                                        <div class="panel-body menu-list-pannel">
+                                                            <ul class="list-group">
+                                                                {% for child in menu.children[0]|slice(5, 5) %}
+                                                                <li class="list-group-item">
+                                                                    <a href=""> {{child.title}} </a>
+                                                                </li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if menu.children[0]|length > 10 %}
+                                                    <div class="panel panel-thm-primary" style="display:inline-block; float:left; min-width:25%; max-width:25%;">
+                                                        <div class="panel-body menu-list-pannel">
+                                                            <ul class="list-group">
+                                                                {% for child in menu.children[0]|slice(10, 5) %}
+                                                                <li class="list-group-item">
+                                                                    <a href=""> {{child.title}} </a>
+                                                                </li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if menu.children[0]|length > 15 %}
+                                                    <div class="panel panel-thm-primary" style="display:inline-block; float:left; min-width:20%; max-width:25%;">
+                                                        <div class="panel-body menu-list-pannel">
+                                                            <ul class="list-group">
+                                                                {% for child in menu.children[0]|slice(15, 5) %}
+                                                                <li class="list-group-item">
+                                                                    <a href=""> {{child.title}} </a>
+                                                                </li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if menu.children[0]|length <= 15 %}
+                                                    <div class="panel panel-thm-primary" style="display:inline-block; float:left; min-width:25%;">
+                                                        <div class="panel-heading">
+                                                            <h3 class="panel-title">Sambutan Kepala Sekolah</h3>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="media">
+                                                                <div class="media-body" style="font-size:12px;">
+                                                                    <p>Mudah-mudahan dengan hadirnya Website ini dapat menambah khazanah informasi sebagai wujud partisipasi kami di era globalisasi teknologi informasi.</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+<!--
+                                                    <div class="panel panel-thm-primary" style="display:inline-block; float:left; max-width:15%;">
+                                                        <div class="panel-heading">
+                                                            <h3 class="panel-title">Sambutan Kepala Sekolah</h3>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="media">
+                                                                <div class="media-body" style="font-size:12px;">
+
+                                                                    <p>Mudah-mudahan dengan hadirnya Website ini dapat menambah khazanah informasi sebagai wujud partisipasi kami di era globalisasi teknologi informasi.</p>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+-->
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                {% else %}
+
+                                {% endif %}
+
+                                {% endfor %}
+<!--
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Profil</a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li><a href="{{ path_for('page', {'page':'sejarah', 'ext':'.html'}) }}">Sejarah</a></li>
+                                        <li><a href="{{ path_for('getPageDetailHTML', {'page':'sejarah', 'ext':'.html'}) }}">Sejarah</a></li>
                                         <li><a href="visi-misi.html">Visi dan Misi</a></li>
                                         <li><a href="sambutan.html">Sambutan Kepala Sekolah</a></li>
                                         <li><a href="struktur.html">Struktur Organisasi</a></li>
@@ -61,6 +165,7 @@
                                         <li><a href="guru.html">Profil Guru dan Staf</a></li>
                                     </ul>
                                 </li>
+-->
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Aplikasi</a>
                                     <ul class="dropdown-menu" role="menu">
@@ -208,7 +313,7 @@
 
     {% block js %}
     <script src="public/assets/js/jquery.min.js"></script>
-    <script src="public/assets/js/bootstrap.js"></script>
+    <script src="public/assets/js/bootstrap.min.js"></script>
     <script src="public/assets/js/web.app.js"></script>
     {% endblock %}
 </body>

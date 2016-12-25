@@ -80,3 +80,14 @@ $app->add(function ($req, $res, $next) {
     return $res;
 });
 
+/*
+ * Web Menu
+ */
+$main_menu = function ($req, $res, $next) {
+    $group_id = $req->getAttribute('current_group_data')['id'];
+    $menu = $this->db->query("select meta from menus where group_id='1'")->fetchColumn();
+    $req = $req->withAttribute('main_menu', json_decode($menu));
+    $res = $next($req, $res);
+    return $res;
+};
+

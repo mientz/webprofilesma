@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{% endblock %} ‹ SMA N 3 Bangkalan - Admin </title>
+    <title>{% block title %}{% endblock %} › SMA N 3 Bangkalan - Admin </title>
     <link href="public/assets/css/admin.css" rel="stylesheet">
     <link href="public/assets/css/font-awesome.min.css" rel="stylesheet">
     <link href="public/assets/css/image-picker.css" rel="stylesheet">
@@ -107,7 +107,7 @@
                 <li class="{{ dashboard }}" style="padding: 10px 0;">
                     <a href="{{ path_for('admin-dashboard') }}"><i class="fa fa-circle-o-notch fa-spin" style="padding:0;margin-right:10px;"></i>Dasbor</a>
                 </li>
-                {% if privilege.post_management %}
+                {% if privilege.writer %}
                 <li class="{{ sidemenu.post ? 'active' }}">
                     <a href="{{ path_for('getAdminPostListHTML') }}"><i class="fa fa-thumb-tack fa-fw"></i>Pos</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
@@ -134,7 +134,7 @@
                 {% endif %}
             </ul>
             <ul class="nav nav-pills nav-stacked" style="padding-top:30px;">
-                {% if privilege.register_management %}
+                {% if privilege.register %}
                 <li class="">
                     <a href="#"><i class="fa fa-rocket fa-fw"></i>Aplikasi</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
@@ -144,31 +144,34 @@
                         <li class=""><a href="#">Formulir Data Siswa</a></li>
                     </ul>
                 </li>
-                {% endif %} {% if privilege.web_management %}
-                <li class="">
-                    <a href="#"><i class="fa fa-paint-brush fa-fw"></i>Tampilan</a>
+                {% endif %} {% if privilege.editor %}
+                <li class="{{ sidemenu.view ? 'active' }}">
+                    <a href="{{ path_for('getAdminMenuListHTML') }}"><i class="fa fa-paint-brush fa-fw"></i>Tampilan</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
-                        <li class=""><a href="#">Menu</a></li>
+                        <li class="{{ sidemenu.view == 'menu' ? 'active' }}"><a href="{{ path_for('getAdminMenuListHTML') }}">Menu</a></li>
                         <li class=""><a href="#">Pengaturan Tampilan</a></li>
                         <li class=""><a href="#">Halaman Depan</a></li>
                     </ul>
                 </li>
-                {% endif %} {% if privilege.user_management %}
-                <li class="">
-                    <a href="#"><i class="fa fa-user-circle-o fa-fw"></i>Pengguna</a>
+                {% endif %} {% if privilege.user %}
+                <li class="{{ sidemenu.users ? 'active' }}">
+                    <a href="{{ path_for('getAdminUserListHTML') }}"><i class="fa fa-user-circle-o fa-fw"></i>Pengguna</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
-                        <li class=""><a href="#">Semua Pengguna</a></li>
+                        <li class=""><a href="{{ path_for('getAdminUserListHTML') }}">Semua Pengguna</a></li>
                         <li class=""><a href="#">Tambah Baru</a></li>
                         <li class=""><a href="#">Komunitas</a></li>
                         <li class=""><a href="#">Profil Anda</a></li>
                     </ul>
                 </li>
-                {% endif %} {% if privilege.web_management %}
+                {% else %}
+                <li class="{{ sidemenu.users ? 'active' }}">
+                    <a href="{{ path_for('getAdminUserListHTML') }}"><i class="fa fa-user-circle-o fa-fw"></i>Profil</a>
+                </li>
+                {% endif %} {% if privilege.setting %}
                 <li class="">
                     <a href="#"><i class="fa fa-sliders fa-fw"></i>Pengaturan</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
                         <li class=""><a href="#">Umum</a></li>
-                        <li class=""><a href="#">Menu</a></li>
                         <li class=""><a href="#">Email</a></li>
                         <li class=""><a href="#">Media Sosial</a></li>
                     </ul>

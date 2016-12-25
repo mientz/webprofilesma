@@ -1430,3 +1430,70 @@ function customPageGallery(){
         })
     }
 }
+
+function menuPage(){
+    var short = $('ol.menu-list').sortable({
+        handle: ".drag-handle",
+        exclude: ".default-permanent",
+        isValidTarget: function  ($item, container) {
+            if($item.data('type') != "parent")
+                return true;
+            else
+                return $item.parent("ol")[0] == container.el[0];
+        },
+        onDrop: function($item, container, _super, event){
+            $item.removeClass(container.group.options.draggedClass).removeAttr("style")
+            $("body").removeClass(container.group.options.bodyClass)
+            var data = short.sortable("serialize").get();
+            console.log(data);
+            _super($item, container)
+        }
+    });
+
+    setInterval(function(){
+        var data = short.sortable("serialize").get();
+        $('.menu-data').val(JSON.stringify(data));
+        console.log(JSON.stringify(data))
+    }, 1000);
+
+    var pageList = new List('menu-list-page-body', {
+        valueNames:['title'],
+        page: 3,
+        plugins: [ ListPagination({
+            outerWindow: 1,
+            innerWindow: 1
+        }) ]
+    });
+    $('#menu-add-page-trigger').on('click', function(){
+        $('.menu-page-checkbox:checked').each(function(i, elm){
+            $('.menu-list').append(Mustache.render($('#menu-page-tmpl').html(), {
+                data:{
+                    title: $(elm).data('title'),
+                    path: $(elm).data('path'),
+                    type: 'page',
+                    id: $(elm).data('id'),
+                    panel: $('.menu-list').find('li').length + 1,
+                }
+            }))
+            $(elm).prop('checked', false);
+        })
+    });
+    $('#menu-add-dropdown-trigger').on('click', function(){
+        $('.menu-list').append(Mustache.render($('#menu-dropdown-tmpl').html(), {
+            data:{
+                title: 'Menu Kebawah',
+                pannel: $('.menu-list').find('li').length + 1,
+            }
+        }))
+    });
+    window.renameTitle = function (elm){
+        var val = $(elm).val();
+        $(elm).parent().parent().parent().parent().data('title', val);
+        $(elm).parent().parent().parent().find('.menu-title').html(val);
+        console.log(val)
+    }
+
+    window.removeMenu = function (elm){
+        $(elm).parent().parent().parent().remove();
+    }
+}

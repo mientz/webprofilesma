@@ -1,0 +1,489 @@
+{% extends "admin/base.html" %} {% block head %} {{ parent() }}
+<style>
+    body.dragging, body.dragging * {
+        cursor: move !important;
+    }
+
+    .dragged {
+        position: absolute;
+        opacity: 0.5;
+        z-index: 2000;
+    }
+
+    ol{
+        list-style-type: none;
+        list-style: decimal;
+        max-width: 100%;
+    }
+    ol li{
+        display: block;
+        margin: 5px 0;
+        width: 100%;
+        min-height: 44px;
+        color: #4e5d6c;
+        cursor: pointer;
+    }
+
+    ol li .panel{
+        background: #fff;
+        color:#000;
+        border:1px solid #d4d4d4;
+        min-height: 44px;
+        margin-bottom: 0;
+        width: 90%;
+    }
+
+    ol.menu-list>li>.panel{
+        width: 80%;
+    }
+
+    ol.menu-list li.placeholder {
+        position: relative;
+        background: #fff;
+        border:1px dashed #a7a7a7;
+    }
+    ol.menu-list li.placeholder:before {
+        position: absolute;
+        /** Define arrowhead **/
+    }
+    ul.bg-white li.active a{
+        background: #0088cc;
+    }
+    ul.bg-white li.disabled a{
+        background: #d6d6d6;
+        max-width: 5px;
+        text-overflow: clip;
+        white-space: nowrap;
+        overflow: hidden;
+        padding: 2px 0;
+    }
+    ul.bg-white li.disabled a:hover{
+        background: #d6d6d6;
+    }
+    ul.bg-white li.active a:hover{
+        background: #485563;
+    }
+    ul.bg-white li a{
+        background: #fff;
+        color: #000;
+        border: 1px solid #a7a7a7;
+        padding: 2px 5px;
+    }
+</style>
+
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet">
+{% endblock %} {% block title %} Menu - Pengaturan Tampilan {% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 no-gutter">
+            <h3 class="page-title pull-left">Kelola Menu</h3>
+        </div>
+        <div class="row col-md-12 no-gutter" style="padding-top:20px;">
+            <!--left pannel-->
+            <div class="col-md-3">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <!--panel page-->
+                    <div class="panel panel-default" style="background:#fff;color:#000;">
+                        <div class="panel-heading" role="tab" id="menu-list-page">
+                            <h4 class="panel-title noselect">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#menu-list-page-body" aria-expanded="true" aria-controls="collapseOne">
+                                    Halaman
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="menu-list-page-body" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body" style="padding:5px">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="control-label" for="focusedInput">Cari Halaman</label>
+                                    <input class="form-control search" id="focusedInput" type="text" placeholder="Judul halaman"  style="border:1px solid #b9b9b9;">
+                                </div>
+                            </div>
+                            <table class="table"  style="padding:5px">
+                                <tbody class="list">
+                                    {% for page in pages %}
+                                    <tr>
+                                        <td style="width:1em;">
+                                            <div class="checkbox" style="margin:0; padding-left:30px">
+                                                <input type="checkbox" data-id="{{ page.id }}" data-title="{{ page.title }}" data-path="{{ path_for('getPageDetailHTML', {'page':page.title_url, 'ext':'html'}) }}" id="checkPage{{ page.id }}" class="menu-page-checkbox">
+                                                <label for="checkPage{{ page.id }}"></label>
+                                            </div>
+                                        </td>
+                                        <td class="title" style="max-width: 0;text-overflow: ellipsis;white-space: nowrap;overflow: hidden; padding-right:10px;">
+                                            {{ page.title }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="panel-body" style="padding:5px">
+                                <center>
+                                    <ul class="pagination pagination-sm bg-white" style="margin:0;">
+                                    </ul>
+                                </center>
+                                <a role="button" class="btn btn-sm text-info">Pilih Semua</a>
+                                <a role="button" class="btn btn-info btn-sm pull-right" id="menu-add-page-trigger">Tambahkan Ke Menu</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--panel custom page-->
+                    <div class="panel panel-default" style="background:#fff;color:#000;">
+                        <div class="panel-heading" role="tab" id="menu-custompage-page">
+                            <h4 class="panel-title noselect">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#menu-list-custompage-body" aria-expanded="false" aria-controls="collapseOne">
+                                    Halaman Lainnya
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="menu-list-custompage-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                            <table class="table"  style="padding:5px">
+                                <tbody class="list">
+                                    <tr>
+                                        <td style="width:1em;">
+                                            <div class="checkbox" style="margin:0; padding-left:30px">
+                                                <input type="checkbox" data-type="teacher" id="checkPage111111" class="page-checkbox">
+                                                <label for="checkPage111111"></label>
+                                            </div>
+                                        </td>
+                                        <td class="title" style="max-width: 0;text-overflow: ellipsis;white-space: nowrap;overflow: hidden; padding-right:10px;">
+                                            Profil Guru dan Staff
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:1em;">
+                                            <div class="checkbox" style="margin:0; padding-left:30px">
+                                                <input type="checkbox" value="" id="checkPage" class="page-checkbox">
+                                                <label for="checkPage"></label>
+                                            </div>
+                                        </td>
+                                        <td class="title" style="max-width: 0;text-overflow: ellipsis;white-space: nowrap;overflow: hidden; padding-right:10px;">
+                                            Galeri Foto
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:1em;">
+                                            <div class="checkbox" style="margin:0; padding-left:30px">
+                                                <input type="checkbox" value="" id="checkPage" class="page-checkbox">
+                                                <label for="checkPage"></label>
+                                            </div>
+                                        </td>
+                                        <td class="title" style="max-width: 0;text-overflow: ellipsis;white-space: nowrap;overflow: hidden; padding-right:10px;">
+                                            Kontak
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="panel-body" style="padding:5px">
+                                <a role="button" class="btn btn-sm text-info">Pilih Semua</a>
+                                <a role="button" class="btn btn-info btn-sm pull-right">Tambahkan Ke Menu</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--pannel url-->
+                    <div class="panel panel-default" style="background:#fff;color:#000;">
+                        <div class="panel-heading" role="tab" id="menu-url-page">
+                            <h4 class="panel-title noselect">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#menu-list-url-body" aria-expanded="false" aria-controls="collapseOne">
+                                    Tautan
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="menu-list-url-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body" style="padding:5px">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">Tautan</label>
+                                        <div class="col-lg-10">
+                                            <input type="text" class="form-control" placeholder="http://"  style="border:1px solid #b9b9b9;">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">Nama</label>
+                                        <div class="col-lg-10">
+                                            <input type="text" class="form-control" placeholder="nama"  style="border:1px solid #b9b9b9;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <a role="button" class="btn btn-info btn-sm pull-right">Tambahkan Ke Menu</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--pannel category-->
+                    <div class="panel panel-default" style="background:#fff;color:#000;">
+                        <div class="panel-heading" role="tab" id="menu-category-page">
+                            <h4 class="panel-title noselect">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#menu-list-category-body" aria-expanded="false" aria-controls="collapseOne">
+                                    Kategori Pos
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="menu-list-category-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body" style="padding:5px">
+                                <div class="form-group">
+                                    <label class="control-label" for="focusedInput">Kategori</label>
+                                    <select class="form-control" id="select"  style="border:1px solid #b9b9b9; padding:0;">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </select>
+                                </div>
+                                <a role="button" class="btn btn-info btn-sm pull-right">Tambahkan Ke Menu</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--pannel Pendaftaran-->
+                    <div class="panel panel-default" style="background:#fff;color:#000;">
+                        <div class="panel-heading" role="tab" id="menu-register-page">
+                            <h4 class="panel-title noselect">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#menu-list-register-body" aria-expanded="false" aria-controls="collapseOne">
+                                    Menu Pendaftaran
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="menu-list-register-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <span class="help-block" style="color:#5f5f5f;">Menu Kebawah adalah menu kosong yang menyimpan menu lain di dalamnya. ketika di klik dengan mouse maka akan menampilkan menu lain secara vertikal</span>
+                                <div class="col-md-12 no-gutter">
+                                    <div class="btn-group">
+                                        <a href="#" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">Menu Kebawah <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">Menu Bawah 1</a></li>
+                                            <li><a href="#">Menu Bawah 2</a></li>
+                                            <li><a href="#">Menu Bawah 3</a></li>
+                                            <li><a href="#">Menu Bawah 4</a></li>
+                                        </ul>
+                                    </div>
+                                    <a role="button" class="btn btn-info btn-sm" id="menu-add-dropdown-trigger"><i class="fa fa-plus fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--pannel Group-->
+                    <div class="panel panel-default" style="background:#fff;color:#000;">
+                        <div class="panel-heading" role="tab" id="menu-register-page">
+                            <h4 class="panel-title noselect">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#menu-list-group-body" aria-expanded="false" aria-controls="collapseOne">
+                                    Menu Grup Komunitas
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="menu-list-group-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <span class="help-block" style="color:#5f5f5f;">Menu Kebawah adalah menu kosong yang menyimpan menu lain di dalamnya. ketika di klik dengan mouse maka akan menampilkan menu lain secara vertikal</span>
+                                <div class="col-md-12 no-gutter">
+                                    <div class="btn-group">
+                                        <a href="#" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">Menu Kebawah <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">Menu Bawah 1</a></li>
+                                            <li><a href="#">Menu Bawah 2</a></li>
+                                            <li><a href="#">Menu Bawah 3</a></li>
+                                            <li><a href="#">Menu Bawah 4</a></li>
+                                        </ul>
+                                    </div>
+                                    <a role="button" class="btn btn-info btn-sm" id="menu-add-dropdown-trigger"><i class="fa fa-plus fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--pannel dropdown-->
+                    <div class="panel panel-default" style="background:#fff;color:#000;">
+                        <div class="panel-heading" role="tab" id="menu-dropdown-page">
+                            <h4 class="panel-title noselect">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#menu-list-dropdown-body" aria-expanded="false" aria-controls="collapseOne">
+                                    Menu Lainnya
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="menu-list-dropdown-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <span class="help-block" style="color:#5f5f5f;">Menu Kebawah adalah menu kosong yang menyimpan menu lain di dalamnya. ketika di klik dengan mouse maka akan menampilkan menu lain secara vertikal</span>
+                                <div class="col-md-12 no-gutter">
+                                    <div class="btn-group">
+                                        <a href="#" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">Menu Kebawah <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">Menu Bawah 1</a></li>
+                                            <li><a href="#">Menu Bawah 2</a></li>
+                                            <li><a href="#">Menu Bawah 3</a></li>
+                                            <li><a href="#">Menu Bawah 4</a></li>
+                                        </ul>
+                                    </div>
+                                    <a role="button" class="btn btn-info btn-sm" id="menu-add-dropdown-trigger"><i class="fa fa-plus fa-fw"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--right pannel-->
+            <div class="col-md-9">
+                <div class="panel panel-default" style="background:#fff;color:#000;">
+                    <div class="panel-heading col-md-12 no-gutter">
+                        <div class="col-md-6 text-left">
+                            <strong>Struktur Menu</strong>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <form method="post" action="{{ path_for('postAdminMenuList302') }}">
+                                <input class="menu-data" type="hidden" name="menu_data" value="">
+                                <button type="submit" class="btn btn-info btn-sm"><i class="fa fa-save fa-fw"></i> Simpan Menu</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="panel-body" style="padding-top:60px;">
+                        <ol class="menu-list">
+                            <li class="default-permanent">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        Halaman Utama
+                                    </div>
+                                </div>
+                            </li>
+
+                            {% for menu in menus[0] %}
+
+                            {% if menu.type == 'parent' %}
+                            {% set id = loop.index %}
+                            <li data-type="parent" data-title="{{ menu.title }}">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading col-md-12 no-gutter noselect">
+                                        <div class="col-md-6 drag-handle"><strong class="menu-title">{{menu.title}}</strong></div>
+                                        <div class="col-md-6 text-right">
+                                            <span class="menu-type">Menu Kebawah</span>
+                                            <a class="btn btn-default btn-xs" role="button" data-toggle="collapse" href="#menu{{id}}" aria-expanded="false" aria-controls="collapseExample">
+                                                <i class="fa fa-cog fa-fw"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body collapse" id="menu{{id}}">
+                                        <div class="form-group">
+                                            <label class="control-label" for="focusedInput">Nama Menu</label>
+                                            <input class="form-control" onkeyup="renameTitle($(this));" id="focusedInput" type="text" name="name" value="{{menu.title}}" style="border:1px solid #b9b9b9;">
+                                        </div>
+                                        <a role="button" class="btn btn-danger btn-sm menu-list-remove" onclick="removeMenu($(this));">Hapus</a>
+                                    </div>
+                                </div>
+                                <ol>
+                                    {% for child in menu.children[0] %}
+                                    {% set child_id = loop.index %}
+                                    <li data-type="{{child.type}}" data-title="{{child.title}}" data-parent="0" data-path="{{child.path}}">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading col-md-12 no-gutter noselect">
+                                                <div class="col-md-6 drag-handle"><strong class="menu-title">{{child.title}}</strong></div>
+                                                <div class="col-md-6 text-right">
+                                                    <span>Halaman</span>
+                                                    <a class="btn btn-info btn-xs" role="button" data-toggle="collapse" href="#menu{{child_id}}-{{id}}" aria-expanded="false" aria-controls="collapseExample">
+                                                        <i class="fa fa-cog fa-fw"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body collapse" id="menu{{child_id}}-{{id}}">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="focusedInput">Nama Menu</label>
+                                                    <input class="form-control" onkeyup="renameTitle($(this));" id="focusedInput" type="text" name="name" value="{{child.title}}" style="border:1px solid #b9b9b9;">
+                                                </div>
+                                                <div class="well well-sm" style="color:#fff;">
+                                                    Asli : <a href="{{child.path}}" class="text-info">{{child.title}}</a>
+                                                </div>
+                                                <a role="button" class="btn btn-danger btn-sm menu-list-remove" onclick="removeMenu($(this));">Hapus</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ol>
+                            </li>
+                            {% else %}
+                            {% set id = loop.index %}
+                            <li data-type="page" data-title="{{menu.title}}" data-parent="0" data-path="{{menu.path}}">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading col-md-12 no-gutter noselect">
+                                        <div class="col-md-6 drag-handle"><strong class="menu-title">{{menu.title}}</strong></div>
+                                        <div class="col-md-6 text-right">
+                                            <span>Halaman</span>
+                                            <a class="btn btn-info btn-xs" role="button" data-toggle="collapse" href="#menu{{id}}" aria-expanded="false" aria-controls="collapseExample">
+                                                <i class="fa fa-cog fa-fw"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body collapse" id="menu{{id}}">
+                                        <div class="form-group">
+                                            <label class="control-label" for="focusedInput">Nama Menu</label>
+                                            <input class="form-control" onkeyup="renameTitle($(this));" id="focusedInput" type="text" name="name" value="{{menu.title}}" style="border:1px solid #b9b9b9;">
+                                        </div>
+                                        <div class="well well-sm" style="color:#fff;">
+                                            Asli : <a href="{{menu.path}}" class="text-info">{{menu.title}}</a>
+                                        </div>
+                                        <a role="button" class="btn btn-danger btn-sm menu-list-remove" onclick="removeMenu($(this));">Hapus</a>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </div>
+                    <div class="panel-footer" style="color:#fff;" onkeyup="">Panel footer</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }} {% verbatim %}
+<script id="menu-page-tmpl" type="x-tmpl-mustache">
+<li data-type="{{data.type}}" data-title="{{data.title}}" data-path="{{data.path}}" data-id="{{data.id}}">
+    <div class="panel panel-info">
+        <div class="panel-heading col-md-12 no-gutter noselect">
+            <div class="col-md-6 drag-handle"><strong class="menu-title">{{data.title}}</strong></div>
+            <div class="col-md-6 text-right">
+                <span>Halaman</span>
+                <a class="btn btn-info btn-xs" role="button" data-toggle="collapse" href="#menu{{data.panel}}" aria-expanded="false" aria-controls="collapseExample">
+                    <i class="fa fa-cog fa-fw"></i>
+                </a>
+            </div>
+        </div>
+        <div class="panel-body collapse" id="menu{{data.panel}}">
+            <div class="form-group">
+                <label class="control-label" for="focusedInput">Nama Menu</label>
+                <input class="form-control" onkeyup="renameTitle($(this));" id="focusedInput" type="text" name="name" value="{{data.title}}" style="border:1px solid #b9b9b9;">
+            </div>
+            <div class="well well-sm" style="color:#fff;">
+                Asli : <a href="{{data.path}}" class="text-info">{{data.title}}</a>
+            </div>
+            <a role="button" class="btn btn-danger btn-sm menu-list-remove" onclick="removeMenu($(this));">Hapus</a>
+        </div>
+    </div>
+</li>
+</script>
+<script id="menu-dropdown-tmpl" type="x-tmpl-mustache">
+<li data-type="parent" data-title="{{data.title}}">
+    <div class="panel panel-default">
+        <div class="panel-heading col-md-12 no-gutter noselect">
+            <div class="col-md-6 drag-handle"><strong class="menu-title">{{data.title}}</strong></div>
+            <div class="col-md-6 text-right">
+                <span class="menu-type">Menu Kebawah</span>
+                <a class="btn btn-default btn-xs" role="button" data-toggle="collapse" href="#menu{{data.id}}" aria-expanded="false" aria-controls="collapseExample">
+                    <i class="fa fa-cog fa-fw"></i>
+                </a>
+            </div>
+        </div>
+        <div class="panel-body collapse" id="menu{{data.id}}">
+            <div class="form-group">
+                <label class="control-label" for="focusedInput">Nama Menu</label>
+                <input class="form-control" onkeyup="renameTitle($(this));" id="focusedInput" type="text" name="name" value="{{data.title}}" style="border:1px solid #b9b9b9;">
+            </div>
+            <a role="button" class="btn btn-danger btn-sm menu-list-remove"  onclick="removeMenu($(this));">Hapus</a>
+        </div>
+    </div>
+    <ol></ol>
+</li>
+</script>
+{% endverbatim %}
+<script src="public/assets/js/bootbox.min.js"></script>
+<script src="public/assets/js/jquery.form.min.js"></script>
+<script src="public/assets/js/jquery-sortable-min.js"></script>
+<script src="public/assets/js/list.min.js"></script>
+<script src="public/assets/js/list.pagination.min.js"></script>
+<script>
+    $(document).ready(function(){
+        menuPage();
+    });
+</script>
+{% endblock %}

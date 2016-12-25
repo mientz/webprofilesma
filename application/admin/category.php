@@ -39,7 +39,7 @@ $app->group('/admin/category', function () {
 
     $this->get('/list[/{id}]', function ($req, $res, $args) {
         $group_data = $req->getAttribute('current_group_data');
-        $req = $req->withAttribute('category', 'active');
+        $req = $req->withAttribute('sidemenu', ['post'=>'category']);
         $default_id = $this->db->query("select id from post_category where name='Tidak Berkategori' and group_id='".$group_data['id']."'")->fetchColumn();
         $select = $this->db->query("
             select

@@ -7,6 +7,7 @@
         "slim/flash": "^0.2.0",
         "intervention/image": "^2.3",
         "twig/extensions": "^1.4",
-        "qazd/text-diff": "^0.1.0"
+        "qazd/text-diff": "^0.1.0",
+        "phpmailer/phpmailer": "^5.2"
     }
 }

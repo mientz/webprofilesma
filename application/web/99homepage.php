@@ -1,7 +1,7 @@
 <?php
 $app->group('/', function () {
     $this->get('', function ($req, $res, $args) {
-    return $this->view->render($res, 'web/homepage.html');
+        return $this->view->render($res, 'web/homepage.html', $req->getAttributes());
     })->setName('homepage');
 
     $this->get('{year:[0-9]+}/{month:[0-9]+}', function ($req, $res, $args) {
@@ -60,10 +60,10 @@ $app->group('/', function () {
     $this->get('{page:.+}.{ext:html}', function ($req, $res, $args) {
 
         return $this->view->render($res, 'web/page.html');
-    })->setName('page');
+    })->setName('getPageDetailHTML');
 
     $this->get('page/{id}', function ($req, $res, $args) {
         return $this->view->render($res, 'web/homepage.html');
     })->setName('custom-page');
 
-});
+})->add($main_menu);

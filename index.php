@@ -15,6 +15,7 @@ $container = $app->getContainer();
 
 $require_dir = [
     "application",
+    "application/helper",
     "application/admin",
     "application/web",
 ];
