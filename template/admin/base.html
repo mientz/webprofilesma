@@ -37,21 +37,21 @@
                     <ul class="nav navbar-nav hidden-xs hidden-sm">
                         <li><a href="#" class="btn btn-default navbar-btn btn-lg"><i class="fa fa-envelope-o"></i>&nbsp;<span class="badge">42</span></a></li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{current_group_data.name}} <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentUserGroup.name}} <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                {% for user_group in user_group %}
-                                <li><a href="{{ path_for('change-group', {'id': user_group.id }) }}">{{user_group.name}}</a></li>
+                                {% for user_group in currentUserGroups %}
+                                <li><a href="{{ path_for('getAdminSwtichGroup302', {'key': loop.index0 }) }}">{{user_group.name}}</a></li>
                                 {% endfor %}
                             </ul>
                         </li>
                         <li>
-                            <a href="{{ uri_base }}" target="_blank" class="btn btn-default navbar-btn btn-lg"><span class="badge">SMA Negeri 1 Bangkalan {% if current_group_url %} <i class="fa fa-chevron-right"></i> {{current_group_url}}{% endif %}<i class="fa fa-external-link-square fa-fw"></i></span></a>
+                            <a href="{{ uri_base }}" target="_blank" class="btn btn-default navbar-btn btn-lg"><span class="badge">SMA Negeri 1 Bangkalan {% if currentUserGroupUrl %} <i class="fa fa-chevron-right"></i> {{currentUserGroup.name}}{% endif %}<i class="fa fa-external-link-square fa-fw"></i></span></a>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right hidden-md hidden-lg">
                         <li><a href="#">{{ user_data.nickname }} ({{ user_data.username }})</a></li>
                         <li><a href="#">Pengaturan Akun</a></li>
-                        <li><a href="{{ path_for('logout') }}">Log Out</a></li>
+                        <li><a href="{{ path_for('getAdminAuthLogout302') }}">Log Out</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right hidden-xs hidden-sm">
                         <li class="dropdown">
@@ -86,7 +86,7 @@
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <p>
-                                                    <a href="{{ path_for('logout') }}" class="btn btn-danger btn-block">Log Out</a>
+                                                    <a href="{{ path_for('getAdminAuthLogout302') }}" class="btn btn-danger btn-block">Log Out</a>
                                                 </p>
                                             </div>
                                         </div>
@@ -105,7 +105,7 @@
         <div id="sidebar-wrapper">
             <ul class="nav nav-pills nav-stacked">
                 <li class="{{ dashboard }}" style="padding: 10px 0;">
-                    <a href="{{ path_for('admin-dashboard') }}"><i class="fa fa-circle-o-notch fa-spin" style="padding:0;margin-right:10px;"></i>Dasbor</a>
+                    <a href="{{ path_for('getAdminDashboardHTML') }}"><i class="fa fa-circle-o-notch fa-spin" style="padding:0;margin-right:10px;"></i>Dasbor</a>
                 </li>
                 {% if privilege.writer %}
                 <li class="{{ sidemenu.post ? 'active' }}">
@@ -114,7 +114,7 @@
                         <li class="{{ sidemenu.post == 'all' ? 'active' }}"><a href="{{ path_for('getAdminPostListHTML') }}">Semua Pos</a></li>
                         <li class="{{ sidemenu.post == 'add' ? 'active' }}"><a href="{{ path_for('getAdminPostAddHTML') }}">Tambah Baru</a></li>
                         <li class="{{ sidemenu.post == 'media' ? 'active' }}"><a href="{{ path_for('getAdminPostmediaHTML') }}">Media</a></li>
-                        <li class="{{ sidemenu.post == 'category' ? 'active' }}"><a href="{{ path_for('admin-allcategory') }}">Kategori</a></li>
+                        <li class="{{ sidemenu.post == 'category' ? 'active' }}"><a href="{{ path_for('getAdminCategoryListHTML') }}">Kategori</a></li>
 <!--                        <li class=""><a href="#">Tags</a></li>-->
                     </ul>
                 </li>
@@ -157,7 +157,7 @@
                 <li class="{{ sidemenu.users ? 'active' }}">
                     <a href="{{ path_for('getAdminUserListHTML') }}"><i class="fa fa-user-circle-o fa-fw"></i>Pengguna</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
-                        <li class=""><a href="{{ path_for('getAdminUserListHTML') }}">Semua Pengguna</a></li>
+                        <li class="{{ sidemenu.users == 'list' ? 'active' }}"><a href="{{ path_for('getAdminUserListHTML') }}">Semua Pengguna</a></li>
                         <li class=""><a href="#">Tambah Baru</a></li>
                         <li class=""><a href="#">Komunitas</a></li>
                         <li class=""><a href="#">Profil Anda</a></li>
@@ -168,13 +168,15 @@
                     <a href="{{ path_for('getAdminUserListHTML') }}"><i class="fa fa-user-circle-o fa-fw"></i>Profil</a>
                 </li>
                 {% endif %} {% if privilege.setting %}
-                <li class="">
-                    <a href="#"><i class="fa fa-sliders fa-fw"></i>Pengaturan</a>
+                <li class="{{ sidemenu.settings ? 'active' }}">
+                    <a href="{{ path_for('getAdminSettingsHTML') }}"><i class="fa fa-sliders fa-fw"></i>Pengaturan</a>
+<!--
                     <ul class="nav nav-pills nav-stacked nav-sub">
                         <li class=""><a href="#">Umum</a></li>
                         <li class=""><a href="#">Email</a></li>
                         <li class=""><a href="#">Media Sosial</a></li>
                     </ul>
+-->
                 </li>
                 {% endif %}
             </ul>
@@ -322,6 +324,9 @@
             postAdminCustomPageTeachersJSON: "{{ path_for('postAdminCustomPageTeachersJSON') }}",
             getAdminCustomGalleryHTML: "{{ path_for('getAdminCustomGalleryHTML') }}",
             postAdminCustomGalleryJSON: "{{ path_for('postAdminCustomGalleryJSON') }}",
+            //admin settings page
+            getAdminSettingsHTML: "{{ path_for('getAdminSettingsHTML') }}",
+            postAdminSettingsJSON: "{{ path_for('postAdminSettingsJSON') }}",
 
         }
     </script>

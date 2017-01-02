@@ -66,4 +66,4 @@ $app->group('/', function () {
         return $this->view->render($res, 'web/homepage.html');
     })->setName('custom-page');
 
-})->add($main_menu);
+})->add($global);

@@ -11,6 +11,10 @@ $container['db'] = function ($c) {
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     return $pdo;
 };
+$container['pdo'] = function ($c) {
+    $settings = $c->get('settings')['database'];
+    return new \Slim\PDO\Database("mysql:host=" . $settings['host'] . ";dbname=" . $settings['database_name'], $settings['user'], $settings['pass']);;
+};
 
 /**
  * [[Twig templating container]]
@@ -39,7 +43,22 @@ $container['view'] = function ($container) {
  */
 $container['mailer'] = function ($container) {
     $mail = new PHPMailer;
-    return new Emailer($container, $mail);
+    $mail->SMTPOptions = array(
+        'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        )
+    );
+    $mail->isSMTP();                                      // Set mailer to use SMTP
+    $mail->SMTPDebug = 2;
+    $mail->Debugoutput = 'html';
+    $mail->SMTPAuth = true;                               // Enable SMTP authentication
+    $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+    $mail->isHTML(true);
+    $loader = new Twig_Loader_Filesystem('template');
+    $twig = new Twig_Environment($loader);
+    return new Emailer($container, $mail, $twig);
 };
 
 /*
@@ -82,13 +101,6 @@ $container['slug'] = function ($string){
  */
 $container['filesize'] = function ($string){
     return new FileSize($string);
-};
-
-/*
- * tags input container
- */
-$container['tags'] = function ($container){
-    return new Tags($container);
 };
 
 /*

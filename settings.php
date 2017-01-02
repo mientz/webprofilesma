@@ -13,6 +13,8 @@ return [
         "template"=>[
             "cache" => false,
             "cache_location" => "template/cache"
-        ]
+        ],
+        'debug' => true,
+        'whoops.editor' => 'sublime'
     ],
 ];

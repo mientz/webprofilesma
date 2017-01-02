@@ -6,31 +6,13 @@
         <div class="col-md-12 no-gutter">
             <div class="col-md-8 no-gutter">
                 <h3 class="page-title pull-left">Pengguna</h3>
-                <a href="{{ path_for('getAdminPagesAddHTML') }}" class="btn btn-info btn-xs pull-left" style="margin:8px;">Tambah Baru</a>
+                <a href="{{ path_for('getAdminPagesAddHTML') }}" class="btn btn-info btn-xs pull-left" style="margin:8px;">Undang Pengguna</a>
             </div>
         </div>
-        <div class="col-md-12 no-gutter">
-            <ul id="myTabpages" class="nav nav-pills custom-nav-pills">
-                <li class="{{ pages_tab == 'all' ? 'active' }}"><a href="{{ path_for('getAdminPagesListHTML') }}">Semua <span class="badge">{{ mw_count_all }}</span></a></li>
-                <li class="{{ pages_tab == 'deleted' ? 'active' }}"><a href="{{ path_for('getAdminPagesListHTML', {'type': 'deleted'}) }}">Tong Sampah <span class="badge">{{ mw_count_deleted }}</span></a></li>
-            </ul>
-        </div>
-        <br>
         <div class="col-md-12 no-gutter" id="pages-list" style="padding-top:20px;">
             <div class="tab-content">
                 <div class="tab-pane fade active in" id="all-pages">
                     <div class="col-md-6 no-gutter">
-                        <div class="form-inline pull-left">
-                            <div class="form-group">
-                                <select class="form-control input-sm" id="pages-list-batch-action">
-                                    <option value="*">Tindakan Masal</option>
-                                    <option value="delete">Hapus Permanen</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <button type="button" class="btn btn-info btn-sm disabled" id="pages-list-batch-action-trigger">Terapkan</button>
-                            </div>
-                        </div>
                     </div>
                     <div class="col-md-6 no-gutter">
                         <div class="form-group">

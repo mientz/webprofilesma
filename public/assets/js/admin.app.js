@@ -52,9 +52,6 @@ function globalSummernote(elm, textElm){
         callbacks: {
             onChange: function (contents, $editable) {
                 $(textElm).val(contents);
-            },
-            onInit: function () {
-                $(textElm).val($('#summernote').html());
             }
         }
     });
@@ -365,41 +362,10 @@ function editPostPage(post_data){
             alert(error);
         },
         onImageLoaded: function(){
-            if(post_data.header_image != ''){
-                $.getJSON(globalUrl.getAdminPostmediaCropitJson + '/' + post_data.header_image, function(data){
-                    if(data.image != 'no-image'){
-                        imageCropper.cropit('previewSize', {
-                            width:parseFloat(data.width),
-                            height:parseFloat(data.height)
-                        });
-                        imageCropper.cropit('zoom', parseFloat(data.zoom));
-                        imageCropper.cropit('offset', {
-                            x: parseFloat('-'+data.x),
-                            y: parseFloat('-'+data.y)
-                        });
-                    }else{
-                        var data = {
-                            image: imageCropper.data('image'),
-                            size: imageCropper.cropit('previewSize'),
-                            offset: imageCropper.cropit('offset'),
-                            zoom: imageCropper.cropit('zoom'),
-                        }
-                        $('#edit-post-header-value').val(
-                            parseInt(data.size.width)+'/'+parseInt(data.size.height)+'/'+Math.abs(parseInt(data.offset.x))+'/'+Math.abs(parseInt(data.offset.y))+'/'+data.zoom+'/'+data.image
-                        );
-                    }
-                });
-            }else{
-                var data = {
-                    image: imageCropper.data('image'),
-                    size: imageCropper.cropit('previewSize'),
-                    offset: imageCropper.cropit('offset'),
-                    zoom: imageCropper.cropit('zoom'),
-                }
-                $('#edit-post-header-value').val(
-                    parseInt(data.size.width)+'/'+parseInt(data.size.height)+'/'+Math.abs(parseInt(data.offset.x))+'/'+Math.abs(parseInt(data.offset.y))+'/'+data.zoom+'/'+data.image
-                );
-            }
+                $('#edit-post-header-value').val(imageCropper.cropit('export', {
+                    type: 'image/jpeg',
+                    quality: 1,
+                }));
         },
         onOffsetChange: function(offset){
             var data = {
@@ -409,22 +375,18 @@ function editPostPage(post_data){
                 zoom: imageCropper.cropit('zoom'),
             }
             localStorage.imageCroped = JSON.stringify(data);
-            $('#edit-post-header-value').val(
-                parseInt(data.size.width)+'/'+parseInt(data.size.height)+'/'+Math.abs(parseInt(data.offset.x))+'/'+Math.abs(parseInt(data.offset.y))+'/'+data.zoom+'/'+data.image
-            );
+            $('#edit-post-header-value').val(imageCropper.cropit('export', {
+                type: 'image/jpeg',
+                quality: 1,
+            }));
         },
         onZoomChange: function(zoom){
             if(typeof imageCropper.cropit('offset') != 'undefined'){
-                var data = {
-                    image: imageCropper.data('image'),
-                    size: imageCropper.cropit('previewSize'),
-                    offset: imageCropper.cropit('offset'),
-                    zoom: zoom,
-                }
                 localStorage.imageCroped = JSON.stringify(data);
-                $('#edit-post-header-value').val(
-                    parseInt(data.size.width)+'/'+parseInt(data.size.height)+'/'+Math.abs(parseInt(data.offset.x))+'/'+Math.abs(parseInt(data.offset.y))+'/'+data.zoom+'/'+data.image
-                );
+                $('#edit-post-header-value').val(imageCropper.cropit('export', {
+                    type: 'image/jpeg',
+                    quality: 1,
+                }));
             }
         },
     });
@@ -444,13 +406,8 @@ function editPostPage(post_data){
         freeInput: true
     });
 
-    // populate image header data
-    $.getJSON(globalUrl.getAdminPostmediaCropitJson + '/' + post_data.header_image, function(data){
-        if(data.image != 'no-image'){
-            imageCropper.cropit('imageSrc', 'public/content/'+data.image);
-            imageCropper.data('image', data.image);
-        }
-    });
+    imageCropper.cropit('imageSrc', imageCropper.data('rawimage'));
+    imageCropper.data('image', imageCropper.data('rawimage'));
 
     // populate category data
     globalShorthandCategory(function(data){
@@ -607,9 +564,10 @@ function addPostPage(){
                 zoom: imageCropper.cropit('zoom'),
             }
             localStorage.imageCroped = JSON.stringify(data);
-            $('#add-post-header-value').val(
-                parseInt(data.size.width)+'/'+parseInt(data.size.height)+'/'+Math.abs(parseInt(data.offset.x))+'/'+Math.abs(parseInt(data.offset.y))+'/'+data.zoom+'/'+data.image
-            );
+            $('#add-post-header-value').val(imageCropper.cropit('export', {
+                type: 'image/jpeg',
+                quality: 1,
+            }));
         },
         onOffsetChange: function(offset){
             var data = {
@@ -619,9 +577,10 @@ function addPostPage(){
                 zoom: imageCropper.cropit('zoom'),
             }
             localStorage.imageCroped = JSON.stringify(data);
-            $('#add-post-header-value').val(
-                parseInt(data.size.width)+'/'+parseInt(data.size.height)+'/'+Math.abs(parseInt(data.offset.x))+'/'+Math.abs(parseInt(data.offset.y))+'/'+data.zoom+'/'+data.image
-            );
+            $('#add-post-header-value').val(imageCropper.cropit('export', {
+                type: 'image/jpeg',
+                quality: 1,
+            }));
         },
         onZoomChange: function(zoom){
             if(typeof imageCropper.cropit('offset') != 'undefined'){
@@ -632,9 +591,10 @@ function addPostPage(){
                     zoom: zoom,
                 }
                 localStorage.imageCroped = JSON.stringify(data);
-                $('#add-post-header-value').val(
-                    parseInt(data.size.width)+'/'+parseInt(data.size.height)+'/'+Math.abs(parseInt(data.offset.x))+'/'+Math.abs(parseInt(data.offset.y))+'/'+data.zoom+'/'+data.image
-                );
+                $('#add-post-header-value').val(imageCropper.cropit('export', {
+                    type: 'image/jpeg',
+                    quality: 1,
+                }));
             }
         },
     });

@@ -81,12 +81,22 @@ $app->add(function ($req, $res, $next) {
 });
 
 /*
- * Web Menu
+ * Web front global
  */
-$main_menu = function ($req, $res, $next) {
-    $group_id = $req->getAttribute('current_group_data')['id'];
+$global = function ($req, $res, $next) {
+    // main menu
     $menu = $this->db->query("select meta from menus where group_id='1'")->fetchColumn();
     $req = $req->withAttribute('main_menu', json_decode($menu));
+
+    // web settings
+    $settings = [];
+    foreach($this->db->query("select * from settings")->fetchAll(PDO::FETCH_ASSOC) as $val){
+        $settings[$val['type']] = [];
+        foreach(json_decode($val['config']) as $key => $config){
+            $settings[$val['type']][$key] = base64_decode($config);
+        }
+    }
+    $req = $req->withAttribute('settings', $settings);
     $res = $next($req, $res);
     return $res;
 };

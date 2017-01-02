@@ -1,0 +1,91 @@
+{% extends "web/base.html" %} {% block title %} Kontak {% endblock %} {% block content %}
+<!--page header area-->
+<div class="col-md-12 col-xs-12 page-header-area">
+    <div class="col-md-12">
+        <div class="col-md-10 col-md-offset-1">
+            <blockquote>
+                <h3>Kontak</h3>
+            </blockquote>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 col-xs-12 page-wrapper-area">
+    <div class="col-md-12">
+        <div class="col-md-10 col-md-offset-1">
+            <ul class="breadcrumb">
+                <li><a href="#">Beranda</a></li>
+                <li class="active">Kontak</li>
+            </ul>
+            <div class="col-md-6 news-list">
+                <div class="col-md-12 news-item">
+                    <div class="col-md-12 news-title news-title-detail">
+                        <h1>Info Kontak</h1>
+                    </div>
+                    <div class="col-md-12 news-summary">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item">
+                                <h4 class="list-group-item-heading contact"><i class="mdi mdi-phone"></i> Telepon</h4>
+                                <p class="list-group-item-text contact">{{ cas.t }}</p>
+                            </a>
+                            <a href="#" class="list-group-item">
+                                <h4 class="list-group-item-heading contact"><i class="mdi mdi-email-outline"></i> Email</h4>
+                                <p class="list-group-item-text contact">{{ cas.e }}</p>
+                            </a>
+                            <a href="#" class="list-group-item">
+                                <h4 class="list-group-item-heading contact"><i class="mdi mdi-map-marker"></i> Email</h4>
+                                <p class="list-group-item-text contact">{{ cas.a }}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 news-list">
+                <div class="col-md-12 news-item">
+                    <div class="col-md-12 news-title news-title-detail">
+                        <h1>Hubungi Kami</h1>
+                    </div>
+                    <div class="col-md-12 news-summary">
+                        {% if captcha_error %}
+                        <div class="alert alert-dismissible alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            {{captcha_error[0]}}
+                        </div>
+                        {% endif %}
+                        {% if mesages_save %}
+                        <div class="alert alert-dismissible alert-success">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            Pesan Berhasil Terkirim
+                        </div>
+                        {% endif %}
+                        {% set form_data = form_data[0] %}
+                        <form method="post">
+                            <div class="form-group">
+                                <label class="sr-only" for="exampleInputPassword3">Nama</label>
+                                <input type="text" class="form-control" id="exampleInputPassword3" placeholder="Nama*" name="name" value="{{form_data.name}}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="exampleInputEmail3">Email address</label>
+                                <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Email*" name="email"  value="{{form_data.email}}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="exampleInputEmail3">Subjek</label>
+                                <input type="text" class="form-control" id="exampleInputEmail3" name="subject"  value="{{form_data.subject}}" placeholder="Subjek">
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="exampleInputEmail3">Email address</label>
+                                <textarea class="form-control" rows="3" id="textArea" placeholder="Pesan*" name="messages" required>{{form_data.messages}}</textarea>
+                            </div>
+                            <div class="g-recaptcha pull-left" data-sitekey="{{ rcs.stk }}"></div>
+                            <br>
+                            <button type="submit" href="#" class="btn btn-thm-default pull-right">Kirim</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }}
+<script src='https://www.google.com/recaptcha/api.js?hl=id'></script>
+{% endblock %}

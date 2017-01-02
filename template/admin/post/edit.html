@@ -167,7 +167,7 @@
                         Tag
                     </a>
                     <div class="panel-body collapse in tag" data-toggle="tooltip" data-placement="left" title="" data-original-title="Untuk memasukkan tag lebih dari satu gunakan tombol 'Enter'">
-                        <input type="text" class="form-control input-sm" id="edit-post-tags-input" name="tag" value="{{post_data.tags}}">
+                        <input type="text" class="form-control input-sm" id="edit-post-tags-input" name="tag" value="{{post_data.tags|join(', ')}}">
                     </div>
                 </div>
             </div>

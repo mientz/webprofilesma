@@ -11,8 +11,8 @@
         <br>
         <div class="col-md-12 no-gutter" id="post-list" style="padding-top:20px;">
             <div class="col-md-4 no-gutter">
-                <form action="{% if is_edit %}{{ path_for('admin-allcategory', {'id': is_edit}) }}{% endif %}" method="post">
-                    <legend><small>Tambah Kategori Baru</small></legend>
+                <form action="{% if is_edit %}{{ path_for('postAdminCategoryAddOrEdit302', {'id': is_edit}) }}{% else %}{{ path_for('postAdminCategoryAddOrEdit302') }}{% endif %}" method="post">
+                    <legend><small>{% if is_edit %} Edit Kategori <q class="text-info">{{selected_category.name}}</q>{% else %} Tambah Kategori Baru {% endif %}</small></legend>
                     <div class="form-group">
                         <label for="inputPassword" class="control-label">Nama Kategori</label>
                         <input type="text" class="form-control" id="inputname" placeholder="Nama Kategori" name="name" value="{{selected_category.name}}">
@@ -24,7 +24,7 @@
                         <span class="help-block">Deskripsi ini tidak tampil dalam situs</span>
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-info">Tambahkan Kategori</button>
+                        <button type="submit" class="btn btn-info">{% if is_edit %} Simpan Perubahan {% else %} Tambahkan Kategori {% endif %}</button>
                     </div>
                 </form>
             </div>

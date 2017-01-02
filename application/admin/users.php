@@ -1,9 +1,27 @@
 <?php
-$app->group('/admin/users', function () {
-    /**
-     * [[api generate json data for ajax]]
+
+class Users extends Admin{
+    /*
+     * This Class Only Variable
      */
-    $this->get('', function ($req, $res, $args) {
+    protected $ci;
+    /**
+     * Constructor
+     * @private
+     * @param function $ci Slimm Container Interface
+     */
+    public function __construct($ci) {
+        $this->ci = $ci;
+        parent::__construct($ci);
+    }
+    /**
+     * Get User List
+     * @param  \Psr\Http\Message\ServerRequestInterface $request  PSR7 request
+     * @param  \Psr\Http\Message\ResponseInterface      $response PSR7 response
+     * @param  object                                   $args     URL Parameter Object
+     * @return HTML                                     HTML Rendered Page
+     */
+    public function getUserLists($req, $res, $args) {
         $req = $req->withAttribute('sidemenu', ['users'=>'list']);
         $select = $this->db->prepare("select * from users where deleted='0'");
         if($select->execute()){
@@ -19,7 +37,8 @@ $app->group('/admin/users', function () {
             }
             $req = $req->withAttribute('users', $users);
         }
-        $this->mailer;
+        //        $this->mailer->invite('genthowijaya@gmail.com', $this->view->render($res, 'email/invite.html', $req->getAttributes()));
         return $this->view->render($res, 'admin/users.html', $req->getAttributes());
-    })->setName('getAdminUserListHTML');
-})->add($session);
+    }
+
+}

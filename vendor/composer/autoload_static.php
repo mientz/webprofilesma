@@ -12,9 +12,14 @@ class ComposerStaticInit3395cd736a09978f5e65a8517b556d01
     );
 
     public static $prefixLengthsPsr4 = array (
+        'W' =>
+        array (
+            'Whoops\\' => 7,
+        ),
         'S' =>
         array (
             'Slim\\Views\\' => 11,
+            'Slim\\PDO\\' => 9,
             'Slim\\Flash\\' => 11,
             'Slim\\' => 5,
         ),
@@ -38,9 +43,17 @@ class ComposerStaticInit3395cd736a09978f5e65a8517b556d01
     );
 
     public static $prefixDirsPsr4 = array (
+        'Whoops\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/filp/whoops/src/Whoops',
+        ),
         'Slim\\Views\\' =>
         array (
             0 => __DIR__ . '/..' . '/slim/twig-view/src',
+        ),
+        'Slim\\PDO\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/slim/pdo/src/PDO',
         ),
         'Slim\\Flash\\' =>
         array (
@@ -77,6 +90,13 @@ class ComposerStaticInit3395cd736a09978f5e65a8517b556d01
     );
 
     public static $prefixesPsr0 = array (
+        'Z' =>
+        array (
+            'Zeuxisoo\\Whoops\\Provider\\Slim' =>
+            array (
+                0 => __DIR__ . '/..' . '/zeuxisoo/slim-whoops/src',
+            ),
+        ),
         'T' =>
         array (
             'Twig_Extensions_' =>

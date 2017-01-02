@@ -1,0 +1,220 @@
+{% extends "admin/base.html" %}{% block head %} {{ parent() }}
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet">
+<style>
+    legend{
+        font-size: 18.5px !important;
+    }
+</style>
+{% endblock %} {% block title %} Pengguna {% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 no-gutter">
+            <div class="col-md-8">
+                <h3 class="page-title pull-left">Pengaturan Situs</h3>
+            </div>
+        </div>
+        <div class="col-md-12 no-gutter grid" id="pages-list" style="padding-top:20px;">
+            <div class="col-md-6 grid-item">
+                <form class="form-horizontal" id="settings-main-form">
+                    {% set ms = settings.ms %}
+                    <fieldset>
+                        <legend>Pengaturan Umum</legend>
+                        <div class="form-group">
+                            <label for="inputTitle" class="col-md-3 control-label">Judul situs</label>
+                            <div class="col-md-9">
+                                <input type="text" name="t" class="form-control" id="inputTitle" placeholder="Masukkan judul situs" value="{{ms.t}}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDescription" class="col-md-3 control-label">Slogan</label>
+                            <div class="col-md-9">
+                                <input type="text" name="d" class="form-control" id="inputDescription" placeholder="Masukkan slogan situs" value="{{ms.d}}">
+                                <span class="help-block">Penjelasan tentang situs dalam beberapa kata</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDescription" class="col-md-3 control-label">Logo</label>
+                            <div class="col-md-9">
+                                <div id="image-cropper" style="float:left;" data-img="{{ms.i}}">
+                                    <div class="cropit-preview" style="width:282.5px;height:60px;"></div>
+                                    <input type="range" class="cropit-image-zoom-input" style="width:282.5px;"/>
+                                    <input type="file" class="cropit-image-input" style="visibility: hidden;"/>
+                                </div>
+                                <div style="float:left;padding-left:10px;">
+                                    <a role="button" class="btn btn-primary btn-xs settings-choose-logo">Pilih Logo</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <button type="button" data-loading-text='<i class="fa fa-spinner fa-pulse fa-fw"></i>' class="btn btn-info pull-right">Simpan perubahan</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+
+            <div class="col-md-6 grid-item">
+                {% set cas = settings.cas %}
+                <form class="form-horizontal" id="settings-contact-form">
+                    <fieldset>
+                        <legend>Pengaturan Kontak dan Alamat</legend>
+                        <div class="form-group">
+                            <label for="inputContactTelp" class="col-md-3 control-label">Telepon</label>
+                            <div class="col-md-9">
+                                <input type="text" name="t" class="form-control" id="inputContactTelp" placeholder="Masukkan nomor telepon" value="{{cas.t}}">
+                                <span class="help-block">Nomor telepon institusi</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputContactEmail" class="col-md-3 control-label">Email</label>
+                            <div class="col-md-9">
+                                <input type="email" name="e" class="form-control" id="inputContactEmail" placeholder="Masukkan alamat email" value="{{cas.e}}">
+                                <span class="help-block">Alamat email institusi</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputContactAddress" class="col-md-3 control-label">Alamat</label>
+                            <div class="col-md-9">
+                                <textarea class="form-control" name="a" rows="3" id="inputContactAddress" placeholder="Masukkan alamat institusi">{{cas.a}}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputContactMap" class="col-md-3 control-label">Peta Google Map</label>
+                            <div class="col-md-9">
+                                <textarea class="form-control" name="m" rows="3" id="inputContactMap" placeholder="Masukkan kode embed googlemap">{{cas.m}}</textarea>
+                                <span class="help-block">Tempelkan alamat iframe peta google disini</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <button type="button" data-loading-text='<i class="fa fa-spinner fa-pulse fa-fw"></i>' class="btn btn-info pull-right">Simpan perubahan</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+
+            <div class="col-md-6 grid-item">
+                {% set ess = settings.ess %}
+                <form class="form-horizontal" id="settings-email-form">
+                    <fieldset>
+                        <legend>Pengaturan Email</legend>
+                        <span class="help-block">Untuk menambahkan pengunna ke situs ini, anda harus menyiapkan akun email sebagai pengirim tautan undangan pengguna</span>
+                        <div class="form-group">
+                            <label for="inputTitle" class="col-md-3 control-label">Server email</label>
+                            <div class="col-md-6">
+                                <input type="text" name="sr" class="form-control" id="inputTitle" placeholder="smtp.example.com" value="{{ ess.sr }}">
+                            </div>
+                            <label for="inputTitle" class="col-lg-1 control-label">Port</label>
+                            <div class="col-md-2">
+                                <input type="text" name="pr" class="form-control" id="inputTitle" placeholder="587"  value="{{ ess.pr }}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail" class="col-md-3 control-label">Akun email</label>
+                            <div class="col-md-9">
+                                <input type="email" name="em" class="form-control" id="inputEmail" placeholder="Masukkan alamat email" value="{{ ess.em }}">
+                                <div class="checkbox">
+                                    <input name="ig" id="inputEmailIsGoogle" type="checkbox" {{ ess.ig ? 'checked="checked"' }}>
+                                    <label for="inputEmailIsGoogle">Akun Google Gmail</label>
+                                </div>
+                                <span class="help-block">Alamat akun email yang digunakan untuk mengirim pesan. Centang checkbox diatas jika email menggunakan layanan Google Gmail</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDescription" class="col-md-3 control-label">Password</label>
+                            <div class="col-md-9">
+                                <input type="password" name="pw" class="form-control" id="inputDescription" placeholder="Masukkan password email" value="{{ ess.pw }}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDescription" class="col-md-3 control-label">Atas Nama</label>
+                            <div class="col-md-9">
+                                <input type="text" name="nm" class="form-control" id="inputDescription" placeholder="Atas nama institusi" value="{{ ess.nm }}">
+                                <span class="help-block">Nama yang ditampilkan sebagai pengirim email</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <button type="button" data-loading-text='<i class="fa fa-spinner fa-pulse fa-fw"></i>' class="btn btn-info pull-right">Simpan perubahan</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }}
+<script src="public/assets/js/bootbox.min.js"></script>
+<script src="public/assets/js/jquery.form.min.js"></script>
+<script src="public/assets/js/masonry.pkgd.min.js"></script>
+<script src="public/assets/js/jquery.cropit.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.grid').masonry({
+            itemSelector: '.grid-item'
+        });
+        $('#image-cropper').cropit({
+            minZoom: 'fit',
+            freeMove: true,
+            smallImage: 'allow',
+            maxZoom: 3,
+        });
+        $('.settings-choose-logo').click(function() {
+            $('.cropit-image-input').click();
+        });
+        $('#image-cropper').cropit('imageSrc', $('#image-cropper').data('img'));
+        $('#settings-main-form').find('button').on('click', function(){
+            //            console.log( $( '#settings-main-form' ).serializeArray() )
+            var $btn = $(this).button('loading')
+            var imageData = $('#image-cropper').cropit('export',{
+                type: 'image/png',
+                quality: 1,
+                fillBg: '#fff'
+            });
+            $('#settings-main-form').ajaxSubmit({
+                url: globalUrl.postAdminSettingsJSON+'/ms',
+                dataType: 'json',
+                type: 'post',
+                data: { i: imageData },
+                success:  function(data) {
+                    console.log(data);
+                    $btn.button('reset');
+                }
+
+            });
+        });
+        $('#settings-contact-form').find('button').on('click', function(){
+            //            console.log( $( '#settings-main-form' ).serializeArray() )
+            var $btn = $(this).button('loading')
+            $('#settings-contact-form').ajaxSubmit({
+                url: globalUrl.postAdminSettingsJSON+'/cas',
+                dataType: 'json',
+                type: 'post',
+                success:  function(data) {
+                    console.log(data);
+                    $btn.button('reset');
+                }
+
+            });
+        });
+        $('#settings-email-form').find('button').on('click', function(){
+            //            console.log( $( '#settings-main-form' ).serializeArray() )
+            var $btn = $(this).button('loading')
+            $('#settings-email-form').ajaxSubmit({
+                url: globalUrl.postAdminSettingsJSON+'/ess',
+                dataType: 'json',
+                type: 'post',
+                success:  function(data) {
+                    console.log(data);
+                    $btn.button('reset');
+                }
+
+            });
+        });
+        //        pagesListPage();
+    })
+</script>
+{% endblock %}

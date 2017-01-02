@@ -1,622 +1,419 @@
 <?php
-$app->group('/admin/post', function () {
-
+class Post extends Admin{
     /*
-     * Post Page List
+     * This Class Only Variable
      */
-    $this->get('/list[/{type}]', function ($req, $res, $args) {
-        $req = $req->withAttribute('sidemenu', ['post'=>'all']);
-        $req = $req->withAttribute('post_tab', (isset($args['type']) ? $args['type'] : 'all'));
-        $groups = $req->getAttribute('current_group_data');
-        $select = $this->db->prepare("
-            SELECT
-                post.id, post_category.`name` 'category', post_category.name_url, post.author, post.`status`, post.title, post.title_url, post.visibility
-            FROM
-                post as post,
-                post_category
-            WHERE
-                post.category_id = post_category.id and post_category.group_id=:group_id
-                and post.status not like '2' and post.status not like '4' and post.status not like '5'
-                and post.deleted <> '2' and post.deleted=:is_deleted and post.status<>:is_status
-            group by post.id
-            order by post.id desc
-        ");
-        $select->bindValue(':group_id', $groups['id'], PDO::PARAM_INT);
-        $sub_page = (isset($args['type']) ? $args['type'] : 'all');
-        switch($sub_page){
+    protected $ci;
+    protected $user_id;
+    protected $group_id;
+    /**
+     * Constructor
+     * @private
+     * @param function $ci Slimm Container Interface
+     */
+    public function __construct($ci){
+        $this->ci = $ci;
+        parent::__construct($ci);
+        $this->user_id = $this->session->user_id;
+        $this->group_id = $this->getUserGroupData($this->user_id, $this->session->groupKey)['id'];
+    }
+    /**
+     * Post Page Middleware(Sessions)
+     * @private
+     * @param  \Psr\Http\Message\ServerRequestInterface $req  PSR7 request
+     * @param  \Psr\Http\Message\ResponseInterface      $res  PSR7 response
+     * @param  callable                                 $next Next middleware
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function __invoke($req, $res, $next){
+        $req = $req->withAttribute('mw_count', [
+            'all'=>$this->pdo->select(['count(post.id)'])->from('post')->join('post_category', 'post.category_id', '=', 'post_category.id')->where('post_category.group_id', '=', $this->group_id)->where('post.deleted', '=', 0)->whereIn('post.status', [ 1, 3 ])->execute()->fetchColumn(),
+            'published'=>$this->pdo->select(['count(post.id)'])->from('post')->join('post_category', 'post.category_id', '=', 'post_category.id')->where('post_category.group_id', '=', $this->group_id)->where('post.deleted', '=', 0)->where('post.status', '=', 3)->execute()->fetchColumn(),
+            'draft'=>$this->pdo->select(['count(post.id)'])->from('post')->join('post_category', 'post.category_id', '=', 'post_category.id')->where('post_category.group_id', '=', $this->group_id)->where('post.deleted', '=', 0)->where('post.status', '=', 1)->execute()->fetchColumn(),
+            'trash'=>$this->pdo->select(['count(post.id)'])->from('post')->join('post_category', 'post.category_id', '=', 'post_category.id')->where('post_category.group_id', '=', $this->group_id)->where('post.deleted', '=', 1)->whereIn('post.status', [ 1, 3 ])->execute()->fetchColumn(),
+        ]);
+        $res = $next($req, $res);
+        return $res;
+    }
+    /**
+     * Get Tag Listed Array
+     * @param  integer $post_id post id
+     * @return array Tags Name in Array
+     */
+    public function getTags($post_id){
+        $tags = [];
+        $tags_select = $this->pdo->select(['tags.name'])->from('tags')->join('post_tags', 'tags.id', '=', 'post_tags.tag_id')->where('post_tags.post_id', '=', $post_id)->execute()->fetchAll();
+        foreach($tags_select as $tag){
+            array_push($tags, $tag['name']);
+        }
+        return $tags;
+    }
+    /**
+     * set post tags
+     * @param  integer $post_id   post id
+     * @param  string  $tagString tags string
+     * @return array   Tags Name in Array
+     */
+    public function setTags($post_id, $tagString){
+        $deleteTags = $this->pdo->delete()->from('post_tags')->where('post_id', '=', $post_id)->execute();
+        $result = false;
+        $tags = explode(',', $tagString);
+        foreach($tags as $tag){
+            $isTagExist = $this->pdo->select([ 'id' ])->count('id', 'total')->from('tags')->where('name', '=', $tag)->execute()->fetch();
+            if($isTagExist['total'] == 0){
+                $newTag = $this->pdo->insert([ 'name', 'name_url' ])->into('tags')->values($tag, $this->slug->make($tag))->execute(true);
+                if($newTag){
+                    $newPostTag = $this->pdo->insert([ 'post_id', 'tag_id' ])->into('post_tags')->value([ $post_id, $newTag ])->execute();
+                    $result = $newPostTag;
+                }
+            }else{
+                $newPostTag = $this->pdo->insert(['post_id', 'tag_id'])->into('post_tags')->values([ $post_id, $isTagExist['id'] ])->execute();
+                $result = $newPostTag;
+            }
+        }
+        return $result;
+    }
+    /**
+     * Get Posts Data by type
+     * @param  string   [$type = 'all'] post status type
+     * @return object Posts Data Object
+     */
+    public function getPostsList($type = 'all'){
+        $post_data = [];
+        $posts = $this->pdo
+            ->select([ "post.id", "post_category.`name` 'category'", 'post.date',  "post_category.name_url", "post.author", "post.`status`", "post.title", "post.title_url", "post.visibility"])
+            ->from('post')
+            ->join('post_category', 'post.category_id', '=', 'post_category.id')
+            ->where('post_category.group_id', '=', $this->group_id);
+
+        switch($type){
             case 'deleted':
-                $select->bindValue(':is_deleted', 1, PDO::PARAM_INT);
-                $select->bindValue(':is_status', 0, PDO::PARAM_INT);
+                $posts->where('post.deleted', '=', 1)->whereIn('post.status', [ 1, 3 ]);
                 break;
             case 'published':
-                $select->bindValue(':is_deleted', 0, PDO::PARAM_INT);
-                $select->bindValue(':is_status', 1, PDO::PARAM_INT);
+                $posts->where('post.deleted', '=', 0)->where('post.status', '=', 3);
                 break;
             case 'draft':
-                $select->bindValue(':is_deleted', 0, PDO::PARAM_INT);
-                $select->bindValue(':is_status', 3, PDO::PARAM_INT);
+                $posts->where('post.deleted', '=', 0)->where('post.status', '=', 1);
                 break;
             default:
-                $select->bindValue(':is_deleted', 0, PDO::PARAM_INT);
-                $select->bindValue(':is_status', 0, PDO::PARAM_INT);
+                $posts->where('post.deleted', '=', 0)->whereIn('post.status', [ 1, 3 ]);
                 break;
         }
-        $select->execute();
-        $data = [];
-        foreach($select->fetchAll(PDO::FETCH_ASSOC) as $post){
-            $post['author'] = $this->db->query("select nickname from users where id='".$post['author']."'")->fetchColumn();
-            $post['tags'] = $this->tags->get($post['id']);
-            array_push($data, $post);
+        $posts->groupBy('post.id')->orderBy('post.date', 'DESC');
+        foreach($posts->execute()->fetchAll() as $post){
+            $post['author'] = $this->getUserDetail($this->user_id)['nickname'];
+            $post['tags'] = $this->getTags($post['id']);
+            array_push($post_data, $post);
         }
-        $req = $req->withAttribute('posts', $data);
-//        return $res->withJson($data);
-        return $this->view->render($res, 'admin/post.html', $req->getAttributes());
-    })->setName('getAdminPostListHTML');
-
-    /*
-     * Post Page Add
+        return $post_data;
+    }
+    /**
+     * get post detail by id
+     * @param  integer $id post id
+     * @return object post data object
      */
-    $this->get('/add', function ($req, $res, $args) {
+    public function getPostById($id){
+        $post = $this->pdo->select()->from('post')->where('id', '=', $id)->execute()->fetch();
+        $post['tags'] = $this->getTags($id);
+        return $post;
+    }
+    /**
+     * get post autosave data by parent post id
+     * @param  integer $id parent post id
+     * @return object post autosave data object
+     */
+    public function getAutosavePostById($id){
+        $autosave = $this->pdo->select()->from('post')->whereLike('title_url', $id.'-autosave')->execute()->fetch();
+        return $autosave;
+    }
+    /**
+     * get post revision data by parent id
+     * @param  integer $id parent post id
+     * @return object post revisions data object
+     */
+    public function getRevisionsPostById($id){
+        $revisions = $this->pdo->select()->from('post')->whereLike('title_url',  $id.'-revision')->execute()->fetchAll();
+        foreach($revisions as $key => $revision){
+            $revisions[$key]['authors'] = $this->getUserDetail($revision['author']);
+        }
+        return $revisions;
+    }
+    /**
+     * update post data by id
+     * @param  integer $id   post id
+     * @param  object  $data post data
+     * @param  integer $type post status type
+     * @param  string  $tag  post tags string
+     * @return boolean PDO Statement Execute
+     */
+    public function setPostById($id, $data, $type, $tag){
+        $data['status'] = $type;
+        $data['title_url'] = $this->slug->make($data['title']);
+        $savePost = $this->pdo->update($data)->table('post')->where('id', '=', $id)->execute();
+        if($savePost){
+            $this->setTags($id, $tag);
+        }
+        return $savePost;
+    }
+    /**
+     * insert post data
+     * @param  boolean $data post data
+     * @param  integer $type post status type
+     * @param  string  $tag  post tag string
+     * @return boolean PDO Statement Execute
+     */
+    public function setNewPost($data, $type, $tag){
+        $data['status'] = $type;
+        $data['title_url'] = $this->slug->make($data['title']);
+        $savePost = $this->pdo->insert(array_keys($data))->into('post')->values(array_values($data))->execute(true);
+        if($savePost){
+            $this->setTags($savePost, $tag);
+        }
+        return $savePost;
+    }
+    /**
+     * update autosave data by parent post id
+     * @param  integer  $id           parent post id
+     * @param  object   $data         post data
+     * @param  integer  $type         post status type
+     * @param  boolean  [$done=false] is autosave done?
+     * @return boolean  PDO Execute Result
+     */
+    public function setAutosavePostById($id, $data, $type, $done=false){
+        $data['status'] = $type;
+        $data['title_url'] = $id.'-autosave'.($done ? '-done': '');
+        $deleteAutosave = $this->pdo->delete()->from('post')->whereLike('title_url', $id.'-autosave%')->execute();
+        $addAutosave = $this->pdo->insert(array_keys($data))->into('post')->values(array_values($data))->execute(true);
+        return $addAutosave;
+    }
+    /**
+     * update post revision data by parent id
+     * @param  integer $id parent post id
+     * @return object post revisions data object
+     */
+    public function setRevisionsPostById($id, $data){
+        $data['status'] = 5;
+        $data['title_url']=$id.'-revision';
+        $countRevisions = $this->pdo->select(['count(id)'])->from('post')
+            ->where('status', '=', 5)->whereLike('title_url', $id.'-revision')
+            ->execute()->fetchColumn();
+        if($countRevisions >= 3){
+            $oldRevision = $this->pdo->select(['id'])->from('post')
+                ->whereLike('title_url', $id.'-revision')
+                ->orderBy('id')->limit(1, 0)
+                ->execute()->fetchColumn();
+            $deleteRevision = $this->pdo->delete()->from('post')->where('id', '=', $oldRevision)->execute();
+        }
+        $addRevision = $this->pdo->insert(array_keys($data))->into('post')->values(array_values($data))->execute(true);
+        return $addRevision;
+    }
+    /**
+     * chage the post status and the autosave
+     * @param  float $id     post id
+     * @param  integer $status post status in integer
+     * @return boolean PDO Execute Result
+     */
+    public function setPostStatus($id, $status){
+        $ChagePostStatus = $this->pdo->update(['status'=>$status])->table('post')->where('id', '=', $id);
+        if($ChagePostStatus->execute()){
+            $chageAutosaveStatus = $this->pdo->update(['status'=>$status+1])->table('post')->whereLike('title_url', $id.'-autosave%');
+            return $chageAutosaveStatus->execute();
+        }
+    }
+    /**
+     * chage the post deleted status and the autosave
+     * @param  float $id     post id
+     * @param  integer $status post deleted status in integer
+     * @return boolean PDO Execute Result
+     */
+    public function setPostDeletedStatus($id, $status){
+        $ChagePostStatus = $this->pdo->update(['deleted'=>$status])->table('post')->where('id', '=', $id);
+        if($ChagePostStatus->execute()){
+            $chageAutosaveStatus = $this->pdo->update(['deleted'=>$status])->table('post')->whereLike('title_url', $id.'-autosave%');
+            return $chageAutosaveStatus->execute();
+        }
+    }
+    /**
+     * display posts list page
+     * @param  \Psr\Http\Message\ServerRequestInterface $req  PSR7 request
+     * @param  \Psr\Http\Message\ResponseInterface      $res  PSR7 response
+     * @param  object                                   $args URL Parameter Object
+     * @return HTML                                     HTML Rendered Page
+     */
+    public function displayPostsList($req, $res, $args){
+        $req = $req->withAttribute('sidemenu', ['post'=>'all']);
+        $req = $req->withAttribute('post_tab', (isset($args['type']) ? $args['type'] : 'all'));
+        $req = $req->withAttribute('posts', $this->getPostsList((isset($args['type']) ? $args['type'] : 'all')));
+        return $this->view->render($res, 'admin/post/index.html', $req->getAttributes());
+
+    }
+    /**
+     * display New Post page
+     * @param  \Psr\Http\Message\ServerRequestInterface $req  PSR7 request
+     * @param  \Psr\Http\Message\ResponseInterface      $res  PSR7 response
+     * @param  object                                   $args URL Parameter Object
+     * @return HTML                                     HTML Rendered Page
+     */
+    public function displayNewPost($req, $res, $args){
         $req = $req->withAttribute('sidemenu', ['post'=>'add']);
-        return $this->view->render($res, 'admin/add-post.html', $req->getAttributes());
-    })->setName('getAdminPostAddHTML');
-
-    /*
-     * Post Page edit
+        return $this->view->render($res, 'admin/post/add.html', $req->getAttributes());
+    }
+    /**
+     * display Edit Post page
+     * @param  \Psr\Http\Message\ServerRequestInterface $req  PSR7 request
+     * @param  \Psr\Http\Message\ResponseInterface      $res  PSR7 response
+     * @param  object                                   $args URL Parameter Object
+     * @return HTML                                     HTML Rendered Page
      */
-    $this->get('/edit[/{id}]', function ($req, $res, $args) {
+    public function displayEditPost($req, $res, $args){
         $req = $req->withAttribute('sidemenu', ['post'=>'l']);
-        $select = $this->db->prepare("
-            SELECT
-                post.id, post.category_id, post.author, post.date, post.title, post.title_url, post.content, post.visibility, post.`password`, post.`status`, post.header_image, post.deleted,
-                (SELECT GROUP_CONCAT(tags.`name`) from tags as tags, post_tags as post_tags where tags.id=post_tags.tag_id and post_tags.post_id = post.id) as tags
-            FROM
-                post as post
-            WHERE
-                post.id = :id
-        ");
-        $select->bindParam(':id', $args['id'], PDO::PARAM_INT);
-        if($select->execute()){
-            $post_data = $select->fetch(PDO::FETCH_ASSOC);
-            $req = $req->withAttribute('post_data', $post_data);
-        }
-        $select_autosave = $this->db->prepare("
-            SELECT
-                post.id, post.category_id, post.author, post.date, post.title, post.title_url, post.content, post.visibility, post.`password`, post.`status`, post.header_image, post.deleted,
-                (SELECT GROUP_CONCAT(tags.`name`) from tags as tags, post_tags as post_tags where tags.id=post_tags.tag_id and post_tags.post_id = post.id) as tags
-            FROM
-                post as post
-            WHERE
-                post.title_url=:id_autosave
-        ");
-        $select_autosave->bindValue(':id_autosave', $args['id'].'-autosave', PDO::PARAM_STR);
-        if($select_autosave->execute()){
-            $post_autosave = $select_autosave->fetch(PDO::FETCH_ASSOC);
-            $req = $req->withAttribute('post_data_autosave', $post_autosave);
-        }
-        $select_revisions = $this->db->prepare("
-            SELECT
-                post.id, post.category_id, post.author, post.date, post.title, post.title_url, post.content, post.visibility, post.`password`, post.`status`, post.header_image, post.deleted,
-                (SELECT GROUP_CONCAT(tags.`name`) from tags as tags, post_tags as post_tags where tags.id=post_tags.tag_id and post_tags.post_id = post.id) as tags
-            FROM
-                post as post
-            WHERE
-                post.title_url=:id_revisions
-            ORDER BY
-                post.id DESC
-        ");
-        $select_revisions->bindValue(':id_revisions', $args['id'].'-revision', PDO::PARAM_STR);
-        if($select_revisions->execute()){
-            $revisions = [];
-            foreach($select_revisions->fetchAll(PDO::FETCH_ASSOC) as $rev){
-                $rev['authors'] = $this->db->query("select nickname, image from users where id='".$rev['author']."'")->fetch(PDO::FETCH_ASSOC);
-                array_push($revisions, $rev);
-            }
-            $req = $req->withAttribute('post_data_revisions', $revisions);
-        }
-        return $this->view->render($res, 'admin/edit-post.html', $req->getAttributes());
-    })->setName('getAdminPostEditHTML');
-
-    /*
-     * Post Page version diferent
+        $req = $req->withAttribute('post_data', $this->getPostById($args['id']));
+        $req = $req->withAttribute('post_data_autosave', $this->getAutosavePostById($args['id']));
+        $req = $req->withAttribute('post_data_revisions', $this->getRevisionsPostById($args['id']));
+        return $this->view->render($res, 'admin/post/edit.html', $req->getAttributes());
+    }
+    /**
+     * display diff Post page
+     * @param  \Psr\Http\Message\ServerRequestInterface $req  PSR7 request
+     * @param  \Psr\Http\Message\ResponseInterface      $res  PSR7 response
+     * @param  object                                   $args URL Parameter Object
+     * @return HTML                                     HTML Rendered Page
      */
-    $this->get('/diff[/{id}]', function ($req, $res, $args) {
+    public function displayDiffRevisionsPost($req, $res, $args){
         $req = $req->withAttribute('sidemenu', ['post'=>'diff']);
-        $select = $this->db->prepare("
-            SELECT
-                post.id, post.category_id, post.author, post.date, post.title, post.title_url, post.content, post.visibility, post.`password`, post.`status`, post.header_image, post.deleted,
-                (SELECT GROUP_CONCAT(tags.`name`) from tags as tags, post_tags as post_tags where tags.id=post_tags.tag_id and post_tags.post_id = post.id) as tags
-            FROM
-                post as post
-            WHERE
-                post.id = :id
-        ");
-        $select->bindParam(':id', $args['id'], PDO::PARAM_INT);
-        if($select->execute()){
-            $post_data = $select->fetch(PDO::FETCH_ASSOC);
-            $req = $req->withAttribute('post_data', $post_data);
-            $post_data['authors'] = $this->db->query("select nickname, image from users where id='".$post_data['author']."'")->fetch(PDO::FETCH_ASSOC);
+        $revisions = [];
+        foreach($this->getRevisionsPostById($args['id']) as $rev){
+            $post = $this->getPostById($args['id']);
+            $rev['titleRevToMain'] = $this->diff->render($rev['title'], $post['title']);
+            $rev['contentRevToTitle'] = $this->diff->render(strip_tags($rev['content']), strip_tags($post['content']));
+            $rev['oldTitle'] = $post['title'];
+            $rev['oldContent'] = $post['content'];
+            $rev['oldId'] = $post['id'];
+            array_push($revisions, $rev);
         }
-        $select_revisions = $this->db->prepare("
-            SELECT
-                post.id, post.category_id, post.author, post.date, post.title, post.title_url, post.content, post.visibility, post.`password`, post.`status`, post.header_image, post.deleted,
-                (SELECT GROUP_CONCAT(tags.`name`) from tags as tags, post_tags as post_tags where tags.id=post_tags.tag_id and post_tags.post_id = post.id) as tags
-            FROM
-                post as post
-            WHERE
-                post.title_url=:id_revisions
-            ORDER BY
-                post.id asc
-        ");
-        $select_revisions->bindValue(':id_revisions', $args['id'].'-revision', PDO::PARAM_STR);
-        if($select_revisions->execute()){
-            $revisions = [];
-            $revs = $select_revisions->fetchAll(PDO::FETCH_ASSOC);
-            if(array_key_exists(0, $revs)){
-                $rev = $revs[0];
-                $rev['authors'] = $this->db->query("select nickname, image from users where id='".$req->getAttribute('post_data')['author']."'")->fetch(PDO::FETCH_ASSOC);
-                $prevContent = strip_tags($rev['content']);
-                $currentContent = strip_tags($req->getAttribute('post_data')['content']);
-                $rev['titleRevToMain'] = $this->diff->render($rev['title'], $req->getAttribute('post_data')['title']);
-                $rev['contentRevToTitle'] = $this->diff->render($prevContent, $currentContent);
-                $revisions[0] = $rev;
-            }
-            if(array_key_exists(1, $revs)){
-                $rev = $revs[1];
-                $rev['authors'] = $this->db->query("select nickname, image from users where id='".$rev['author']."'")->fetch(PDO::FETCH_ASSOC);
-                $prevContent = strip_tags($revs[0]['content']);
-                $currentContent = strip_tags($rev['content']);
-                $rev['titleRevToMain'] = $this->diff->render($revs[0]['title'], $rev['title']);
-                $rev['contentRevToTitle'] = $this->diff->render($prevContent, $currentContent);
-                $revisions[1] = $rev;
-            }
-            if(array_key_exists(2, $revs)){
-                $rev = $revs[2];
-                $rev['authors'] = $this->db->query("select nickname, image from users where id='".$rev['author']."'")->fetch(PDO::FETCH_ASSOC);
-                $prevContent = strip_tags($revs[1]['content']);
-                $currentContent = strip_tags($rev['content']);
-                $rev['titleRevToMain'] = $this->diff->render($revs[1]['title'], $rev['title']);
-                $rev['contentRevToTitle'] = $this->diff->render($prevContent, $currentContent);
-                $revisions[2] = $rev;
-            }
-            $req = $req->withAttribute('post_data_revisions', $revisions);
-        }
-        return $this->view->render($res, 'admin/diff-post.html', $req->getAttributes());
-    })->setName('getAdminPostDiffHTML');
-
-    $this->get('/revert[/{id}[/{rev_id}]]', function ($req, $res, $args) {
-        $revisions = $this->db->query("select title, content from post where id='".$args['rev_id']."'")->fetch(PDO::FETCH_ASSOC);
-        $update = $this->db->prepare("
-            update post
-            set author=:author, date=:date, title=:title, title_url=:title_url, content=:content
-            where id=:id
-        ");
-        $user_id = $this->session->user_id;
-        $update->bindValue(':id', $args['id'], PDO::PARAM_INT);
-        $update->bindValue(':author', $user_id, PDO::PARAM_INT);
-        $update->bindValue(':date', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-        $update->bindValue(':title', $revisions['title'], PDO::PARAM_STR);
-        $update->bindValue(':title_url', $this->slug->make($revisions['title']), PDO::PARAM_STR);
-        $update->bindValue(':content', $revisions['content'], PDO::PARAM_STR);
-        if($update->execute()){
-            return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('getAdminPostEditHTML', ['id'=>$args['id']]));
-        }else{
-            $res = $res->withJson([
-                'status'=>'publish-autosaved failed',
-                'id'=>$args['id']
-            ]);
-        }
-    })->setName('getAdminPostRevertRevisions302');
-
-    /*
-     * Post Actions - change status type
-     * - change to published
-     * - change to draft
-     * - change to trash (temporary delete)
-     * - permanent delete
+        $req = $req->withAttribute('post_data_revisions', $revisions);
+        return $this->view->render($res, 'admin/post/diff.html', $req->getAttributes());
+    }
+    /**
+     * Actions To Revert the revisions
+     * @param  \Psr\Http\Message\ServerRequestInterface $req  PSR7 request
+     * @param  \Psr\Http\Message\ResponseInterface      $res  PSR7 response
+     * @param  object                                   $args URL Parameter Object
+     * @return 302                                      HTML Rendered Page
      */
-    $this->post('/change[/{id}[/{action}]]', function ($req, $res, $args) {
+    public function actionsRevertDiff($req, $res, $args){
+        $post = $this->getPostById($args['id']);
+        foreach($this->getRevisionsPostById($args['id']) as $rev){
+            if($rev['id'] == $args['rev_id']){
+                $data = [
+                    'author'    => $this->user_id,
+                    'date'      => date("Y-m-d H:i:s"),
+                    'title'     => $rev['title'],
+                    'title_url' => $this->slug->make($rev['title']),
+                    'content'   => $rev['content']
+                ];
+                $RevertPost = $this->setPostById($args['id'], $data, $post['status'], implode(', ', $post['tags']));
+                if($RevertPost){
+                    return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('getAdminPostEditHTML', ['id'=>$args['id']]));
+                }
+            }
+        }
+        return $this->view->render($res, 'admin/post/diff.html', $req->getAttributes());
+    }
+    /**
+     * Actions Change Post Status / Post Deleted Status
+     * @param  \Psr\Http\Message\ServerRequestInterface $req  PSR7 request
+     * @param  \Psr\Http\Message\ResponseInterface      $res  PSR7 response
+     * @param  object                                   $args URL Parameter Object
+     * @return JSON                                     Actions Status
+     */
+    public function actionsChangePostStatus($req, $res, $args){
         switch($args['action']){
             case 'draft':
+                if($this->setPostStatus($args['id'], 1)){
+                    $res = $res->withJson(['success'=>true]);
+                }
+                break;
             case 'publish':
-                $update = $this->db->prepare('update post set status=:status where id=:id');
-                $update->bindValue(':id', $args['id'], PDO::PARAM_INT);
-                $update->bindValue(':status', ($args['action'] == 'draft' ? 1 : 3), PDO::PARAM_INT);
-                if($update->execute()){
-                    $update = $this->db->prepare('update post set status=:status where title_url like :title_url');
-                    $update->bindValue(':title_url', $args['id'].'-autosave%', PDO::PARAM_STR);
-                    $update->bindValue(':status', ($args['action'] == 'draft' ? 2 : 4), PDO::PARAM_INT);
-                    if($update->execute()){
-                        $res->withJSON(['success'=>true]);
-                    }else{
-                        $res->withJSON(['success'=>false]);
-                    }
+                if($this->setPostStatus($args['id'], 3)){
+                    $res = $res->withJson(['success'=>true]);
                 }
                 break;
             case 'trash':
+                if($this->setPostDeletedStatus($args['id'], 1)){
+                    $res = $res->withJson(['success'=>true]);
+                }
+                break;
             case 'revert':
-                $update = $this->db->prepare('update post set deleted=:status where id=:id');
-                $update->bindValue(':id', $args['id'], PDO::PARAM_INT);
-                $update->bindValue(':status', ($args['action'] == 'trash' ? 1 : 0), PDO::PARAM_INT);
-                if($update->execute()){
-                    $update = $this->db->prepare('update post set deleted=:status where title_url like :title_url');
-                    $update->bindValue(':title_url', $args['id'].'-autosave%', PDO::PARAM_STR);
-                    $update->bindValue(':status', ($args['action'] == 'trash' ? 1 : 0), PDO::PARAM_INT);
-                    if($update->execute()){
-                        $res->withJSON(['success'=>true]);
-                    }else{
-                        $res->withJSON([
-                            'success'=>false
-                        ]);
-                    }
+                if($this->setPostDeletedStatus($args['id'], 0)){
+                    $res = $res->withJson(['success'=>true]);
                 }
                 break;
             case 'delete':
-//                $update = $this->db->prepare('update post set deleted=:status where id=:id');
-//                $update->bindParam(':id', $args['id'], PDO::PARAM_INT);
-//                $update->bindValue(':status', 0, PDO::PARAM_INT);
-                $res->withJSON(['success'=>false]);
+                if($this->setPostDeletedStatus($args['id'], 2)){
+                    $res = $res->withJson(['success'=>true]);
+                }
                 break;
         }
-    })->setName('postAdminPostChangeJSON');
+        return $res;
+    }
 
-    /*
-     * post action
-     * - 0 'new' create new post to db and create the first autosave version of post
-     * - 1 'draft-autosave' automaticaly save the post data to draft backup
-     * - 2 'draft-saved' save the post as draft
-     * - 3 'publish-autosave' automaticaly save the post data to published backup
-     * - 4 'publish-saved' publish the post
-     * - 5 'revision' save 3 revision of the post
+    /**
+     * Action save changes to post
+     * @param  \Psr\Http\Message\ServerRequestInterface $req  PSR7 request
+     * @param  \Psr\Http\Message\ResponseInterface      $res  PSR7 response
+     * @param  object                                   $args URL Parameter Object
+     * @return JSON                                     Actions Status
      */
-    $this->post('/save[/{id}]', function ($req, $res, $args) {
+    public function actionsSavePost($req, $res, $args){
+        $data = [
+            'category_id'   => $_POST['category'],
+            'author'        => $this->session->user_id,
+            'date'          => date("Y-m-d H:i:s"),
+            'title'         => $_POST['title'],
+            'content'       => $_POST['content'],
+            'visibility'    => $_POST['visibility'],
+            'password'      => md5($_POST['password']),
+            'header_image'  => $_POST['image'],
+            'deleted'       => 0
+        ];
+        $response = [];
         if(isset($args['id'])){
-            $title = $_POST['title'];
-            $content = $_POST['content'];
-            $visibility = $_POST['visibility'];
-            $password = $_POST['password'];
-            $category = $_POST['category'];
-            $tag = $_POST['tag'];
-            $image = $_POST['image'];
-            $user_id = $this->session->user_id;
             $id = $args['id'];
-            $type = $_POST['type'];
-            switch($type){
+            switch($_POST['type']){
                 case 'draft-autosave':
-                    $id = $this->db->query("select id from post where title_url like '".$args['id']."-autosave%'")->fetchColumn();
-                    $update = $this->db->prepare("
-                        update post
-                        set category_id=:categorry_id, author=:author, date=:date, title=:title, title_url=:title_url, content=:content, visibility=:visibility, password=:password, status=:status, header_image=:header_image
-                        where id=:id
-                    ");
-                    $update->bindValue(':id', $id, PDO::PARAM_INT);
-                    $update->bindValue(':categorry_id', $category, PDO::PARAM_INT);
-                    $update->bindValue(':author', $user_id, PDO::PARAM_INT);
-                    $update->bindValue(':date', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-                    $update->bindValue(':title', $title, PDO::PARAM_STR);
-                    $update->bindValue(':title_url', $args['id'].'-autosave', PDO::PARAM_STR);
-                    $update->bindValue(':content', $content, PDO::PARAM_STR);
-                    $update->bindValue(':visibility', $visibility, PDO::PARAM_INT);
-                    $update->bindValue(':password', md5($password), PDO::PARAM_STR);
-                    $update->bindValue(':status', 2, PDO::PARAM_INT);
-                    $update->bindValue(':header_image', $image, PDO::PARAM_STR);
-                    if($update->execute()){
-                        $res = $res->withJson([
-                            'status'=>'draft-autosaved',
-                            'id'=>$args['id']
-                        ]);
-                        $this->tags->set($id, $tags = explode(',', $tag));
-                    }else{
-                        $res = $res->withJson([
-                            'status'=>'draft-autosave failed',
-                            'id'=>$args['id']
-                        ]);
+                    if($this->setAutosavePostById($id, $data, 2)){
+                        $response = [ 'status'=>'draft-autosaved', 'id'=>$args['id'] ];
                     }
                     break;
                 case 'draft-saved':
-                    $update = $this->db->prepare("
-                        update post
-                        set category_id=:categorry_id, author=:author, date=:date, title=:title, title_url=:title_url, content=:content, visibility=:visibility, password=:password, status=:status, header_image=:header_image
-                        where id=:id
-                    ");
-                    $update->bindValue(':id', $args['id'], PDO::PARAM_INT);
-                    $update->bindValue(':categorry_id', $category, PDO::PARAM_INT);
-                    $update->bindValue(':author', $user_id, PDO::PARAM_INT);
-                    $update->bindValue(':date', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-                    $update->bindValue(':title', $title, PDO::PARAM_STR);
-                    $update->bindValue(':title_url', $this->slug->make($title), PDO::PARAM_STR);
-                    $update->bindValue(':content', $content, PDO::PARAM_STR);
-                    $update->bindValue(':visibility', $visibility, PDO::PARAM_INT);
-                    $update->bindValue(':password', md5($password), PDO::PARAM_STR);
-                    $update->bindValue(':status', 1, PDO::PARAM_INT);
-                    $update->bindValue(':header_image', $image, PDO::PARAM_STR);
-                    if($update->execute()){
-                        $this->tags->set($id, $tags = explode(',', $tag));
-                        $autosaveid = $this->db->query("select id from post where title_url like '".$args['id']."-autosave%'")->fetchColumn();
-                        $update = $this->db->prepare("
-                            update post
-                            set category_id=:categorry_id, author=:author, date=:date, title=:title, title_url=:title_url, content=:content, visibility=:visibility, password=:password, status=:status, header_image=:header_image
-                            where id=:id
-                        ");
-                        $update->bindValue(':id', $autosaveid, PDO::PARAM_INT);
-                        $update->bindValue(':categorry_id', $category, PDO::PARAM_INT);
-                        $update->bindValue(':author', $user_id, PDO::PARAM_INT);
-                        $update->bindValue(':date', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-                        $update->bindValue(':title', $title, PDO::PARAM_STR);
-                        $update->bindValue(':title_url', $id.'-autosave-done', PDO::PARAM_STR);
-                        $update->bindValue(':content', $content, PDO::PARAM_STR);
-                        $update->bindValue(':visibility', $visibility, PDO::PARAM_INT);
-                        $update->bindValue(':password', md5($password), PDO::PARAM_STR);
-                        $update->bindValue(':status', 2, PDO::PARAM_INT);
-                        $update->bindValue(':header_image', $image, PDO::PARAM_STR);
-                        if($update->execute()){
-                            $this->tags->set($autosaveid, $tags = explode(',', $tag));
-                        }
-                        $revisions = $this->db->query("select count(id) from post where status='5' and title_url like '".$args['id']."-revision'")->fetchColumn();
-                        if($revisions < 3){
-                            $insert = $this->db->prepare("
-                                insert into post
-                                (category_id, author, date, title, title_url, content, visibility, password, status, header_image, deleted)
-                                values(:categorry_id, :author, :date, :title, :title_url, :content, :visibility, :password, :status, :header_image, 0)
-                            ");
-                            $insert->bindValue(':categorry_id', $category, PDO::PARAM_INT);
-                            $insert->bindValue(':author', $user_id, PDO::PARAM_INT);
-                            $insert->bindValue(':date', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-                            $insert->bindValue(':title', $title, PDO::PARAM_STR);
-                            $insert->bindValue(':title_url', $id.'-revision', PDO::PARAM_STR);
-                            $insert->bindValue(':content', $content, PDO::PARAM_STR);
-                            $insert->bindValue(':visibility', $visibility, PDO::PARAM_INT);
-                            $insert->bindValue(':password', md5($password), PDO::PARAM_STR);
-                            $insert->bindValue(':status', 5, PDO::PARAM_INT);
-                            $insert->bindValue(':header_image', $image, PDO::PARAM_STR);
-                            if($insert->execute()){
-                                $revisionid = $this->db->lastInsertId();
-                                $this->tags->set($revisionid, $tags = explode(',', $tag));
-                            }
-                        }else{
-                            $oldRevId = $this->db->query("SELECT post.id FROM post WHERE post.title_url LIKE '".$id."-revision' ORDER BY post.id ASC LIMIT 1")->fetchColumn();
-                            if($this->tags->clean($oldRevId)){
-                                $this->db->exec("delete from post where id='".$oldRevId."'");
-                            }
-                            $insert = $this->db->prepare("
-                                insert into post
-                                (category_id, author, date, title, title_url, content, visibility, password, status, header_image, deleted)
-                                values(:categorry_id, :author, :date, :title, :title_url, :content, :visibility, :password, :status, :header_image, 0)
-                            ");
-                            $insert->bindValue(':categorry_id', $category, PDO::PARAM_INT);
-                            $insert->bindValue(':author', $user_id, PDO::PARAM_INT);
-                            $insert->bindValue(':date', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-                            $insert->bindValue(':title', $title, PDO::PARAM_STR);
-                            $insert->bindValue(':title_url', $id.'-revision', PDO::PARAM_STR);
-                            $insert->bindValue(':content', $content, PDO::PARAM_STR);
-                            $insert->bindValue(':visibility', $visibility, PDO::PARAM_INT);
-                            $insert->bindValue(':password', md5($password), PDO::PARAM_STR);
-                            $insert->bindValue(':status', 5, PDO::PARAM_INT);
-                            $insert->bindValue(':header_image', $image, PDO::PARAM_STR);
-                            if($insert->execute()){
-                                $revisionid = $this->db->lastInsertId();
-                                $this->tags->set($revisionid, $tags = explode(',', $tag));
-                            }
-
-                        }
-                        $res = $res->withJson([
-                            'status'=>'draft-saved',
-                            'id'=>$args['id']
-                        ]);
-                    }else{
-                        $res = $res->withJson([
-                            'status'=>'draft-save failed',
-                            'id'=>$id
-                        ]);
+                    if($this->setPostById($id, $data, 1, $_POST['tag'])){
+                        $this->setAutosavePostById($id, $data, 2, true);
+                        $this->setRevisionsPostById($id, $data);
                     }
                     break;
                 case 'publish-autosave':
-                    $id = $this->db->query("select id from post where title_url like '".$args['id']."-autosave%'")->fetchColumn();
-                    $update = $this->db->prepare("
-                        update post
-                        set category_id=:categorry_id, author=:author, date=:date, title=:title, title_url=:title_url, content=:content, visibility=:visibility, password=:password, status=:status, header_image=:header_image
-                        where id=:id
-                    ");
-                    $update->bindValue(':id', $id, PDO::PARAM_INT);
-                    $update->bindValue(':categorry_id', $category, PDO::PARAM_INT);
-                    $update->bindValue(':author', $user_id, PDO::PARAM_INT);
-                    $update->bindValue(':date', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-                    $update->bindValue(':title', $title, PDO::PARAM_STR);
-                    $update->bindValue(':title_url', $args['id'].'-autosave', PDO::PARAM_STR);
-                    $update->bindValue(':content', $content, PDO::PARAM_STR);
-                    $update->bindValue(':visibility', $visibility, PDO::PARAM_INT);
-                    $update->bindValue(':password', md5($password), PDO::PARAM_STR);
-                    $update->bindValue(':status', 4, PDO::PARAM_INT);
-                    $update->bindValue(':header_image', $image, PDO::PARAM_STR);
-                    if($update->execute()){
-                        $res = $res->withJson([
-                            'status'=>'publish-autosaved',
-                            'id'=>$args['id']
-                        ]);
-                        $this->tags->set($id, $tags = explode(',', $tag));
-                    }else{
-                        $res = $res->withJson([
-                            'status'=>'publish-autosaved failed',
-                            'id'=>$args['id']
-                        ]);
+                    if($this->setAutosavePostById($id, $data, 4)){
+                        $response = [ 'status'=>'draft-autosaved', 'id'=>$args['id'] ];
                     }
                     break;
                 case 'publish-saved':
-                    $update = $this->db->prepare("
-                        update post
-                        set category_id=:categorry_id, author=:author, date=:date, title=:title, title_url=:title_url, content=:content, visibility=:visibility, password=:password, status=:status, header_image=:header_image
-                        where id=:id
-                    ");
-                    $update->bindValue(':id', $args['id'], PDO::PARAM_INT);
-                    $update->bindValue(':categorry_id', $category, PDO::PARAM_INT);
-                    $update->bindValue(':author', $user_id, PDO::PARAM_INT);
-                    $update->bindValue(':date', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-                    $update->bindValue(':title', $title, PDO::PARAM_STR);
-                    $update->bindValue(':title_url', $this->slug->make($title), PDO::PARAM_STR);
-                    $update->bindValue(':content', $content, PDO::PARAM_STR);
-                    $update->bindValue(':visibility', $visibility, PDO::PARAM_INT);
-                    $update->bindValue(':password', md5($password), PDO::PARAM_STR);
-                    $update->bindValue(':status', 3, PDO::PARAM_INT);
-                    $update->bindValue(':header_image', $image, PDO::PARAM_STR);
-                    if($update->execute()){
-                        $this->tags->set($id, $tags = explode(',', $tag));
-                        $autosaveid = $this->db->query("select id from post where title_url like '".$args['id']."-autosave%'")->fetchColumn();
-                        $update = $this->db->prepare("
-                            update post
-                            set category_id=:categorry_id, author=:author, date=:date, title=:title, title_url=:title_url, content=:content, visibility=:visibility, password=:password, status=:status, header_image=:header_image
-                            where id=:id
-                        ");
-                        $update->bindValue(':id', $autosaveid, PDO::PARAM_INT);
-                        $update->bindValue(':categorry_id', $category, PDO::PARAM_INT);
-                        $update->bindValue(':author', $user_id, PDO::PARAM_INT);
-                        $update->bindValue(':date', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-                        $update->bindValue(':title', $title, PDO::PARAM_STR);
-                        $update->bindValue(':title_url', $id.'-autosave-done', PDO::PARAM_STR);
-                        $update->bindValue(':content', $content, PDO::PARAM_STR);
-                        $update->bindValue(':visibility', $visibility, PDO::PARAM_INT);
-                        $update->bindValue(':password', md5($password), PDO::PARAM_STR);
-                        $update->bindValue(':status', 4, PDO::PARAM_INT);
-                        $update->bindValue(':header_image', $image, PDO::PARAM_STR);
-                        if($update->execute()){
-                            $this->tags->set($autosaveid, $tags = explode(',', $tag));
-                        }
-                        $revisions = $this->db->query("select count(id) from post where status='5' and title_url like '".$args['id']."-revision'")->fetchColumn();
-                        if($revisions < 3){
-                            $insert = $this->db->prepare("
-                                insert into post
-                                (category_id, author, date, title, title_url, content, visibility, password, status, header_image, deleted)
-                                values(:categorry_id, :author, :date, :title, :title_url, :content, :visibility, :password, :status, :header_image, 0)
-                            ");
-                            $insert->bindValue(':categorry_id', $category, PDO::PARAM_INT);
-                            $insert->bindValue(':author', $user_id, PDO::PARAM_INT);
-                            $insert->bindValue(':date', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-                            $insert->bindValue(':title', $title, PDO::PARAM_STR);
-                            $insert->bindValue(':title_url', $id.'-revision', PDO::PARAM_STR);
-                            $insert->bindValue(':content', $content, PDO::PARAM_STR);
-                            $insert->bindValue(':visibility', $visibility, PDO::PARAM_INT);
-                            $insert->bindValue(':password', md5($password), PDO::PARAM_STR);
-                            $insert->bindValue(':status', 5, PDO::PARAM_INT);
-                            $insert->bindValue(':header_image', $image, PDO::PARAM_STR);
-                            if($insert->execute()){
-                                $revisionid = $this->db->lastInsertId();
-                                $this->tags->set($revisionid, $tags = explode(',', $tag));
-                            }
-                        }else{
-                            $oldRevId = $this->db->query("SELECT post.id FROM post WHERE post.title_url LIKE '".$id."-revision' ORDER BY post.id ASC LIMIT 1")->fetchColumn();
-                            if($this->tags->clean($oldRevId)){
-                                $this->db->exec("delete from post where id='".$oldRevId."'");
-                            }
-                            $insert = $this->db->prepare("
-                                insert into post
-                                (category_id, author, date, title, title_url, content, visibility, password, status, header_image, deleted)
-                                values(:categorry_id, :author, :date, :title, :title_url, :content, :visibility, :password, :status, :header_image, 0)
-                            ");
-                            $insert->bindValue(':categorry_id', $category, PDO::PARAM_INT);
-                            $insert->bindValue(':author', $user_id, PDO::PARAM_INT);
-                            $insert->bindValue(':date', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-                            $insert->bindValue(':title', $title, PDO::PARAM_STR);
-                            $insert->bindValue(':title_url', $id.'-revision', PDO::PARAM_STR);
-                            $insert->bindValue(':content', $content, PDO::PARAM_STR);
-                            $insert->bindValue(':visibility', $visibility, PDO::PARAM_INT);
-                            $insert->bindValue(':password', md5($password), PDO::PARAM_STR);
-                            $insert->bindValue(':status', 5, PDO::PARAM_INT);
-                            $insert->bindValue(':header_image', $image, PDO::PARAM_STR);
-                            if($insert->execute()){
-                                $revisionid = $this->db->lastInsertId();
-                                $this->tags->set($revisionid, $tags = explode(',', $tag));
-                            }
-                        }
-                        $res = $res->withJson([
-                            'status'=>'publish-saved',
-                            'id'=>$args['id']
-                        ]);
-                    }else{
-                        $res = $res->withJson([
-                            'status'=>'publish-saved failed',
-                            'id'=>$args['id']
-                        ]);
+                    if($this->setPostById($id, $data, 3, $_POST['tag'])){
+                        $this->setAutosavePostById($id, $data, 4, true);
+                        $this->setRevisionsPostById($id, $data);
                     }
                     break;
             }
         }else{
-            $title = $_POST['title'];
-            $title_url = $this->slug->make($_POST['title']);
-            $content = $_POST['content'];
-            $visibility = $_POST['visibility'];
-            $password = $_POST['password'];
-            $category = $_POST['category'];
-            $tag = $_POST['tag'];
-            $image = $_POST['image'];
-            $user_id = $this->session->user_id;
-            $insert = $this->db->prepare("
-                insert into post
-                (category_id, author, date, title, title_url, content, visibility, password, status, header_image, deleted)
-                values(:categorry_id, :author, :date, :title, :title_url, :content, :visibility, :password, :status, :header_image, 0)
-            ");
-            $insert->bindValue(':categorry_id', $category, PDO::PARAM_INT);
-            $insert->bindValue(':author', $user_id, PDO::PARAM_STR);
-            $insert->bindValue(':date', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-            $insert->bindValue(':title', $title, PDO::PARAM_STR);
-            $insert->bindValue(':title_url', $title_url, PDO::PARAM_STR);
-            $insert->bindValue(':content', $content, PDO::PARAM_STR);
-            $insert->bindValue(':visibility', $visibility, PDO::PARAM_INT);
-            $insert->bindValue(':password', md5($password), PDO::PARAM_STR);
-            $insert->bindValue(':status', 1, PDO::PARAM_INT);
-            $insert->bindValue(':header_image', $image, PDO::PARAM_STR);
-            if($insert->execute()){
-                $postid = $this->db->lastInsertId();
-                $this->tags->set($postid, $tags = explode(',', $tag));
-                $insert = $this->db->prepare("
-                    insert into post
-                    (category_id, author, date, title, title_url, content, visibility, password, status, header_image, deleted)
-                    values(:categorry_id, :author, :date, :title, :title_url, :content, :visibility, :password, :status, :header_image, 0)
-                ");
-                $insert->bindValue(':categorry_id', $category, PDO::PARAM_INT);
-                $insert->bindValue(':author', $user_id, PDO::PARAM_STR);
-                $insert->bindValue(':date', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-                $insert->bindValue(':title', $title, PDO::PARAM_STR);
-                $insert->bindValue(':title_url', $postid.'-autosave', PDO::PARAM_STR);
-                $insert->bindValue(':content', $content, PDO::PARAM_STR);
-                $insert->bindValue(':visibility', $visibility, PDO::PARAM_INT);
-                $insert->bindValue(':password', md5($password), PDO::PARAM_STR);
-                $insert->bindValue(':status', 2, PDO::PARAM_INT);
-                $insert->bindValue(':header_image', $image, PDO::PARAM_STR);
-                if($insert->execute()){
-                    $autosave_id = $this->db->lastInsertId();
-                    $this->tags->set($autosave_id, $tags = explode(',', $tag));
-                }
-                $res = $res->withJson([
-                    'status'=>'created',
-                    'id'=>$postid
-                ]);
-            }else{
-                $res = $res->withJson([
-                    'status'=>'failed',
-                    'id'=>$postid
-                ]);
+            $newPost = $this->setNewPost($data, 1, $_POST['tag']);
+            if($newPost){
+                $this->setAutosavePostById($newPost, $data, 2);
+                $response = [ 'status'=>'created', 'id'=>$newPost ];
             }
         }
+        $res = $res->withJson($response);
         return $res;
-    })->setName('postAdminPostSaveJSON');
-})->add(function ($req, $res, $next) {
-    $select = $this->db->query("select * from post_category where group_id='".$req->getAttribute('current_group_data')['id']."' and deleted = '0'")->fetchAll(PDO::FETCH_ASSOC);
-    $req = $req->withAttribute('mw_category_list', $select);
-    $res = $next($req, $res);
-    return $res;
-})->add(function ($req, $res, $next) {
-    $select = $this->db->query("select post.date from post, post_category, groups where post.category_id=post_category.id and post_category.group_id=groups.id and group_id='".$req->getAttribute('current_group_data')['id']."' and post.deleted = '0' group by MONTH(post.date), year(post.date)")->fetchAll(PDO::FETCH_ASSOC);
-    $req = $req->withAttribute('mw_date_groups', $select);
-    $res = $next($req, $res);
-    return $res;
-})->add(function ($req, $res, $next) {
-    $all_post = $this->db->query("select count(post.id) from post, post_category, groups where post.category_id=post_category.id and post_category.group_id=groups.id and group_id='".$req->getAttribute('current_group_data')['id']."' and post.deleted = '0' and post.status<>'2' and post.status<>'4' and post.status<>'5'")->fetchColumn();
-    $published_post = $this->db->query("select count(post.id) from post, post_category, groups where post.category_id=post_category.id and post_category.group_id=groups.id and post.status='3' and group_id='".$req->getAttribute('current_group_data')['id']."' and post.deleted = '0'")->fetchColumn();
-    $draft_post = $this->db->query("select count(post.id) from post, post_category, groups where post.category_id=post_category.id and post_category.group_id=groups.id and post.status='1' and group_id='".$req->getAttribute('current_group_data')['id']."' and post.deleted = '0'")->fetchColumn();
-    $trashed_post = $this->db->query("select count(post.id) from post, post_category, groups where post.category_id=post_category.id and post_category.group_id=groups.id and group_id='".$req->getAttribute('current_group_data')['id']."' and post.deleted = '1' and post.status<>'2' and post.status<>'4' and post.status<>'5'")->fetchColumn();
-    $req = $req->withAttribute('mw_count_all', $all_post);
-    $req = $req->withAttribute('mw_count_published', $published_post);
-    $req = $req->withAttribute('mw_count_draft', $draft_post);
-    $req = $req->withAttribute('mw_count_deleted', $trashed_post);
-    $res = $next($req, $res);
-    return $res;
-})->add($session);
+    }
+}
