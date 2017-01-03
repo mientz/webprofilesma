@@ -1,0 +1,187 @@
+{% extends "admin/base.html" %}{% block head %} {{ parent() }}
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet">
+{% endblock %} {% block title %} Komunitas {% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 no-gutter">
+            <div class="col-md-8 no-gutter">
+                <h3 class="page-title pull-left">Komunitas</h3>
+                <a role="button" class="btn btn-info btn-xs pull-left new-groups" style="margin:8px;">Tambah Baru</a>
+            </div>
+        </div>
+        <div class="col-md-12 no-gutter" id="users-list" style="padding-top:20px;">
+            <div class="tab-content">
+                <div class="tab-pane fade active in" id="all-pages">
+                    <div class="col-md-6 no-gutter">
+                    </div>
+                    <div class="col-md-6 no-gutter">
+                        <div class="form-group">
+                            <div class="input-group" style="padding-left:20px;">
+                                <input type="text" class="form-control input-sm search" style="width:100%" placeholder="Masukkan Pengguna Yang Dicari">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default btn-sm" type="button"><i class="mdi mdi-magnify"></i> Cari Komunitas</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 no-gutter table-responsive">
+                        <table class="table table-striped" id="users-list-table">
+                            <thead>
+                                <tr class="info">
+                                    <th style="width:1em;"></th>
+                                    <th style="width:55px;"></th>
+                                    <th style="min-width:20em;">Nama Komunitas</th>
+                                    <th >Administrator</th>
+                                    <th style="width:150px;">Terdaftar</th>
+                                    <th class="text-right" style="width:5em;">Pengguna</th>
+                                </tr>
+                            </thead>
+                            <tbody class="list">
+                                {% for group in groups %}
+                                {% set meta = group.meta %}
+                                {% set admins = group.admin %}
+                                <tr height='65'>
+                                    <td id="id-container{{group.id}}">
+                                        <div class="checkbox">
+                                            <input type="checkbox" value="{{group.id}}" id="check{{group.id}}" class="pages-checkbox">
+                                            <label for="check{{group.id}}"></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <img src="{{meta.logo}}" style="width:100%;">
+                                    </td>
+                                    <td class="table-list-hasbutton" data-title="{{group.name}}">
+                                        <strong class="name">
+                                            {{group.name}}
+                                        </strong>
+                                        <div class="form-inline">
+                                            <a href="{{ path_for('getAdminGroupsEditHTML', {'id': group.id }) }}" class="btn btn-link btn-sm no-gutter"><span class="label label-info"><i class="fa fa-cog"></i> Pengaturan</span></a>
+                                            <a role="button" class="btn btn-link btn-sm no-gutter groups-delete-sub" data-id="{{group.id}}" data-name="{{group.name}}"><span class="label label-danger"><i class="fa fa-trash"></i> Hapus Permanen</span></a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% for admin in admins %}
+                                        {{admin.username}} (<em>{{admin.nickname}}</em>)<br>
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{meta.date|date("Y/m/d H:i:s")}}</td>
+                                    <td class="text-right">
+                                        {{ group.userGroups|length  }}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <th colspan="6"><center><h4>Belum Ada Komunitas</h4></center></th>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr class="info">
+                                    <th style="width:1em;"></th>
+                                    <th style="width:55px;"></th>
+                                    <th style="min-width:15em;">Nama Komunitas</th>
+                                    <th>Administrator</th>
+                                    <th>Terdaftar</th>
+                                    <th class="text-right">Pengguna</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <ul class="pagination pagination-sm pull-right">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }}
+{% verbatim %}
+<script id="groups-new-dialog" type="x-tmpl-mustache">
+    <form method="post">
+        <fieldset>
+            <div class="form-group">
+                <label class="control-label">Nama Komunitas</label>
+                <input class="form-control" type="text" name="name" placeholder="Contoh : Pramuka">
+            </div>
+            <div class="form-group">
+                <label class="control-label">Admin Komunitas</label>
+                <select class="form-control" id="select" name="admin">
+                    <option value="0">Pilih Admin</option>
+                    {{#users}}
+                    <option value="{{id}}">{{username}} ({{nickname}}) </option>
+                    {{/users}}
+                </select>
+            </div>
+        </fieldset>
+    </form>
+</script>
+{% endverbatim %}
+<script src="public/assets/js/list.min.js"></script>
+<script src="public/assets/js/list.pagination.min.js"></script>
+<script src="public/assets/js/bootbox.min.js"></script>
+<script src="public/assets/js/jquery.form.min.js"></script>
+<script>
+    $(document).ready(function(){
+        bootbox.setLocale('id')
+        var UserList = new List('users-list', {
+            valueNames: [ 'name' ]
+        });
+
+        $('.new-groups').on('click', function(){
+            $.post(globalUrl.getAdminUserListJSON, function(data){
+                var dialog = bootbox.dialog({
+                    className: 'modal-info',
+                    size: 'small',
+                    title: 'Tambah Komunitas',
+                    message: Mustache.render($('#groups-new-dialog').html(), { users: data }),
+                    buttons: {
+                        add: {
+                            label: 'Tambah',
+                            className: "btn-info",
+                            callback: function() {
+                                dialog.find('form').submit(function(e) {
+                                    e.preventDefault;
+                                    // return false to prevent normal browser submit and page navigation
+                                    return false;
+                                });
+
+                                // submit the form
+                                dialog.find('form').ajaxSubmit({
+                                    url: globalUrl.postAdminNewGroupsJSON,
+                                    success:    function(data) {
+                                        if(data.success){
+                                            location.reload();
+                                        }
+                                    }
+                                });
+                            }
+                        },
+                        cancel: {
+                            label: 'Batal',
+                            className: "btn-default",
+                        }
+                    }
+                });
+            }, 'json')
+        });
+
+        $('.groups-delete-sub').on('click', function(){
+            var button = $(this);
+            bootbox.confirm({
+                className: 'modal-danger',
+                title: "Hapus <b>"+button.data('name')+"</b>?",
+                message: "Apakah anda yakin akan menghapus komunitas <b>"+button.data('name')+"</b>?<br><small>Semua Pos, Foto, Halaman, Kategori yang terhubung dalam komunitas ini <em>akan</em> ikut terhapus </small><br><small>pengguna yang terhubung dalam komunitas ini <em>Tidak akan</em> ikut terhapus </small>",
+                callback: function(result){
+                    if(result){
+                        $.post(globalUrl.postAdminDeleteGroupsJSON+'/'+button.data('id'), { name : button.data('name')}, function(data){
+                            if(data.success){
+                                location.reload()
+                            }
+                        })
+                    }
+                }
+            })
+        });
+    })
+</script>
+{% endblock %}

@@ -38,7 +38,7 @@ class Admin{
 
         $user_data = $this->pdo->select()->from('users')->where('id', '=', $user_id)->execute()->fetch();
         $user_data["status"] = json_decode($user_data["status"], true);
-        $user_data["privilege"] = json_decode($user_data["privilege"], true);
+        $user_data["privilege"] = $this->getUserGroupData($user_id, $this->session->groupKey);
 
         return $user_data;
 
@@ -52,14 +52,18 @@ class Admin{
 
         $user_groups = $this->pdo
             ->select([
-                'groups.id', 'groups.`name`', 'groups.name_url', 'groups.header_image', 'groups.meta', 'groups.deleted'
+                'groups.id', 'groups.`name`', 'groups.name_url', 'groups.header_image', 'groups.meta', 'groups.deleted', 'user_group.role'
             ])
             ->from('groups')
             ->join('user_group', 'groups.id', '=', 'user_group.group_id')
             ->where('user_group.user_id', '=', $user_id)
-            ->execute()->fetchAll();
-
-        return $user_groups;
+            ->where('groups.deleted', '=', 0)
+            ->execute();
+        if($user_groups){
+            return $user_groups->fetchAll();
+        }else{
+            return false;
+        }
 
     }
     /**
@@ -68,8 +72,11 @@ class Admin{
      * @return object selected group data
      */
     public function getUserGroupData($user_id, $groupsKey){
-
-        return $this->getUserGroupsData($user_id)[$groupsKey];
+        if($this->getUserGroupsData($user_id)){
+            return $this->getUserGroupsData($user_id)[$groupsKey];
+        }else{
+            return false;
+        }
 
     }
     /**
@@ -82,15 +89,18 @@ class Admin{
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function __invoke($req, $res, $next){
-
+        $group_id;
         $route = $req->getAttribute('route');
-        $user_id = $this->session->user_id;
-        $group_id = $this->getUserGroupData($user_id, $this->session->groupKey)['id'];
-
         if(!isset($this->session->user_id)){
 
-            return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('pre-login'));
+            return $res->withStatus(302)->withHeader('Location', $this->router->pathFor('getAdminAuthLoginHTML'));
 
+        }
+        $user_id = $this->session->user_id;
+        if($this->getUserGroupData($user_id, $this->session->groupKey)){
+            $group_id = $this->getUserGroupData($user_id, $this->session->groupKey)['id'];
+        }else{
+            $group_id = false;
         }
         $req = $req->withAttribute('user_data', $this->getUserDetail($user_id));
         $req = $req->withAttribute('currentUserGroups', $this->getUserGroupsData($user_id));

@@ -35,6 +35,7 @@
                 </div>
                 <div class="collapse navbar-collapse" id="profile-sm-menu">
                     <ul class="nav navbar-nav hidden-xs hidden-sm">
+                        {% if currentUserGroupID %}
                         <li><a href="#" class="btn btn-default navbar-btn btn-lg"><i class="fa fa-envelope-o"></i>&nbsp;<span class="badge">42</span></a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentUserGroup.name}} <span class="caret"></span></a>
@@ -44,6 +45,7 @@
                                 {% endfor %}
                             </ul>
                         </li>
+                        {% endif %}
                         <li>
                             <a href="{{ uri_base }}" target="_blank" class="btn btn-default navbar-btn btn-lg"><span class="badge">SMA Negeri 1 Bangkalan {% if currentUserGroupUrl %} <i class="fa fa-chevron-right"></i> {{currentUserGroup.name}}{% endif %}<i class="fa fa-external-link-square fa-fw"></i></span></a>
                         </li>
@@ -107,7 +109,8 @@
                 <li class="{{ dashboard }}" style="padding: 10px 0;">
                     <a href="{{ path_for('getAdminDashboardHTML') }}"><i class="fa fa-circle-o-notch fa-spin" style="padding:0;margin-right:10px;"></i>Dasbor</a>
                 </li>
-                {% if privilege.writer %}
+                {% if currentUserGroupID %}
+                {% if privilege.role in ['writer', 'editor', 'administrator' ]%}
                 <li class="{{ sidemenu.post ? 'active' }}">
                     <a href="{{ path_for('getAdminPostListHTML') }}"><i class="fa fa-thumb-tack fa-fw"></i>Pos</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
@@ -134,7 +137,7 @@
                 {% endif %}
             </ul>
             <ul class="nav nav-pills nav-stacked" style="padding-top:30px;">
-                {% if privilege.register %}
+                {% if privilege.role in [ 'registe', 'administrator' ] %}
                 <li class="">
                     <a href="#"><i class="fa fa-rocket fa-fw"></i>Aplikasi</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
@@ -144,7 +147,7 @@
                         <li class=""><a href="#">Formulir Data Siswa</a></li>
                     </ul>
                 </li>
-                {% endif %} {% if privilege.editor %}
+                {% endif %} {% if privilege.role in [ 'editor', 'administrator' ] %}
                 <li class="{{ sidemenu.view ? 'active' }}">
                     <a href="{{ path_for('getAdminMenuListHTML') }}"><i class="fa fa-paint-brush fa-fw"></i>Tampilan</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
@@ -153,13 +156,19 @@
                         <li class=""><a href="#">Halaman Depan</a></li>
                     </ul>
                 </li>
-                {% endif %} {% if privilege.user %}
+                {% endif %} {% if privilege.role in [ 'administrator' ] %}
+                <li class="{{ sidemenu.groups ? 'active' }}">
+                    <a href="{{ path_for('getAdminGroupsListHTML') }}"><i class="fa fa-cubes fa-fw"></i>Komunitas</a>
+                    <ul class="nav nav-pills nav-stacked nav-sub">
+                        <li class="{{ sidemenu.groups == 'list' ? 'active' }}"><a href="{{ path_for('getAdminGroupsListHTML') }}">Semua Komunitas</a></li>
+                        <li class=""><a role="button" class="new-groups">Tambah Baru</a></li>
+                    </ul>
+                </li>
                 <li class="{{ sidemenu.users ? 'active' }}">
                     <a href="{{ path_for('getAdminUserListHTML') }}"><i class="fa fa-user-circle-o fa-fw"></i>Pengguna</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
                         <li class="{{ sidemenu.users == 'list' ? 'active' }}"><a href="{{ path_for('getAdminUserListHTML') }}">Semua Pengguna</a></li>
                         <li class=""><a href="#">Tambah Baru</a></li>
-                        <li class=""><a href="#">Komunitas</a></li>
                         <li class=""><a href="#">Profil Anda</a></li>
                     </ul>
                 </li>
@@ -167,7 +176,7 @@
                 <li class="{{ sidemenu.users ? 'active' }}">
                     <a href="{{ path_for('getAdminUserListHTML') }}"><i class="fa fa-user-circle-o fa-fw"></i>Profil</a>
                 </li>
-                {% endif %} {% if privilege.setting %}
+                {% endif %} {% if privilege.role in [ 'administrator' ] %}
                 <li class="{{ sidemenu.settings ? 'active' }}">
                     <a href="{{ path_for('getAdminSettingsHTML') }}"><i class="fa fa-sliders fa-fw"></i>Pengaturan</a>
 <!--
@@ -177,6 +186,11 @@
                         <li class=""><a href="#">Media Sosial</a></li>
                     </ul>
 -->
+                </li>
+                {% endif %}
+                {% else %}
+                <li class="{{ sidemenu.users ? 'active' }}">
+                    <a href="{{ path_for('getAdminUserListHTML') }}"><i class="fa fa-user-circle-o fa-fw"></i>Profil</a>
                 </li>
                 {% endif %}
             </ul>
@@ -191,21 +205,11 @@
     <script id="global-postmedia-dialog" type="x-tmpl-mustache">
         <div class="tab-content">
             <div class="row tab-pane fade" id="global-postmedia-dialog-list-tab">
-                <div class="col-md-9">
-                    <div class="form-group">
-                        <select class="form-control input-sm global-postmedia-image-list-short-date">
-                            <option>Semua Tanggal</option>
-                        </select>
-                    </div>
+                <div class="col-md-12">
                     <div class="col-md-12 no-gutter limit-modal global-postmedia-image-list-container" style="overflow-y: auto;">
                         <select class="image-picker show-html global-postmedia-image-list">
                         <!-- image list -->
                         </select>
-                    </div>
-                </div>
-                <div class="col-md-3 no-gutter">
-                    <div class="image-picker col-md-12" id="postmedia-image-detail-sidebar" style="overflow-y: auto;">
-
                     </div>
                 </div>
             </div>
@@ -240,7 +244,7 @@
     </script>
     <script id="global-postmedia-image-list" type="x-tmpl-mustache">
         {{#postmedia}}
-        <option data-img-class="lazy" data-img-src="{{thumbnail}}" data-img-alt="{{file}}" value="{{id}}">{{file}}</option>
+        <option data-img-class="lazy" data-img-src="public/content/{{name}}.{{mime}}" data-img-alt="{{file}}" value="public/content/{{name}}.{{mime}}">{{file}}</option>
         {{/postmedia}}
     </script>
     <script id="global-postmedia-dialog-image-detail" type="x-tmpl-mustache">
@@ -286,6 +290,7 @@
     <script src="public/assets/js/jquery.lazyload.js"></script>
     <script src="public/assets/js/mustache.min.js"></script>
     <script src="public/assets/js/image-picker.min.js"></script>
+    <script src="public/assets/js/masonry.pkgd.min.js"></script>
     {% endblock %}
     <script src="public/assets/js/admin.app.js"></script>
     <script>
@@ -296,7 +301,6 @@
             //admin postmedia url
             postAdminPostmediaUploadJSON: "{{ path_for('postAdminPostmediaUploadJSON') }}",
             getAdminPostmediaListJSON: "{{ path_for('getAdminPostmediaListJSON') }}",
-            getAdminPostmediaThumbnailIMAGE: "{{ path_for('getAdminPostmediaThumbnailIMAGE') }}",
             getAdminPostmediaDeleteJSON: "{{ path_for('getAdminPostmediaDeleteJSON') }}",
             getAdminPostmediaExifJSON: "{{ path_for('getAdminPostmediaExifJSON') }}",
             getAdminPostmediaCropitJson: "{{ path_for('getAdminPostmediaCropitJson') }}",
@@ -327,6 +331,16 @@
             //admin settings page
             getAdminSettingsHTML: "{{ path_for('getAdminSettingsHTML') }}",
             postAdminSettingsJSON: "{{ path_for('postAdminSettingsJSON') }}",
+            //user page
+            getAdminUserListJSON: "{{ path_for('getAdminUserListJSON') }}",
+            //groups page
+            postAdminNewGroupsJSON: "{{ path_for('postAdminNewGroupsJSON') }}",
+            postAdminDeleteGroupsJSON: "{{ path_for('postAdminDeleteGroupsJSON') }}",
+            postAdminSimpleEditGroupsJSON: "{{ path_for('postAdminSimpleEditGroupsJSON') }}",
+            postAdminChangeUserGroupsJSON: "{{ path_for('postAdminChangeUserGroupsJSON') }}",
+            postAdminKickUserGroupsJSON: "{{ path_for('postAdminKickUserGroupsJSON') }}",
+            postAdminAddUserGroupsJSON: "{{ path_for('postAdminAddUserGroupsJSON') }}",
+
 
         }
     </script>

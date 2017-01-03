@@ -1,0 +1,262 @@
+{% extends "admin/base.html" %}{% block head %} {{ parent() }}
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet">
+{% endblock %} {% block title %} Komunitas {{groups.name}} {% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 no-gutter">
+            <div class="col-md-8 no-gutter">
+                <h3 class="page-title pull-left">Pengaturan Komunitas: <q class="text-info">{{groups.name}}</q> </h3>
+            </div>
+        </div>
+        <div class="col-md-12 no-gutter" id="users-list" style="padding-top:20px;">
+
+            <ul id="myTabPost" class="nav nav-pills custom-nav-pills">
+                <li class="active"><a href="#group-setting-tab" data-toggle="tab">Pengaturan</a></li>
+                <li class=""><a href="#groups-user-tab" data-toggle="tab">Pengguna</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade active in" id="group-setting-tab" style="padding-top:20px;">
+                    <form method="post" id="groups-setting">
+                        <fieldset class="col-md-6">
+                            <div class="form-group">
+                                <label for="inputEmail" class="control-label">Nama</label>
+                                <input type="text" class="form-control" id="inputEmail" name="name" placeholder="Nama Komunitas" value="{{groups.name}}">
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="includeSearch" value="true"> Masukkan semua pos komunitas ini dalam pencarian pada website utama
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12 no-gutter">
+                                <label for="inputEmail" class="control-label">Logo</label><br>
+                                <div id="image-cropper" style="float:left;" data-img="{{groups.meta|json_encode()}}">
+                                    <div class="cropit-preview" style="width:150px;height:150px;"></div>
+                                    <input type="range" class="cropit-image-zoom-input" style="width:150px;"/>
+                                    <input type="file" class="cropit-image-input" style="visibility: hidden;width:150px;"/>
+                                </div>
+                                <div style="float:left;padding-left:10px;">
+                                    <a role="button" class="btn btn-info settings-choose-logo">Pilih Logo</a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" name="meta" value="{{groups.meta|json_encode()}}">
+                                <button id="save-group-settings" type="button" class="btn btn-info" data-id="{{groups.id}}">Simpan Perubahan</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+
+                <div class="tab-pane fade" id="groups-user-tab"  style="padding-top:20px;">
+                    <table class="table table-striped" id="users-list-table">
+                        <thead>
+                            <tr class="info">
+                                <th style="width:1em;"></th>
+                                <th style="width:55px;"></th>
+                                <th style="min-width:15em;">Nama Pengguna</th>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>Peranan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list">
+                            {% for user in groups.userGroups %}
+                            {% set userData = user.user_detail %}
+                            <tr height='65'>
+                                <td id="id-container{{user.id}}">
+                                    <div class="checkbox">
+                                        <input type="checkbox" value="{{userData.id}}" id="check{{userData.id}}" class="pages-checkbox">
+                                        <label for="check{{userData.id}}"></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <img src="public/profile/{{userData.image}}" style="width:100%;">
+                                </td>
+                                <td class="table-list-hasbutton" data-title="{{userData.username}}">
+                                    <strong class="username">
+                                        {{userData.username}}
+                                    </strong>
+                                    <div class="form-inline">
+                                        <a role="button" class="btn btn-link btn-sm no-gutter user-groups-mod" data-userid="{{userData.id}}" data-username="{{userData.username}}" data-id="{{user.id}}" data-currentval="{{user.role}}"><span class="label label-info"><i class="fa fa-external-link"></i> Moderasi</span></a>
+                                        <a role="button" class="btn btn-link btn-sm no-gutter user-groups-delete" data-userid="{{userData.id}}" data-username="{{userData.username}}" data-id="{{user.id}}"><span class="label label-danger"><i class="fa fa-external-link"></i> Keluarkan Pengguna</span></a>
+                                    </div>
+                                </td>
+                                <td class="nickname">{{userData.nickname}}</td>
+                                <td class="email">{{userData.email}}</td>
+                                <td>
+                                    {{ user.role == 'administrator' or user.role == 'editor' ? 'Administrator' }}
+                                    {{ user.role == 'writer' ? 'Penulis' }}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <th colspan="6"><center><h4>Tidak Ada Pengguna</h4></center></th>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="info">
+                                <th></th>
+                                <th></th>
+                                <th>Nama Pengguna</th>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>Peranan</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <button id="add-user-groups" data-id="{{groups.id}}" class="btn btn-info add-user-groups">Tambah Pengguna</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }}
+{% verbatim %}
+<script id="groups-new-dialog" type="x-tmpl-mustache">
+<form method="post">
+    <fieldset>
+        <div class="form-group">
+            <label class="control-label">Admin Komunitas</label>
+            <select class="form-control" id="select" name="user">
+                {{#users}}
+                <option value="{{id}}">{{username}} ({{nickname}}) </option>
+                {{/users}}
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Admin Komunitas</label>
+            <select class="form-control" id="select" name="role">
+                <option value="editor">Administrator</option>
+                <option value="writer">Penulis</option>
+            </select>
+        </div>
+    </fieldset>
+</form>
+</script>
+{% endverbatim %}
+<script src="public/assets/js/list.min.js"></script>
+<script src="public/assets/js/list.pagination.min.js"></script>
+<script src="public/assets/js/bootbox.min.js"></script>
+<script src="public/assets/js/jquery.form.min.js"></script>
+<script src="public/assets/js/jquery.cropit.js"></script>
+<script>
+    $(document).ready(function(){
+        bootbox.setLocale('id')
+        $('#image-cropper').cropit({
+            minZoom: 'fit',
+            freeMove: true,
+            smallImage: 'allow',
+            maxZoom: 3,
+        });
+        $('.settings-choose-logo').click(function() {
+            $('.cropit-image-input').click();
+        });
+        var groupMeta = $('#image-cropper').data('img');
+        $('#image-cropper').cropit('imageSrc', groupMeta.logo);
+        $('#groups-setting').submit(function(e){
+            e.preventDefault();
+        });
+        $('#save-group-settings').on('click', function(){
+            var btn = $(this)
+            var imageData = $('#image-cropper').cropit('export',{
+                type: 'image/png',
+                quality: 1
+            });
+            $('#groups-setting').ajaxSubmit({
+                url: globalUrl.postAdminSimpleEditGroupsJSON+'/'+btn.data('id'),
+                data: { logo:imageData },
+                success: function(data) {
+                    if(data.success){
+                        location.reload();
+                    }
+                }
+            });
+        });
+        $('.user-groups-mod').on('click', function(){
+            var btn = $(this);
+            bootbox.prompt({
+                className: 'modal-info',
+                size: "small",
+                title: "Rubah peranan <q>"+btn.data('username')+"</q>?",
+                inputType: 'select',
+                value: btn.data('currentval'),
+                inputOptions: [
+                    {
+                        text: 'Administrator',
+                        value: 'editor',
+                    },
+                    {
+                        text: 'Penulis',
+                        value: 'writer',
+                    },
+                ],
+                callback: function(result){
+                    $.post(globalUrl.postAdminChangeUserGroupsJSON+'/'+btn.data('id'), { role: result },  function(data){
+                        if(data.success){
+                            location.reload();
+                        }
+                    });
+                }
+            })
+        });
+        $('.user-groups-delete').on('click', function(){
+            var btn = $(this);
+            bootbox.confirm({
+                className: 'modal-danger',
+                title: "Keluarkan <q>"+btn.data('username')+"</q> dari komunitas?",
+                message: "Apakah anda yakin akan mengeluarkan <q>"+btn.data('username')+"</q> dari komunitas?",
+                callback: function(result){
+                    $.post(globalUrl.postAdminKickUserGroupsJSON+'/'+btn.data('id'),  function(data){
+                        if(data.success){
+                            location.reload();
+                        }
+                    });
+                }
+            })
+        });
+        $('.add-user-groups').on('click', function(){
+            var btn = $(this);
+            $.post(globalUrl.getAdminUserListJSON, function(data){
+                var dialog = bootbox.dialog({
+                    className: 'modal-info',
+                    size: 'small',
+                    title: 'Tambah Pengguna ?',
+                    message: Mustache.render($('#groups-new-dialog').html(), { users: data }),
+                    buttons: {
+                        add: {
+                            label: 'Tambah',
+                            className: "btn-info",
+                            callback: function() {
+                                dialog.find('form').submit(function(e) {
+                                    e.preventDefault;
+                                    // return false to prevent normal browser submit and page navigation
+                                    return false;
+                                });
+
+                                // submit the form
+                                dialog.find('form').ajaxSubmit({
+                                    url: globalUrl.postAdminAddUserGroupsJSON,
+                                    data: {
+                                        group_id: btn.data('id')
+                                    },
+                                    success: function(data) {
+                                        if(data.success){
+                                            location.reload();
+                                        }
+                                    }
+                                });
+                            }
+                        },
+                        cancel: {
+                            label: 'Batal',
+                            className: "btn-default",
+                        }
+                    }
+                });
+            }, 'json')
+        })
+    })
+</script>
+{% endblock %}

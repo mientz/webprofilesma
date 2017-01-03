@@ -640,8 +640,18 @@ a.cke_dialog_tab {
     overflow: hidden;
 }
 
+.postmedia-image-thumb-container {
+    display: inline-block;
+    height: 190px;
+    overflow: hidden;
+}
+
 .modal-danger .modal-header {
     background-color: #d9534f;
+}
+
+.modal-info .modal-header {
+    background-color: #5bc0de;
 }
 
 .noselect {

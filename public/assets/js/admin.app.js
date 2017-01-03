@@ -25,7 +25,7 @@ function globalSummernote(elm, textElm){
                 globalPostmediaSelector("Masukkan Media Ke Dalam Pos", function(is_picked, image){
                     if(is_picked){
 //                        alert(image)
-                        elm.summernote('insertImage', "public/content/"+image)
+                        elm.summernote('insertImage', image)
                     }
                 })
             }
@@ -74,7 +74,7 @@ function globalPostmediaSelector(title, callback){
                 label: 'Gunakan Media',
                 className: "btn-info",
                 callback: function() {
-                    callback(true, dialog.find('.global-postmedia-image-list option:selected').text());
+                    callback(true, dialog.find('.global-postmedia-image-list option:selected').val());
                 }
             },
             cancel: {
@@ -92,9 +92,6 @@ function globalPostmediaSelector(title, callback){
         dialog.find('#postmedia-image-detail-sidebar').css('height', ($(window).height()-dialog.find('.modal-header').height()-dialog.find('.modal-footer').height()-360)+'px');
         dialog.find('.modal-header').css('background-color', '#2b3e50')
         dialog.find('.modal-header').html(Mustache.render($('#global-postmedia-dialog-header').html(), { title: title}));
-        globalPopulatePostmediaFilterDateInput(function(html){
-            dialog.find('.global-postmedia-image-list-short-date').html(html)
-        });
         var myDropzone = new Dropzone('.global-postmedia-image-upload', {
             url: globalUrl.postAdminPostmediaUploadJSON,
             maxFileSize: 2,
@@ -111,11 +108,6 @@ function globalPostmediaSelector(title, callback){
         Dropzone.options.myDropzone = false;
 
         pospulateImageOnTab('all');
-
-        dialog.find('.global-postmedia-image-list-short-date').on('change', function(){
-            pospulateImageOnTab($(this).val());
-        })
-
         dialog.find('a[href="#global-postmedia-dialog-list-tab"]').tab('show');
         dialog.find('a[href="#global-postmedia-dialog-list-tab"]').on('show.bs.tab', function (e) {
             pospulateImageOnTab('all');
@@ -262,86 +254,85 @@ function SavePagesChange(elm, type, id, callback, ret){
  * run When Postmedia Page is Load
  */
 function postmediaPage(){
-    $('.postmedia-image-uploader').dropzone({
-        url: globalUrl.postAdminPostmediaUploadJSON,
-        maxFileSize: 2,
-        createImageThumbnails: true,
-        aceptedFiles: 'image/*,',
-        previewTemplate: Mustache.render($('#postmedia-upload-preview-tmpl').html()),
-        clickable: true,
-        init: function () {
-            this.on('complete', function (file) {
-                this.removeFile(file)
-                $('#collapse-upload').collapse('hide');
-                globalPopulatePostmediaFilterDateInput(function(html){
-                    dialog.find('#postmedia-select-date').html(html)
-                });
-            })
+    bootbox.setLocale('id')
+    var postmediaList = new List('media-list', {
+        valueNames: ['date']
+    });
+    $('#postmedia-select-date').on('change', function(){
+        if ($(this).val() != '*') {
+            postmediaList.filter(function (item) {
+                if (item.values().date == $('#postmedia-select-date').val() || item.values().date == '*') {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        } else {
+            postmediaList.filter();
         }
     });
-
-    globalPopulatePostmediaFilterDateInput(function(html){
-        $('#postmedia-select-date').html(html)
-    });
-
-    globalPopulatePostmediaList('all', function(data){
-        $('#postmedia-list-images').html(Mustache.render($('#postmedia-list-upload-preview-tmpl').html(), data));
-    })
-
-    $('#postmedia-select-date').on('change', function(){
-        globalPopulatePostmediaList($(this).val(), function(data){
-            $('#postmedia-list-images').html(Mustache.render($('#postmedia-list-upload-preview-tmpl').html(), data));
-        })
-    });
-
-    function postmediaDetailExifDialog(id){
-
+    if($('.postmedia-photo-list').length){
+        var uploadDropzone = new Dropzone('.postmedia-photo-list', {
+            url: globalUrl.postAdminPostmediaUploadJSON,
+            acceptedFiles: 'image/*',
+            previewTemplate: Mustache.render($('#postmedia-upload-preview-tmpl').html()),
+            maxThumbnailFilesize: 100,
+            clickable: '#postmedia-add-photo',
+            uploadprogress: function(file, progress, bytesSent) {
+                var elm = file.previewElement
+                $(elm).find('.progress-bar').width(progress+'%')
+                var img = $(elm).find('img');
+                if(progress == 100){
+                    $(elm).find('.progress').css('display', 'none');
+                    $(elm).find('img').css('filter', '');
+                }else{
+                    $(elm).find('img').css('filter', 'blur(5px)');
+                }
+            },
+            success: function(file, res){
+                var elm = file.previewElement
+                if(res.success){
+                    $(elm).find('.postmedia-image-thumb-container').attr('href', 'public/gallery/'+res.file);
+                    $(elm).find('.postmedia-photo-rename').data('id', res.id);
+                    $(elm).find('.postmedia-photo-move').data('id', res.id);
+                    $(elm).find('.postmedia-photo-delete').data('id', res.id);
+                }
+                if(res.failed){
+                    $(elm).find('.progress-container').html('<a class="alert alert-dismissible alert-danger postmedia-add-photo-error" style="margin-left: auto;margin-right: auto;width:80%;">Gagal</a>')
+                }
+            },
+            complete: function(){
+                location.reload();
+            }
+        });
     }
 
-    $('#postmedia-list-images').on('click', '.postmedia-image-selector', function(){
-        globalPostmediaDetailExif($(this).data('id'), function(data){
-            var dialog = bootbox.dialog({
-                title: 'Detil Media',
-                size: 'large',
-                message:Mustache.render($('#postmedia-image-detail-preview').html(), data),
-                onEscape: true,
-                backdrop: true,
-            });
-            dialog.init(function(){
-                dialog.find('.postmedia-image-delete-trigger').on('click', function(){
-                    bootbox.confirm({
-                        title: "Hapus Gambar Permanen ?",
-                        message: "<img src='" + globalUrl.getAdminPostmediaThumbnailIMAGE + '/' + data.postmedia.file+"' width='100%'>",
-                        size: 'small',
-                        buttons: {
-                            cancel: {
-                                label: '<i class="fa fa-times"></i> Batal'
-                            },
-                            confirm: {
-                                label: '<i class="fa fa-check"></i> Hapus'
-                            }
-                        },
-                        callback: function (result) {
-                            if(result){
-                                $.getJSON(globalUrl.getAdminPostmediaDeleteJSON + "/" + data.postmedia.id, function(data){
-                                    if(data.status=="success"){
-                                        globalPopulatePostmediaFilterDateInput(function(html){
-                                            $('#postmedia-select-date').html(html)
-                                        });
-                                        globalPopulatePostmediaList('all', function(data){
-                                            $('#postmedia-list-images').html(Mustache.render($('#postmedia-list-upload-preview-tmpl').html(), data));
-                                        })
-                                        dialog.modal('hide')
-                                    }else{
-                                        bootbox.alert(data.cause);
-                                    }
-                                })
-                            }
-                        }
-                    });
+    $('.postmedia-photo-delete').on('click', function(){
+        var name = $(this).data('title');
+        var id = $(this).data('id');
+        var file = $(this).data('file');
+        bootbox.confirm({
+            className: 'modal-danger',
+            title: 'Hapus Media ?',
+            message: "Apakah anda yakin ingin menghapus <span class='text-info'>"+name+"</span>?",
+            buttons: {
+                confirm: {
+                    label: 'Ya',
+                    className: 'btn-danger'
+                },
+                cancel: {
+                    label: 'Batal',
+                    className: 'btn-default'
+                }
+            },
+            callback: function(result){
+                $.post(globalUrl.getAdminPostmediaDeleteJSON+"/"+id+'/'+file, function(data){
+                    if(data.success){
+                        location.reload();
+                    }
                 })
-            })
-        })
+            }
+        });
     });
 }
 
@@ -426,7 +417,7 @@ function editPostPage(post_data){
             if(is_picked){
                 $('#edit-post-header').removeClass('hidden');
                 $('#edit-post-header-select-add').addClass('hidden')
-                imageCropper.cropit('imageSrc', 'public/content/'+image);
+                imageCropper.cropit('imageSrc', image);
                 imageCropper.data('image', image);
             }else{
                 $('#edit-post-header').addClass('hidden');
@@ -438,7 +429,7 @@ function editPostPage(post_data){
     $('#edit-post-header-select-change').on('click', function(){
         globalPostmediaSelector("Ganti Gambar Fitur", function(is_picked, image){
             if(is_picked){
-                imageCropper.cropit('imageSrc', 'public/content/'+image);
+                imageCropper.cropit('imageSrc', image);
                 imageCropper.data('image', image);
             }
         })
@@ -632,7 +623,7 @@ function addPostPage(){
             if(is_picked){
                 $('#add-post-header').removeClass('hidden');
                 $('#add-post-header-select-add').addClass('hidden')
-                imageCropper.cropit('imageSrc', 'public/content/'+image);
+                imageCropper.cropit('imageSrc', image);
                 imageCropper.data('image', image);
             }else{
                 $('#add-post-header').addClass('hidden');
@@ -645,7 +636,7 @@ function addPostPage(){
         localStorage.setItem('imageCroped', '');
         globalPostmediaSelector("Ganti Gambar Fitur", function(is_picked, image){
             if(is_picked){
-                imageCropper.cropit('imageSrc', 'public/content/'+image);
+                imageCropper.cropit('imageSrc', image);
                 imageCropper.data('image', image)
             }
         })

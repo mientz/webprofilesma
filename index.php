@@ -72,6 +72,17 @@ $app->group('/api', function () {
         $this->post('/save[/{id}]', '\Post:actionsSavePost')->setName('postAdminPostSaveJSON')->add('Admin');
     });
     /*
+    * Route Group For Admin -> Users => URL/admin/users
+    */
+    $this->group('/postmedia', function () {
+        // actions post changes
+        $this->post('/upload', '\Postmedia:actionsUploadPostmedia')->setName('postAdminPostmediaUploadJSON')->add('Admin');
+        // actions post changes
+        $this->post('/delete[/{id}[/{file:.*}]]', '\Postmedia:actionsDeletePostmedia')->setName('getAdminPostmediaDeleteJSON')->add('Admin');
+        // actions post changes
+        $this->get('/list', '\Postmedia:actionsGetPostmedia')->setName('getAdminPostmediaListJSON')->add('Admin');
+    });
+    /*
     * Route Group For Admin -> Category => URL/admin/category
     */
     $this->group('/category', function () {
@@ -79,6 +90,31 @@ $app->group('/api', function () {
         $this->get('/list', '\Category:actionsGetCategory')->setName('getAdminCategoryListJSON')->add('Admin');
         // insert new category actions
         $this->post('/new', '\Category:actionsNewCategory')->setName('postAdminCategoryShorthandInsertJSON')->add('Admin');
+
+    });
+    /*
+    * Route Group For Admin -> Users => URL/admin/users
+    */
+    $this->group('/users', function () {
+        // display userlist page
+        $this->post('', '\Users:actionsGetUserLists')->setName('getAdminUserListJSON')->add('Admin');
+        // display userlist page
+        $this->post('/new', '\Users:actionsNewGroups')->setName('setAdminUserListJSON')->add('Admin');
+
+    });
+    $this->group('/groups', function () {
+        // display userlist page
+        $this->post('/new', '\Groups:actionsNewGroups')->setName('postAdminNewGroupsJSON')->add('Admin');
+        // display userlist page
+        $this->post('/delete[/{id}]', '\Groups:actionsDeleteGroups')->setName('postAdminDeleteGroupsJSON')->add('Admin');
+        // display userlist page
+        $this->post('/simple-edit[/{id}]', '\Groups:actionsSimpleEditGroup')->setName('postAdminSimpleEditGroupsJSON')->add('Admin');
+        // display userlist page
+        $this->post('/kick-user-group[/{id}]', '\Groups:actionsKickUserGroupRole')->setName('postAdminKickUserGroupsJSON')->add('Admin');
+        // display userlist page
+        $this->post('/add-user-group', '\Groups:actionsAddUserGroupRole')->setName('postAdminAddUserGroupsJSON')->add('Admin');
+        // display userlist page
+        $this->post('/change-user-groups[/{id}]', '\Groups:actionsChangeUserGroupRole')->setName('postAdminChangeUserGroupsJSON')->add('Admin');
 
     });
 });
@@ -105,6 +141,16 @@ $app->group('/admin', function () {
 
     })->add('Post');
     /*
+    * Route Group For Postmedia -> Category => URL/admin/postmedia
+    */
+    $this->group('/postmedia', function () {
+        // display postmedia list page
+        $this->get('', '\Postmedia:displayGetPostmedia')->setName('getAdminPostmediaHTML');
+        // display post list page
+//        $this->get('/list', '\Category:displayCategoryLists')->setName('getAdminCategoryListHTML');
+
+    });
+    /*
     * Route Group For Admin -> Category => URL/admin/category
     */
     $this->group('/category', function () {
@@ -120,6 +166,16 @@ $app->group('/admin', function () {
     $this->group('/users', function () {
         // display userlist page
         $this->get('', '\Users:getUserLists')->setName('getAdminUserListHTML');
+
+    });
+    /*
+    * Route Group For Admin -> Users => URL/admin/users
+    */
+    $this->group('/groups', function () {
+        // display userlist page
+        $this->get('', '\Groups:displayGroupList')->setName('getAdminGroupsListHTML');
+        // display userlist page
+        $this->get('/edit[/{id}]', '\Groups:displayEditGroup')->setName('getAdminGroupsEditHTML');
 
     });
 

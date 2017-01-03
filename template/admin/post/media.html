@@ -1,0 +1,113 @@
+{% extends "admin/base.html" %} {% block head %} {{ parent() }}
+<link href="public/assets/css/croppie.css" rel="stylesheet">
+<link href="public/assets/css/ekko-lightbox.min.css" rel="stylesheet">
+{% endblock %} {% block title %} Galeri Foto {% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row" id="media-list">
+        <div class="col-md-12 no-gutter">
+            <h3 class="page-title pull-left">Media</h3>
+        </div>
+        <div class="col-md-12 no-gutter">
+            <div class="form-inline" style="padding:20px 5px;">
+                <div class="form-group">
+                    <label>Pilih tanggal </label>
+                    <select class="form-control input-sm filter-date" id="postmedia-select-date">
+                        <option value="*">Semua Tanggal</option>
+                        {% set dateFilter = [] %}
+                        {% for post in postmedia %}
+                        {% if post.date|date("m y") not in dateFilter %}
+                        <option value='{{post.date|date("m y")}}'>{{post.date|date("F Y")}}</option>
+                        {% set dateFilter = dateFilter|merge([post.date|date("m y")]) %}
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row col-md-12 postmedia-photo-list list">
+            <button id="postmedia-add-photo" class="col-md-2 col-xs-6 btn btn-default postmedia-album-container" style="border:1px dashed #fff;margin:5px;height:230px;">
+                <i class="fa fa-plus fa-fw fa-3x"></i><br>
+                <span class="hidden date">*</span>
+                Tambah Media
+            </button>
+            {% for media in postmedia %}
+            <div class="col-md-2 col-xs-6 postmedia-album-container no-gutter" style="margin:5px;">
+                <a href="public/content/{{ media.name }}.{{ media.mime }}" data-toggle="lightbox" data-gallery="example-postmedia" class="postmedia-image-thumb-container col-md-12 no-gutter" style="border:3px solid #fff;">
+
+                    <img src="public/content/{{ media.name }}.{{ media.mime }}" height="190px">
+                </a>
+                <span class="hidden date">{{ media.date|date("m y") }}</span>
+                <div class="col-md-12 bg-info"></div>
+                <div class="col-md-12 no-gutter" style="background:#fff;">
+                    <a href="" class="col-md-10 no-gutter btn text-info no-gutter" style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden; text-align:left;">
+                        <small style="padding:0 5px;">
+                            <b>{{ media.name }}</b>
+                        </small>
+                    </a>
+                    <div class="col-md-2 no-gutter">
+                        <a  data-toggle="dropdown" class="btn dropdown-toggle no-gutter pull-right" style="background:#fff;color:#434343;">
+                            <i class="fa fa-cog"></i> <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a role="button" class="postmedia-photo-delete" data-id="{{ media.id }}" data-file="public/content/{{ media.name }}.{{ media.mime }}" data-title="{{ media.title }}"><i class="fa fa-trash"></i> Hapus</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }} {% verbatim %}
+<script id="postmedia-upload-preview-tmpl" type="x-tmpl-mustache">
+<div class="col-md-2 col-xs-6 postmedia-album-container no-gutter dz-preview" style="margin:5px;">
+    <a href="" class="album-image-thumb-container col-md-12 no-gutter" data-toggle="lightbox" data-postmedia="example-postmedia" style="border:3px solid #fff;">
+        <img height="190px" data-dz-thumbnail style="position:absolute;">
+        <div style="position:absolute; z-index: 1000000; width:100%; height:100%; display: table;">
+            <div class="progress-container" style="display: table-cell; vertical-align: middle; padding-top:21px;">
+                <div class="progress progress-striped active" style="margin-left: auto;margin-right: auto;width:80%;">
+                    <div class="progress-bar progress-bar-info" data-dz-uploadprogress style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </a>
+    <div class="col-md-12 bg-info"></div>
+    <div class="col-md-12" style="background:#fff;">
+        <div class="col-md-10 no-gutter">
+            <a href="" class="btn no-gutter text-info"><small><b data-dz-name></b></small><br></a>
+        </div>
+        <div class="col-md-2 no-gutter">
+            <a data-toggle="dropdown" class="btn dropdown-toggle no-gutter pull-right" style="background:#fff;color:#434343;">
+                <i class="fa fa-cog"></i> <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a role="button" class="postmedia-photo-rename" data-id=""><i class="fa fa-arrows"></i> Ganti Nama Foto</a></li>
+                <li class="divider"></li>
+                <li><a role="button" class="postmedia-photo-delete" data-id=""><i class="fa fa-trash"></i> Hapus</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</script>
+{% endverbatim %}
+<script src="public/assets/js/jquery.cropit.js"></script>
+<script src="public/assets/js/bootbox.min.js"></script>
+<script src="public/assets/js/jquery.form.min.js"></script>
+<script src="public/assets/js/ekko-lightbox.min.js"></script>
+<script src="public/assets/js/dropzone.js"></script>
+<script src="public/assets/js/jquery.cycle.all.js"></script>
+<script src="public/assets/js/list.min.js"></script>
+<script src="public/assets/js/list.pagination.min.js"></script>
+<script>
+    $(document).ready(function(){
+        postmediaPage();
+    });
+    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+        event.preventDefault();
+        $(this).ekkoLightbox({
+            always_show_close: false
+        });
+    });
+</script>
+{% endblock %}
