@@ -1,6 +1,6 @@
 <?php
 
-class Category extends Admin{
+class Category extends WebApp{
     /*
      * This Class Only Variable
      */

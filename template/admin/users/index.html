@@ -17,7 +17,7 @@
                     <div class="col-md-6 no-gutter">
                         <div class="form-group">
                             <div class="input-group" style="padding-left:20px;">
-                                <input type="text" class="form-control input-sm search" style="width:100%" placeholder="Masukkan Pengguna Yang Dicari">
+                                <input type="text" class="form-control input-sm search" style="width:100%" placeholder="Cari Nama atau email pengguna">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default btn-sm" type="button"><i class="mdi mdi-magnify"></i> Cari Pengguna</button>
                                 </span>
@@ -34,7 +34,6 @@
                                     <th>Nama</th>
                                     <th>Email</th>
                                     <th>Status</th>
-                                    <th>Peranan</th>
                                     <th>Hak Akses</th>
                                 </tr>
                             </thead>
@@ -42,7 +41,11 @@
                                 {% for user in users %}
                                 {% set status = user.status %}
                                 {% set priv = user.privilege %}
-                                <tr height='65'>
+                                {% set isadmin = false %}
+                                {% for group in user.groups if group.role == 'administrator' %}
+                                    {% set isadmin = true %}
+                                {% endfor %}
+                                <tr height='65' class="{{ user.id == user_data.id ? 'hidden' }}">
                                     <td id="id-container{{user.id}}">
                                         <div class="checkbox">
                                             <input type="checkbox" value="{{user.id}}" id="check{{user.id}}" class="pages-checkbox">
@@ -57,25 +60,35 @@
                                             {{user.username}}
                                         </strong>
                                         <div class="form-inline">
-                                            <a href="" class="btn btn-link btn-sm no-gutter"><span class="label label-info"><i class="fa fa-external-link"></i> Moderasi</span></a>
-                                            <a role="button" class="btn btn-link btn-sm no-gutter users-delete-sub {{ priv.writer and priv.editor and priv.user and priv.setting and not priv.register ? 'hidden' }}" data-id="{{user.id}}"><span class="label label-danger"><i class="fa fa-trash"></i> Hapus Permanen</span></a>
+                                            {% for group in user.groups if group.id == 1 %}
+                                            <a role="button" class="btn btn-link btn-sm no-gutter user-mod-sub" data-id="{{group.user_id}}" data-username="{{user.username}}"><span class="label label-info"><i class="fa fa-external-link"></i> Moderasi</span></a>
+                                            {% endfor %}
+                                            <a role="button" class="btn btn-link btn-sm no-gutter users-delete-sub" data-id="{{user.id}}" data-username="{{user.username}}"><span class="label label-danger"><i class="fa fa-trash"></i> Hapus Permanen</span></a>
                                         </div>
                                     </td>
                                     <td class="nickname">{{user.nickname}}</td>
                                     <td class="email">{{user.email}}</td>
                                     <td>
                                         {{ status.status == 'active' ? 'Aktif' }}
-                                    </td>
-                                    <td class="privilege">
-                                        {{ priv.writer and priv.editor and priv.user and priv.setting and not priv.register ? 'Administrator' }}
-                                        {{ priv.writer and not priv.editor and not priv.user and not priv.setting and not priv.register ? 'Penulis' }}
-                                        {{ priv.writer and priv.editor and not priv.user and not priv.setting and not priv.register ? 'Penyuting' }}
-                                        {{ not priv.writer and not priv.editor and not priv.user and not priv.setting and priv.register ? 'Pendaftaran Siswa Baru' }}
+                                        {{ status.status == 'pending' ? 'Belum Mendaftar' }}
                                     </td>
                                     <td>
-                                    {% for group in user.groups%}
-                                    {{group.name}}<br>
-                                    {% endfor %}
+                                        {% for group in user.groups%}
+                                        <strong>{{group.name}}</strong>
+                                        {% if group.role == 'administrator' %}
+                                        <span class="label label-danger">Admin Istimewa</span>
+                                        {% elseif group.role == 'editor' %}
+                                        <span class="label label-info">Admin Web</span>
+                                        {% elseif group.role == 'writer' %}
+                                        <span class="label label-success">Penulis</span>
+                                        {% elseif group.role == 'register' %}
+                                        <span class="label label-default">Admin Pendaftaran</span>
+                                        {% endif %}
+                                        <br>
+                                        {% else %}
+                                        {{ status.status == 'active' ? 'Pengguna Belum terdaftar pada kelompok apapun' }}
+                                        {{ status.status == 'pending' ? 'Undangan telah terkirim' }}
+                                        {% endfor %}
                                     </td>
                                 </tr>
                                 {% else %}
@@ -92,7 +105,6 @@
                                     <th>Nama</th>
                                     <th>Email</th>
                                     <th>Status</th>
-                                    <th>Peranan</th>
                                     <th>Hak Akses</th>
                                 </tr>
                             </tfoot>
@@ -106,13 +118,148 @@
     </div>
 </div>
 {% endblock %} {% block js %} {{ parent() }}
+{% verbatim %}
+<script id="user-invite-dialog" type="x-tmpl-mustache">
+<form method="post">
+    <fieldset>
+        <div class="form-group">
+            <label class="control-label">Email Pengguna</label>
+            <input class="form-control" type="email" name="email" placeholder="pengguna@contoh.com" required>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Peranan</label>
+            <select class="form-control" id="select" name="role">
+                <option value="editor">Administrator</option>
+                <option value="writer">Penulis</option>
+                <option value="register">Admin Pendaftaran</option>
+                <option value="null">Pengguna Biasa (Pengguna Komunitas)</option>
+            </select>
+            <span class="help-block">
+            &#8226; Peranan ini merupakan peranan pengguna pada <q class="text-info">Website Utama</q>.<br>
+            &#8226; Jika ingin menambahkan pengguna untuk komunitas pilih Pengguna Biasa
+            </span>
+        </div>
+    </fieldset>
+</form>
+</script>
+<script id="user-mod-dialog" type="x-tmpl-mustache">
+<form method="post">
+    <fieldset>
+        <div class="form-group">
+            <label class="control-label">Email Pengguna</label>
+            <input class="form-control" type="email" name="email" placeholder="pengguna@contoh.com" required>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Peranan</label>
+            <select class="form-control" id="select" name="role">
+                <option value="editor">Administrator</option>
+                <option value="writer">Penulis</option>
+                <option value="register">Admin Pendaftaran</option>
+                <option value="null">Pengguna Biasa (Pengguna Komunitas)</option>
+            </select>
+            <span class="help-block">
+            &#8226; Peranan ini merupakan peranan pengguna pada <q class="text-info">Website Utama</q>.<br>
+            &#8226; Jika ingin menambahkan pengguna untuk komunitas pilih Pengguna Biasa
+            </span>
+        </div>
+    </fieldset>
+</form>
+</script>
+{% endverbatim %}
 <script src="public/assets/js/list.min.js"></script>
 <script src="public/assets/js/list.pagination.min.js"></script>
 <script src="public/assets/js/bootbox.min.js"></script>
+<script src="public/assets/js/jquery.form.min.js"></script>
 <script>
     $(document).ready(function(){
         var UserList = new List('users-list', {
             valueNames: [ 'username', 'nickname', 'email', 'privilege' ]
+        });
+        $('.invite-users').on('click', function(){
+            var dialog = bootbox.dialog({
+                className: 'modal-info',
+                title: 'Tambah Pengguna',
+                message: Mustache.render($('#user-invite-dialog').html()),
+                buttons: {
+                    add: {
+                        label: 'Tambah',
+                        className: "btn-info",
+                        callback: function() {
+                            dialog.find('form').submit(function(e) {
+                                e.preventDefault;
+                                // return false to prevent normal browser submit and page navigation
+                                return false;
+                            });
+                            var btn = $(this);
+                            // submit the form
+                            dialog.find('form').ajaxSubmit({
+                                url: globalUrl.setAdminInviteusersJSON,
+                                success:function(data) {
+                                    if(data.success){
+                                        location.reload();
+                                    }else{
+                                        $.notify(data.messages, "sh-error");
+                                    }
+                                }
+                            });
+                            return false;
+                        }
+                    },
+                    cancel: {
+                        label: 'Batal',
+                        className: "btn-default",
+                    }
+                }
+            });
+        })
+        
+        $('.user-mod-sub').on('click', function(){
+            var btn = $(this);
+            bootbox.prompt({
+                className: 'modal-info',
+                size: "small",
+                title: "Rubah peranan <q>"+btn.data('username')+"</q>?",
+                inputType: 'select',
+                value: btn.data('currentval'),
+                inputOptions: [
+                    {
+                        text: 'Penulis',
+                        value: 'writer',
+                    },
+                    {
+                        text: 'Admin Web',
+                        value: 'editor',
+                    },
+                    {
+                        text: 'Admin istimewa',
+                        value: 'administrator',
+                    },
+                ],
+                callback: function(result){
+                    if(result != null){
+                        $.post(globalUrl.postAdminChangeUserGroupsJSON+'/'+btn.data('id'), { role: result },  function(data){
+                            if(data.success){
+                                location.reload();
+                            }
+                        });
+                    }
+                }
+            })
+        })
+        $('.users-delete-sub').on('click', function(){
+            var btn = $(this);
+            bootbox.confirm({
+                className: 'modal-danger',
+                title: "Hapus pengguna <q>"+btn.data('username')+"</q>?",
+                message: "Apakah anda yakin akan menghapus pengguna <q>"+btn.data('username')+"</q> ?",
+                callback: function(result){
+                    $.post(globalUrl.setAdminremoveUsersJSON+'/'+btn.data('id'),  function(data){
+                        if(data.success){
+                            location.reload();
+                        }
+                    });
+                }
+            })
         });
     })
 </script>

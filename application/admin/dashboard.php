@@ -1,5 +1,6 @@
 <?php
-class Dashboard extends Admin{
+namespace Wijaya\WebApp\Admin;
+class Dashboard extends \Wijaya\WebApp{
     /*
      * This Class Only Variable
      */
@@ -21,7 +22,7 @@ class Dashboard extends Admin{
      * @param  object                                   $args URL Parameter Object
      * @return \Psr\Http\Message\ResponseInterface      HTML Dasboard Page
      */
-    public function displayDashboard($req, $res, $args){
+    public function __invoke($req, $res, $args){
         return $this->view->render($res, 'admin/dashboard/index.html', $req->getAttributes());
     }
 }

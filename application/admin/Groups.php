@@ -1,6 +1,6 @@
 <?php
 
-class Groups extends Admin{
+class Groups extends WebApp{
     /*
      * This Class Only Variable
      */

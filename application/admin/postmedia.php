@@ -1,5 +1,5 @@
 <?php
-class Postmedia extends Admin{
+class Postmedia extends WebApp{
     /*
      * This Class Only Variable
      */

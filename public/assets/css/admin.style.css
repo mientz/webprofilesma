@@ -151,6 +151,27 @@
     padding-right: 0;
 }
 
+.no-tbgutter {
+    padding-top: : 0;
+    padding-bottom: 0;
+}
+
+.no-lgutter {
+    padding-left: 0;
+}
+
+.no-rgutter {
+    padding-right: 0;
+}
+
+.no-tgutter {
+    padding-top: 0;
+}
+
+.no-bgutter {
+    padding-bottom: 0;
+}
+
 input[type=range].form-range {
     -webkit-appearance: none;
     width: 100%;
@@ -654,6 +675,10 @@ a.cke_dialog_tab {
     background-color: #5bc0de;
 }
 
+.modal-success .modal-header {
+    background-color: #5cb85c;
+}
+
 .noselect {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Chrome/Safari/Opera */
@@ -662,4 +687,47 @@ a.cke_dialog_tab {
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently
     not supported by any browser */
+}
+
+.notice {
+    padding: 15px;
+    background-color: #fafafa;
+    border-left: 6px solid #7f7f84;
+    margin-bottom: 10px;
+    -webkit-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+    box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+    color: #6a6a6a;
+}
+.notice-sm {
+    padding: 10px;
+    font-size: 80%;
+}
+.notice-lg {
+    padding: 35px;
+    font-size: large;
+}
+.notice-success {
+    border-color: #80D651;
+}
+.notice-success>strong {
+    color: #80D651;
+}
+.notice-info {
+    border-color: #45ABCD;
+}
+.notice-info>strong {
+    color: #45ABCD;
+}
+.notice-warning {
+    border-color: #FEAF20;
+}
+.notice-warning>strong {
+    color: #FEAF20;
+}
+.notice-danger {
+    border-color: #d73814;
+}
+.notice-danger>strong {
+    color: #d73814;
 }

@@ -6,21 +6,23 @@
     {% set rcs = settings.rcs %}
 <head>
     {% block head %}
-    <base href="{{ path_for('homepage') }}">
+    <base href="{{ base_path }}/">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %}{{ ms.t }}{{ ms.d ? [' | ', ms.d]|join }}</title>
     <link href="public/assets/css/web.css" rel="stylesheet">
+    <link href="public/assets/fuelux/css/fuelux.min.css" rel="stylesheet">
     <link href="public/assets/css/yamm.css" rel="stylesheet">
     <link href="public/assets/css/web.style.css" rel="stylesheet">
     <link href="public/assets/css/themes/theme-eb8a44.css" rel="stylesheet">
     <link href="public/assets/css/animate.css" rel="stylesheet">
     <link href="public/assets/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="public/assets/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Lato|Roboto|Roboto+Mono|Roboto+Slab" rel="stylesheet">
     {% endblock %}
 </head>
-<body>
+<body class="fuelux">
     <div class="row wraper">
         <div class="col-md-11 col-xs-12 container">
             <!--header-->
@@ -46,7 +48,7 @@
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                             </button>
-                            <a class="navbar-brand" href="{{ path_for('homepage') }}">
+                            <a class="navbar-brand" href="{{ base_path }}">
                                 <img src="{{ ms.i }}" alt="{{ ms.t }}{{ ms.d ? [' | ', ms.d]|join }}" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{ ms.t }}{{ ms.d ? [' | ', ms.d]|join }}">
                             </a>
                         </div>
@@ -158,7 +160,7 @@
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Profil</a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li><a href="{{ path_for('getPageDetailHTML', {'page':'sejarah', 'ext':'.html'}) }}">Sejarah</a></li>
+                                        <li><a href="{#{ path_for('getPageDetailHTML', {'page':'sejarah', 'ext':'.html'}) }#}">Sejarah</a></li>
                                         <li><a href="visi-misi.html">Visi dan Misi</a></li>
                                         <li><a href="sambutan.html">Sambutan Kepala Sekolah</a></li>
                                         <li><a href="struktur.html">Struktur Organisasi</a></li>
@@ -183,12 +185,12 @@
                                         <li><a href="download.html">Materi Pelajaran</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="{{ path_for('getPostByCategoryHTML', {'category':'berita', 'ext':'/'}) }}">Berita</a></li>
+                                <li><a href="{#{ path_for('getPostByCategoryHTML', {'category':'berita', 'ext':'/'}) }#}">Berita</a></li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Komunitas</a>
                                     <ul class="dropdown-menu" role="menu">
-                                        <li><a href="{{ path_for('getPostByDateHTML', {'year':'2016', 'month':'01'}) }}">OSIS</a></li>
-                                        <li><a href="{{ path_for('getPostDetailHTML', {'category':'berita', 'post':'coba-c', 'ext':'html'}) }}">MPK</a></li>
+                                        <li><a href="{#{ path_for('getPostByDateHTML', {'year':'2016', 'month':'01'}) }#}">OSIS</a></li>
+                                        <li><a href="{#{ path_for('getPostDetailHTML', {'category':'berita', 'post':'coba-c', 'ext':'html'}) }#}">MPK</a></li>
                                         <li><a href="komunitas.html">Pencinta Alam</a></li>
                                         <li><a href="komunitas.html">Pramuka</a></li>
                                         <li><a href="komunitas.html">Futsal</a></li>
@@ -207,7 +209,7 @@
                                     </ul>
                                 </li>
                                 <li><a href="gallery.html">Galeri</a></li>
-                                <li><a href="{{ path_for('getContactsHTML') }}">Hubungi Kami</a></li>
+                                <li><a href="{#{ path_for('getContactsHTML') }#}">Hubungi Kami</a></li>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                         <p class="visible-xs visible-sm"><i class="mdi mdi-magnify"></i> Pencarian</p>
@@ -316,7 +318,12 @@
     {% block js %}
     <script src="public/assets/js/jquery.min.js"></script>
     <script src="public/assets/js/bootstrap.min.js"></script>
+    <script src="public/assets/fuelux/js/fuelux.min.js"></script>
+    <script src="public/assets/js/ekko-lightbox.min.js"></script>
     <script src="public/assets/js/web.app.js"></script>
+    <script>
+        var baseUrl = $('base').attr('href');
+    </script>
     {% endblock %}
 </body>
 

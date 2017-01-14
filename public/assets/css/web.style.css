@@ -988,3 +988,35 @@ body > .row > .footer {
         font-size: 42px;
     }
 }
+
+
+
+.no-gutter {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.no-tbgutter {
+    padding-top: : 0;
+    padding-bottom: 0;
+}
+
+.no-lgutter {
+    padding-left: 0;
+}
+
+.no-rgutter {
+    padding-right: 0;
+}
+
+.no-tgutter {
+    padding-top: 0;
+}
+
+.no-bgutter {
+    padding-bottom: 0;
+}
+
+.form-upcase{
+    text-transform:uppercase;
+}

@@ -33,13 +33,31 @@ var timeinterval = setInterval(function () {
     }
 }, 1000);
 
-$(window).scroll(function (event) {
-    var scroll = $(window).scrollTop();
-    if (scroll >= 180) {
-        $('.navbar').addClass("navbar-fixed-top");
-        $('body').addClass("body-padding");
-    } else {
-        $('.navbar').removeClass("navbar-fixed-top");
-        $('body').removeClass("body-padding");
-    }
+// $(window).scroll(function (event) {
+//     var scroll = $(window).scrollTop();
+//     if (scroll >= 180) {
+//         $('.navbar').addClass("navbar-fixed-top");
+//         $('body').addClass("body-padding");
+//     } else {
+//         $('.navbar').removeClass("navbar-fixed-top");
+//         $('body').removeClass("body-padding");
+//     }
+// });
+
+$(document).delegate('*[data-toggle="lightbox"]', 'click', function(event) {
+    event.preventDefault();
+    $(this).ekkoLightbox();
 });
+
+function readURL(input, callback) {
+
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            callback(e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}

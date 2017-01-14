@@ -1,4 +1,4 @@
-{% extends "admin/base.html" %} {% block title %} Dashboard {% endblock %} {% block content %}
+{% extends "admin/base.twig" %} {% block title %} Dashboard {% endblock %} {% block content %}
 {% set foo = user_data.privilege %}
 {{foo.post_management}}
 {% endblock %} {% block js %} {{ parent() }} {% endblock %}

@@ -1,28 +1,42 @@
 <?php
-$app->group('/admin/settings', function () {
-
-    $this->get('', function ($req, $res, $args) {
-        $req = $req->withAttribute('sidemenu', ['settings'=>true]);
+class Settings extends WebApp {
+    /*
+     * This Class Only Variable
+     */
+    protected $ci;
+    /**
+     * Constructor
+     * @private
+     * @param function $ci Slimm Container Interface
+     */
+    public function __construct($ci){
+        $this->ci = $ci;
+        parent::__construct($ci);
+    }
+    public function getSettings(){
         $settings = [];
-        foreach($this->db->query("select * from settings")->fetchAll(PDO::FETCH_ASSOC) as $val){
+        foreach($this->pdo->select()->from('settings')->execute()->fetchAll() as $val){
             $settings[$val['type']] = [];
             foreach(json_decode($val['config']) as $key => $config){
                 $settings[$val['type']][$key] = base64_decode($config);
             }
         }
-//        $req = $req->withAttribute('settings', $settings);
+        return $settings;
+    }
+    public function setSettings($type, $config){
+        return $this->pdo->update(['config'=>$config])->table('settings')->where('type', '=', $type)->execute();
+    }
+    public function displaySettings($req, $res, $args) {
+        $req = $req->withAttribute('sidemenu', ['settings'=>true]);
+        $req = $req->withAttribute('settings', $this->getSettings());
         return $this->view->render($res, 'admin/settings.html', $req->getAttributes());
-    })->setName('getAdminSettingsHTML');
-
-    $this->post('[/{type}]', function ($req, $res, $args) {
+    }
+    public function ActionsSaveSettings($req, $res, $args) {
         $configs = [];
         foreach( $_POST as $key => $val ) {
             $configs[$key] = base64_encode($val);
         }
-        $update = $this->db->prepare("update settings set config=:config where type=:type");
-        $update->bindValue(':type', $args['type'], PDO::PARAM_STR);
-        $update->bindValue(':config', json_encode($configs), PDO::PARAM_STR);
-        if($update->execute()){
+        if($this->setSettings($args['type'], json_encode($configs))){
             $res = $res->withJson([
                 'success'=>true,
                 'type'=>$args['type']
@@ -34,5 +48,5 @@ $app->group('/admin/settings', function () {
             ]);
         }
         return $res;
-    })->setName('postAdminSettingsJSON');
-})->add($session);
+    }
+}
