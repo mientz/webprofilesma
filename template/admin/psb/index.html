@@ -1,0 +1,118 @@
+{% extends "admin/base.html" %}{% block head %} {{ parent() }}
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet"> 
+<link href="public/assets/css/bootstrap-datepicker.min.css" rel="stylesheet"> 
+{% endblock %} {% block title %} Pos {% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 no-gutter">
+            <div class="col-md-8 no-gutter">
+                <h3 class="page-title pull-left">Pendaftaran</h3>
+            </div>
+        </div>
+        <br>
+        <div class="col-md-12 no-gutter" id="post-list" style="padding-top:20px;">
+            <div class="col-md-3 no-gutter" style="padding-right:20px;">
+                <a role="button" style="text-decoration: none;" id="new-form">
+                    <div class="notice notice-success">
+                        <strong><i class="fa fa-plus fa-fw"></i> Buat Formulir Baru</strong><br>
+                        <small>&nbsp;</small><br>
+                    </div>
+                </a>
+            </div>
+            {% for form in forms %}
+            <div class="col-md-3 no-gutter" style="padding-right:20px;">
+                <div class="notice notice-info">
+                    <strong>{{form.name}}</strong><br>
+                    <small>{{form.start|date("d M")}} - {{form.end|date("d M Y")}} | 100 Pendaftar</small><br>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }} {% verbatim %}
+<script id="add-form-tmpl" type="x-tmpl-mustache">
+<form method="post">
+    <fieldset>
+        <div class="form-group">
+            <label class="control-label">Nama Formulir</label>
+            <input class="form-control" type="text" name="name">
+        </div>
+        <div class="form-group">
+            <label class="control-label">Jalur</label>
+            <select class="form-control" name="type">
+                <option value="reguler">Reguler</option>
+                <option value="prestasi">Prestasi</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Dibuka</label>
+            <div class="input-group input-daterange">
+                <input type="text" class="form-control" name="start">
+                <span class="input-group-addon">Sampai</span>
+                <input type="text" class="form-control" name="end">
+            </div>
+        </div>
+    </fieldset>
+</form>
+</script>
+{% endverbatim %}
+<script src="public/assets/js/list.min.js"></script>
+<script src="public/assets/js/list.pagination.min.js"></script>
+<script src="public/assets/js/bootbox.min.js"></script>
+<script src="public/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="public/assets/js/bootstrap-datepicker.id.min.js"></script>
+<script src="public/assets/js/jquery.form.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#new-form').on('click', function(){
+            var btn = $(this);
+            var dialog = bootbox.dialog({
+                title: 'Buat Formulir Pendaftaran',
+                message: Mustache.render($('#add-form-tmpl').html()),
+                buttons: {
+                    add: {
+                        label: 'Tambah',
+                        className: "btn-info",
+                        callback: function() {
+                            dialog.find('form').submit(function(e) {
+                                e.preventDefault;
+                                // return false to prevent normal browser submit and page navigation
+                                return false;
+                            });
+                            // submit the form
+                            dialog.find('form').ajaxSubmit({
+                                url: globalUrl.getAdminNewPSBJSON,
+                                success:function(data) {
+                                    if(data.success){
+                                        location.reload();
+                                    }else{
+                                        $.notify(data.messages, "error");
+                                    }
+                                }
+                            });
+                            return false;
+                        }
+                    },
+                    cancel: {
+                        label: 'Batal',
+                        className: "btn-default",
+                    }
+                }
+            });
+            dialog.init(function(){
+                $('.input-daterange input').each(function() {
+                    $(this).datepicker({
+                        autoclose: true,
+                        format: 'd M yyyy',
+                        todayHighlight: true,
+                        todayBtn: true,
+                        zIndexOffset: 50000000
+                    });
+                });
+            });
+        })
+    })
+
+</script>
+{% endblock %}

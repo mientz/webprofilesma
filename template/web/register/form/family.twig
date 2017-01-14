@@ -1,0 +1,111 @@
+<form method="post" data-toggle="validator" role="form" action="{{ path_for('ApiPSB_DataSave', {'psb_id': psb_form.id, 'regnumber':regnumber, 'step': step }) }}">
+    <fieldset>
+        <legend>Data Keluarga</legend>
+        <div class="col-md-6 no-lgutter">
+            <div class="form-group has-feedback">
+                <label class="control-label">Nama Ayah</label>
+                <input class="form-control form-upcase" type="text" name="family[father][name]" data-error="Wajib di-isi" required>
+                <div class="help-block with-errors"></div>
+                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <label class="control-label">Pekerjaan Ayah</label>
+                <input class="form-control form-upcase" type="text" name="family[father][work]" data-required-error="Wajib di-isi" required>
+                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <label class="control-label">Penghasilan Ayah per bulan</label>
+                <div class="input-group">
+                    <span class="input-group-addon">Rp.</span>
+                    <input class="form-control form-upcase" pattern="^[_0-9]{1,}$" type="text" name="family[father][paycheck]" data-required-error="Wajib di-isi" data-pattern-error="Hanya Angka" required>
+                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                </div>
+                <div class="help-block with-errors"></div>
+            </div>
+            <div class="form-group has-feedback">
+                <label class="control-label">Alamat Ayah</label>
+                <textarea class="form-control form-upcase" name="family[father][address]" data-required-error="Wajib di-isi" required></textarea>
+                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+            </div>
+        </div>
+        <div class="col-md-6 no-rgutter">
+            <div class="form-group has-feedback">
+                <label class="control-label">Nama Ibu</label>
+                <input class="form-control form-upcase" type="text" name="family[mother][name]" data-error="Wajib di-isi" required>
+                <div class="help-block with-errors"></div>
+                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <label class="control-label">Pekerjaan Ibu</label>
+                <input class="form-control form-upcase" type="text" name="family[mother][work]" data-required-error="Wajib di-isi" required>
+                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <label class="control-label">Penghasilan Ibu per bulan</label>
+                <div class="input-group">
+                    <span class="input-group-addon">Rp.</span>
+                    <input class="form-control form-upcase" pattern="^[_0-9]{1,}$" type="text" name="family[mother][paycheck]" data-required-error="Wajib di-isi" data-pattern-error="Hanya Angka" required>
+                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                </div>
+                <div class="help-block with-errors"></div>
+            </div>
+            <div class="form-group has-feedback">
+                <label class="control-label">Alamat Ibu</label>
+                <textarea class="form-control form-upcase" name="family[mother][address]" data-required-error="Wajib di-isi" required></textarea>
+                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Saudara</label>
+            <div class="input-group">
+                <span class="input-group-addon">Anda anak Ke</span>
+                <input class="form-control form-upcase" pattern="^[_0-9]{1,}$" type="text" name="family[sibling][number]" data-required-error="Wajib di-isi" data-pattern-error="Hanya Angka" required>
+                <span class="input-group-addon">dari</span>
+                <input class="form-control form-upcase" pattern="^[_0-9]{1,}$" type="text" name="family[sibling][from]" data-required-error="Wajib di-isi" data-pattern-error="Hanya Angka" required>
+                <span class="input-group-addon">orang bersaudara</span>
+            </div>
+            <div class="help-block with-errors"></div>
+        </div>
+        <div class="col-md-12 no-gutter">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center"></th>
+                        <th class="text-center" style="width:250px;">Nama Saudara</th>
+                        <th class="text-center">Hubungan</th>
+                        <th class="text-center">Pendidikan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-xs btn-sibling-remove"><i class="fa fa-trash fa-fw"></i></button>
+                        </td>
+                        <td class="form-group">
+                            <input class="form-control input-sm form-upcase" type="text" name="family[sibling_data][name][]" data-required-error="Wajib di-isi" required>
+                            <div class="help-block with-errors"></div>
+                        </td>
+                        <td class="form-group">
+                            <input class="form-control input-sm form-upcase" type="text" name="family[sibling_data][relation][]" placeholder="adik / kakak" data-required-error="Wajib di-isi" required>
+                            <div class="help-block with-errors"></div>
+                        </td>
+                        <td class="form-group">
+                            <input class="form-control input-sm form-upcase" type="text" name="family[sibling_data][education][]" data-required-error="Wajib di-isi" required>
+                            <div class="help-block with-errors"></div>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="4">
+                            <button type="button" class="btn btn-info btn-sm btn-block btn-sibling-add"><i class="fa fa-plus"></i> Tambah Saudara</button>
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary pull-right">Selanjutnya</button>
+        </div>
+    </fieldset>
+</form>

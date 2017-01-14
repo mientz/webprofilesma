@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <base href="{{ base_path }}/">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="public/assets/css/admin.css">
+        <link rel="stylesheet" href="public/assets/css/font-awesome.min.css">
+        <style>
+            /*
+            /* Created by Filipe Pina
+            * Specific styles of signin, register, component
+            */
+            /*
+            * General styles
+            */
+
+            body,
+            html {
+                height: 100%;
+            }
+
+            .main {
+                margin-top: 30px;
+            }
+
+            h1.title {
+                font-size: 50px;
+                font-weight: 400;
+            }
+
+            hr {
+                width: 10%;
+                color: #fff;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            label {
+                margin-bottom: 15px;
+            }
+
+            input,
+            input::-webkit-input-placeholder {
+                font-size: 11px;
+                padding-top: 3px;
+            }
+
+            .main-login {
+                background-color: #151515;
+                /* shadows and rounded borders */
+                -moz-border-radius: 2px;
+                -webkit-border-radius: 2px;
+                border-radius: 2px;
+                -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+                -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+                box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+            }
+
+            .main-center {
+                margin-top: 30px;
+                margin: 0 auto;
+                max-width: 430px;
+                padding: 40px 40px;
+            }
+
+            .login-button {
+                margin-top: 5px;
+            }
+
+            .login-register {
+                font-size: 11px;
+                text-align: center;
+            }
+        </style>
+        <title>Admin</title>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row main">
+                <div class="panel-heading">
+                    <div class="panel-title text-center">
+                        <h3 class="title">SMA</h3>
+                        <hr />
+                    </div>
+                </div>
+                <div class="main-login main-center">
+                    {% if date(token.valid) >= date() and token and valid %}
+                    <form id="regis-form" data-toggle="validator" class="form-horizontal" method="post">
+                        <div class="form-group has-feedback">
+                            <label for="username" class="control-label">Email</label>
+                            <div class="cols-sm-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-envelope fa-fw" aria-hidden="true"></i></span>
+                                    <input type="email" class="form-control" name="email" id="username" placeholder="Email" value="{{token.email}}" readonly required/>
+                                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                </div>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback">
+                            <label for="username" class="control-label">Username</label>
+                            <div class="cols-sm-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-user fa-fw" aria-hidden="true"></i></span>
+                                    <input type="text" class="form-control" name="username" data-minlength="6" placeholder="Username" required data-minlength-error="Minimal 6 karakter" data-remote="{{ path_for('ApiUsernameValidate') }}" />
+                                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                </div>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <label for="password" class="cols-sm-2 control-label">Password</label>
+                            <div class="cols-sm-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-key fa-fw" aria-hidden="true"></i></span>
+                                    <input id="password" type="password" class="form-control" name="password" data-minlength="6" placeholder="Password" required data-error="Minimal 6 karakter"/>
+                                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                </div>
+                                <div class="help-block  with-errors"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <label for="password" class="cols-sm-2 control-label">Ulangi Password</label>
+                            <div class="cols-sm-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-key fa-fw" aria-hidden="true"></i></span>
+                                    <input type="password" class="form-control" name="repassword" data-match="#password" placeholder="Password" required data-error="Password tidak sama"/>
+                                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                </div>
+                                <div class="help-block  with-errors"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group ">
+                            <input type="hidden" name="token" value="{{tokenRaw}}">
+                            <button type="submit" class="btn btn-info btn-lg btn-block login-button">Daftar</button>
+                        </div>
+                        <div class="login-register">
+                            Sudah Terdaftar ?
+                            &nbsp;&#124;&nbsp;
+                            <a href="reset_password.php" class="text-primary">Masuk</a>
+                        </div>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-dismissible alert-danger">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        Alamat pendaftaran yang anda gunakan tidak valid
+                    </div>
+                    <div class="login-register">
+                        kembali kehalaman utama
+                        &nbsp;&#124;&nbsp;
+                        <a href="reset_password.php" class="text-primary">Kembali</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="public/assets/js/jquery.min.js"></script>
+        <script type="text/javascript" src="public/assets/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="public/assets/js/validator.min.js"></script>
+        <script src="public/assets/js/jquery.form.min.js"></script>
+        <script src="public/assets/js/notify.js"></script>
+        <script>
+            $('#regis-form').validator()
+        </script>
+    </body>
+
+</html>

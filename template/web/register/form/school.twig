@@ -1,0 +1,24 @@
+<form method="post" data-toggle="validator" role="form"  action="{{ path_for('ApiPSB_DataSave', {'psb_id': psb_form.id, 'regnumber':regnumber, 'step': step }) }}">
+    <fieldset>
+        <legend>Asal Sekolah</legend>
+        <div class="form-group has-feedback">
+            <label class="control-label">Nama Sekolah</label>
+            <input class="form-control form-upcase typeahead-smp" type="text" name="school[name]" data-required-error="Wajib di-isi" required>
+            <div class="help-block with-errors"></div>
+            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+        </div>
+        <div class="form-group has-feedback">
+            <label class="control-label">Kabupaten / Kota Madya Sekolah</label>
+            <input class="form-control form-upcase typeahead-city" type="text" name="school[city]" data-required-error="Wajib di-isi" required>
+            <div class="help-block with-errors"></div>
+            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+        </div>
+        <div class="form-group has-feedback">
+            <label class="control-label">Alamat Sekolah</label>
+            <textarea class="form-control form-upcase" rows="3"  name="school[address]"></textarea>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary pull-right">Selanjutnya</button>
+        </div>
+    </fieldset>
+</form>

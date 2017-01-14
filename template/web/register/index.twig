@@ -1,0 +1,176 @@
+{% extends "web/base.html" %}{% block head %} {{ parent() }}
+<link href="public/assets/css/bootstrap-datepicker.min.css" rel="stylesheet">
+{% endblock %} {% block title %} Home {% endblock %} {% block content %}
+<!--page header area-->
+<div class="col-md-12 col-xs-12 page-header-area">
+    <div class="col-md-12">
+        <div class="col-md-10 col-md-offset-1">
+            <blockquote>
+                <h3>{{psb_form.name}}</h3>
+            </blockquote>
+        </div>
+    </div>
+</div>
+<div class="col-md-12 col-xs-12 page-wrapper-area">
+    <div class="col-md-12">
+        <div class="col-md-10 col-md-offset-1">
+            <ul class="breadcrumb">
+                <li><a href="#">Beranda</a></li>
+                <li>Pendaftaran</li>
+                <li class="active">{{psb_form.name}}</li>
+            </ul>
+            <div class="col-md-12 news-list">
+                <div class="col-md-12 news-item">
+                    <div class="col-md-12 no-gutter">
+                        <div class="wizard" data-initialize="wizard" id="myWizard" data-active="{{step}}" data-psb="{{psb_form|json_encode()}}">
+                            <div class="steps-container">
+                            	<ul class="steps">
+                            		<li data-step="1" class="active">
+                            			Informasi Pendaftaran
+                            			<span class="chevron"></span>
+                            		</li>
+                            		<li data-step="2">
+                            			<span class="badge">1</span>Data Diri
+                            			<span class="chevron"></span>
+                            		</li>
+                            		<li data-step="3" data-restrict="previous">
+                            			<span class="badge">2</span>Data Keluarga
+                            			<span class="chevron"></span>
+                            		</li>
+                            		<li data-step="4" data-restrict="previous" >
+                            			<span class="badge">3</span>Sekolah
+                            			<span class="chevron"></span>
+                            		</li>
+                                    {% if psb_form.type == "prestasi" %}
+                            		<li data-step="5" data-restrict="previous" >
+                            			<span class="badge">4</span>Nilai
+                            			<span class="chevron"></span>
+                            		</li>
+                            		<li data-step="6" data-restrict="previous" >
+                            			<span class="badge">5</span>Piagam
+                            			<span class="chevron"></span>
+                            		</li>
+                                    {% else %}
+                            		<li data-step="5" data-restrict="previous" >
+                            			<span class="badge">4</span>Nilai Ujian Nasional
+                            			<span class="chevron"></span>
+                            		</li>
+                                    {% endif %}
+                            		<li data-step="7" data-restrict="previous" >
+                            		    <span class="badge"><i class="fa fa-check fa-fw"></i></span>Selesai
+                            			<span class="chevron"></span>
+                            		</li>
+                            	</ul>
+                            </div>
+                            <div class="step-content">
+                                {% set psb_msg = psb_form.messages %}
+                            	<div class="step-pane active sample-pane alert" data-step="1">
+                            		<p>{{psb_msg.before|raw}}</p>
+                                    <div class="actions">
+                                    	<a href="{{ path_for('WebPSB', {'psb_id': psb_form.id, 'step': 2 } ) }}" class="btn btn-primary btn-next pull-right"> Mulai </a>
+                                    </div>
+                            	</div>
+                            	<div class="step-pane active sample-pane alert" data-step="2">
+                            		{% include 'web/register/form/bio.twig' %}
+                            	</div>
+                            	<div class="step-pane sample-pane alert" data-step="3">
+                            		{% include 'web/register/form/family.twig' %}
+                            	</div>
+                            	<div class="step-pane sample-pane alert" data-step="4">
+                                    {% include 'web/register/form/school.twig' %}
+                            	</div>
+                                {% if psb_form.type == "prestasi" %}
+                            	<div class="step-pane sample-pane alert" data-step="5">
+                                    {% include 'web/register/form/grade.twig' %}
+                            	</div>
+                            	<div class="step-pane sample-pane alert" data-step="6">
+                                    {% include 'web/register/form/cert.twig' %}
+                            	</div>
+                                {% else %}
+                            	<div class="step-pane sample-pane alert" data-step="5">
+                                    {% include 'web/register/form/nationalgrade.twig' %}
+                            	</div>
+                                {% endif %}
+                            	<div class="step-pane sample-pane" data-step="7">
+                                    <p>
+                                        {{psb_msg.after|raw}}
+                                    </p>
+                                    <div class="well well-lg text-center">
+                                        Nomor Pendaftaran Anda Adalah : <h3><kbd>{{ regnumber|split('', 4)|join('-')}}</kbd></h3>
+                                    </div>
+                            	</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }}
+<script type="text/javascript" src="public/assets/js/validator.min.js"></script>
+<script src="public/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="public/assets/js/bootstrap-datepicker.id.min.js"></script>
+<script src="public/assets/js/twig.min.js"></script>
+<script src="public/assets/js/bootstrap3-typeahead.min.js"></script>
+<script>
+    $("#myWizard").data('active');
+    $('#myWizard').wizard({
+        disablePreviousStep: true,
+        selectedItem: {
+            step: $("#myWizard").data('active'),
+        }
+    });
+    var siblingsFormTmpl = Twig.twig({
+        href: baseUrl+"template/web/register/helper/sibling-table.twig",
+        async: false
+    })
+    var certFormTmpl = Twig.twig({
+        href: baseUrl+"template/web/register/helper/cert-table.twig",
+        async: false
+    })
+    $(document).on('click', '.btn-sibling-remove', function(){
+        var parent = $(this).parent().parent();
+        parent.remove();
+    });
+    $(document).on('change', '.upload-file-selector', function(){
+        var btn = $(this);
+        readURL(this, function(img){
+            btn.parent().parent().find('img').attr('src', img);
+            btn.parent().parent().find('a').attr('href', img);
+            btn.parent().parent().find('a').data('title', btn.val().split('\\').pop());
+            btn.parent().parent().find('.cert-image').val(img);
+        });
+    });
+    $('.btn-sibling-add').on('click', function(){
+        var container = $(this).parent().parent().parent().parent().find('tbody');
+        container.append(siblingsFormTmpl.render());
+        $('form').validator('update');
+    });
+    $('.btn-cert-add').on('click', function(){
+        var container = $(this).parent().parent().parent().parent().find('tbody');
+        container.append(certFormTmpl.render({
+            id: $('.tr-cert-count').length+1
+        }));
+        $('form').validator('update');
+    });
+    $(document).ready(function(){
+        $.get(baseUrl+'public/data/smp-bangkalan.json', function(data){
+            $(".typeahead-smp").typeahead({ source:data.smp });
+        },'json');
+        $.get(baseUrl+'public/data/city-eastjava.json', function(data){
+            $(".typeahead-city").typeahead({ source:data });
+        },'json');
+        $('.date-picker').each(function() {
+            $(this).datepicker({
+                autoclose: true,
+                format: 'd M yyyy',
+                todayHighlight: true,
+                todayBtn: true,
+                zIndexOffset: 50000000,
+                language: 'id'
+            });
+        });
+    });
+</script>
+{% endblock %}

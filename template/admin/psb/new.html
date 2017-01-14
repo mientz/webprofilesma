@@ -1,0 +1,212 @@
+{% extends "admin/base.html" %} {% block head %} {{ parent() }}
+<style>
+    body.dragging, body.dragging * {
+        cursor: move !important;
+    }
+
+    .dragged {
+        position: absolute;
+        left: -100px;
+        opacity: 0.5;
+        z-index: 2000;
+    }
+
+    ol{
+        list-style-type: none;
+        list-style: decimal;
+        max-width: 100%;
+        padding: 0;
+    }
+
+    ol.form-list .form-control{
+        border: 1px solid #aaaaaa;
+    }
+    ol li{
+        display: block;
+        margin: 5px 0;
+        width: 100%;
+        min-height: 44px;
+        color: #4e5d6c;
+        padding: 0;
+    }
+
+    ol li .panel{
+        background: #fff;
+        color:#000;
+        border:1px solid #d4d4d4;
+        min-height: 44px;
+        margin-bottom: 0;
+    }
+
+    ol li .panel .panel-heading{
+        cursor: pointer;
+    }
+    ol.example li.placeholder {
+        position: relative;
+        /** More li styles **/
+    }
+    ol.example li.placeholder:before {
+        position: absolute;
+        /** Define arrowhead **/
+    }
+</style>
+
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet">
+{% endblock %} {% block title %} Menu - Pengaturan Tampilan {% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 no-gutter">
+            <h3 class="page-title pull-left">Kelola Menu</h3>
+        </div>
+        <div class="row col-md-12 no-gutter" style="padding-top:20px;">
+            <!--left pannel-->
+            <div class="col-md-3">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <!--panel page-->
+                    <div class="panel panel-default" style="background:#fff;color:#000;">
+                        <div class="panel-heading" role="tab" id="menu-list-page">
+                            <h4 class="panel-title noselect">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#menu-list-page-body" aria-expanded="true" aria-controls="collapseOne">
+                                    Halaman
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="menu-list-page-body" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body" style="padding:5px">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="control-label" for="focusedInput">Cari Halaman</label>
+                                    <input class="form-control search" id="focusedInput" type="text" placeholder="Judul halaman"  style="border:1px solid #b9b9b9;">
+                                </div>
+                            </div>
+                            <table class="table"  style="padding:5px">
+                                <tbody class="list">
+                                    {% for page in pages %}
+                                    <tr>
+                                        <td style="width:1em;">
+                                            <div class="checkbox" style="margin:0; padding-left:30px">
+                                                <input type="checkbox" data-id="{{ page.id }}" data-title="{{ page.title }}" data-path="{{ path_for('getPageDetailHTML', {'page':page.title_url, 'ext':'html'}) }}" id="checkPage{{ page.id }}" class="menu-page-checkbox">
+                                                <label for="checkPage{{ page.id }}"></label>
+                                            </div>
+                                        </td>
+                                        <td class="title" style="max-width: 0;text-overflow: ellipsis;white-space: nowrap;overflow: hidden; padding-right:10px;">
+                                            {{ page.title }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="panel-body" style="padding:5px">
+                                <center>
+                                    <ul class="pagination pagination-sm bg-white" style="margin:0;">
+                                    </ul>
+                                </center>
+                                <a role="button" class="btn btn-sm text-info">Pilih Semua</a>
+                                <a role="button" class="btn btn-info btn-sm pull-right" id="menu-add-page-trigger">Tambahkan Ke Menu</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--right pannel-->
+            <div class="col-md-9">
+                <div class="panel panel-default" style="background:#fff;color:#000;">
+                    <div class="panel-heading col-md-12 no-gutter">
+                        <div class="col-md-6 text-left">
+                            <strong>Struktur Formulir</strong>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <form method="post" action="{{ path_for('postAdminMenuList302') }}">
+                                <input class="menu-data" type="hidden" name="menu_data" value="">
+                                <button type="submit" class="btn btn-info btn-sm"><i class="fa fa-save fa-fw"></i> Simpan Formulir</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="panel-body" style="padding-top:60px;">
+                        <ol class="form-list">
+                            <li data-id="0" data-type="simple-text">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"><i class="fa fa-th fa-fw"></i> Teks Sederhana</div>
+                                    <div class="panel-body">
+                                        <div class="col-md-9">
+                                            <div class="form-group">
+                                                <label class="control-label" for="focusedInput">Pertanyaan</label>
+                                                <input class="form-control" id="focusedInput" type="text" name="name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <div class="checkbox checkbox-primary">
+                                                    <input type="checkbox">
+                                                    <label>
+                                                        Wajib di isi
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li data-id="0" data-type="simple-text">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"><i class="fa fa-th fa-fw"></i> Teks Panjang</div>
+                                    <div class="panel-body">
+                                        <div class="col-md-9">
+                                            <div class="form-group">
+                                                <label class="control-label" for="focusedInput">Pertanyaan</label>
+                                                <input class="form-control" id="focusedInput" type="text" name="name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <div class="checkbox checkbox-primary">
+                                                    <input type="checkbox">
+                                                    <label>
+                                                        Wajib di isi
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="panel-footer" style="color:#fff;" onkeyup="">Panel footer</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }} {% verbatim %}
+<script id="simple-text-form-tmpl" type="x-tmpl-mustache">
+
+</script>
+{% endverbatim %}
+<script src="public/assets/js/bootbox.min.js"></script>
+<script src="public/assets/js/jquery.form.min.js"></script>
+<script src="public/assets/js/jquery-sortable-min.js"></script>
+<script src="public/assets/js/list.min.js"></script>
+<script src="public/assets/js/list.pagination.min.js"></script>
+<script>
+    $(document).ready(function(){
+        var short = $('ol.form-list').sortable({
+            handle: ".panel-heading",
+            //            exclude: ".default-permanent",
+            //            isValidTarget: function  ($item, container) {
+            //                if($item.data('type') != "parent")
+            //                    return true;
+            //                else
+            //                    return $item.parent("ol")[0] == container.el[0];
+            //            },
+            onDrop: function($item, container, _super, event){
+                $('ol.form-list').find('li').each(function(index, elm){
+                    $(elm).data('id', index);
+                });
+                var data = short.sortable("serialize").get();
+                console.log(data);
+                _super($item, container)
+            }
+        });
+    });
+</script>
+{% endblock %}

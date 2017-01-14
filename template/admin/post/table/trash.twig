@@ -1,0 +1,40 @@
+{% for post in PostByCategory.post if post.deleted == 1 %}
+<tr height='65'>
+    <td id="id-container{{post.id}}">
+        <div class="checkbox">
+            <input type="checkbox" value="{{post.id}}" id="check{{post.id}}" class="post-checkbox">
+            <label for="check{{post.id}}"></label>
+        </div>
+    </td>
+    <td class="post-title table-list-hasbutton" data-title="{{post.title}}">
+        <strong class="title">
+            {{post.title}} <small style="color:#c6c6c6;"> {{ post.status == 1 ? '| <em> Konsep </em>' }}</small>
+        </strong>
+        <i class="fa fa-eye pull-right {{ post.visibility == 0 ?: 'hidden' }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Pos ini tersembunyi dari umum"></i>
+        <i class="fa fa-lock pull-right {{ post.visibility == 2 ?: 'hidden' }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Pos ini terlindungi password"></i>
+        <div class="form-inline">
+            <a role="button" class="btn btn-link btn-sm no-gutter post-revert-sub" data-id="{{post.id}}"><span class="label label-info"><i class="fa fa-undo"></i> Kembalikan</span></a>
+            <a role="button" class="btn btn-link btn-sm no-gutter post-delete-sub" data-id="{{post.id}}"><span class="label label-danger"><i class="fa fa-trash"></i> Hapus Permanen</span></a>
+        </div>
+    </td>
+    <td>
+        {% for user in Users if user.id == post.author %}
+            {{ user.nickname }}
+        {% endfor %}
+    </td>
+    <td class="category">{{PostByCategory.name}}</td>
+    <td>
+        {% for PostTagKey, postTag in PostTags if postTag.post_id == post.id %}
+            {% for tag in Tags if tag.id == postTag.tag_id %}
+            <span class="label label-{{ cycle(['primary', 'success', 'warning', 'danger', 'info'], PostTagKey) }}">{{tag.name}}</span>
+            {% endfor %}
+        {% endfor %}
+    </td>
+    <td>
+        {% if post.status == 2 %} Telah Terbit
+        <br> {% else %} Terakhir Diubah
+        <br> {% endif %} {{post.date|date("d M y")}}
+        <span class="date hidden">{{post.date|date("m y")}}</span>
+    </td>
+</tr>
+{% endfor %}

@@ -1,0 +1,37 @@
+<tr class="tr-cert-count">
+    <td>
+        <button type="button" class="btn btn-danger btn-xs btn-cert-remove">
+            <i class="fa fa-trash fa-fw"></i>
+        </button>
+    </td>
+    <td class="form-group">
+        <input class="form-control input-sm form-upcase" type="text" name="cert[{{id}}][name]" data-required-error="Wajib di-isi" required>
+        <div class="help-block with-errors"></div>
+    </td>
+    <td class="form-group">
+        <input class="form-control input-sm form-upcase" type="text" name="cert[{{id}}][level]" placeholder="{{" now"|date(" Y")}}" data-required-error="Wajib di-isi" required>
+        <div class="help-block with-errors"></div>
+    </td>
+    <td class="form-group">
+        <input class="form-control input-sm form-upcase" type="text" name="cert[{{id}}][level]" placeholder="adik / kakak" data-required-error="Wajib di-isi" required>
+        <div class="help-block with-errors"></div>
+    </td>
+    <td class="form-group">
+        <select class="form-control input-sm form-upcase" type="text" name="cert[{{id}}][rank]">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        <div class="help-block with-errors"></div>
+    </td>
+    <td>
+        <label class="btn btn-default btn-xs">
+            <input class="upload-file-selector" type="file" style="display:none;">
+            <i class="fa fa-cloud-upload fa-fw"></i>
+        </label>
+        <input type="hidden" class="cert-image" name="cert[{{id}}][image]">
+        <a href="" data-toggle="lightbox">
+            <img src="" style="max-height:30px;border:1px solid #000;border-radius:4px;">
+        </a>
+    </td>
+</tr>
