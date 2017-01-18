@@ -1,0 +1,102 @@
+<fieldset>
+    <legend>Data Diri</legend>
+    <div class="form-group has-feedback">
+        <label class="control-label">NISN</label>
+        <input class="form-control form-upcase" pattern="^[_0-9]{1,}$"  type="text" name="bio[nisn]" data-required-error="Wajib di-isi" data-pattern-error="Hanya Angka" required>
+        <div class="help-block with-errors"></div>
+        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+    </div>
+    <div class="form-group has-feedback">
+        <label class="control-label">Nama Lengkap</label>
+        <input class="form-control form-upcase" type="text" name="bio[name]" data-required-error="Wajib di-isi" required>
+        <div class="help-block with-errors"></div>
+        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+    </div>
+    <div class="form-group has-feedback">
+        <label class="control-label">Jenis Kelamin</label>
+        <div class="radio">
+            <label class="radio-custom radio-inline highlight" data-initialize="radio">
+                <input type="radio" name="bio[gender]" value="Laki-laki" data-required-error="Wajib memilih salah satu" required>
+                Laki-Laki
+            </label>
+            <label class="radio-custom radio-inline highlight" data-initialize="radio">
+                <input type="radio" name="bio[gender]" value="Perempuan" data-required-error="Wajib memilih salah satu" required>
+                Perempuan
+            </label>
+        </div>
+        <div class="help-block with-errors"></div>
+        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+    </div>
+    <div class="form-group has-feedback">
+        <label class="control-label">Agama</label>
+        <div class="radio">
+            <label class="radio-custom radio-inline highlight" data-initialize="radio">
+                <input type="radio" name="bio[religion]" value="Islam" data-required-error="Wajib memilih salah satu" required>
+                Islam
+            </label>
+            <label class="radio-custom radio-inline highlight" data-initialize="radio">
+                <input type="radio" name="bio[religion]" value="Katolik" data-required-error="Wajib memilih salah satu" required>
+                Katolik
+            </label>
+            <label class="radio-custom radio-inline highlight" data-initialize="radio">
+                <input type="radio" name="bio[religion]" value="Protestan" data-required-error="Wajib memilih salah satu" required>
+                Protestan
+            </label>
+            <label class="radio-custom radio-inline highlight" data-initialize="radio">
+                <input type="radio" name="bio[religion]" value="Hindu" data-required-error="Wajib memilih salah satu" required>
+                Hindu
+            </label>
+            <label class="radio-custom radio-inline highlight" data-initialize="radio">
+                <input type="radio" name="bio[religion]" value="Budha" data-required-error="Wajib memilih salah satu" required>
+                Budha
+            </label>
+        </div>
+        <div class="help-block with-errors"></div>
+        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+    </div>
+    <div class="form-group has-feedback">
+        <label class="control-label">Tempat Lahir</label>
+        <input class="form-control form-upcase" type="text" name="bio[birthplace]" data-error="Wajib di-isi" required>
+        <div class="help-block with-errors"></div>
+        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+    </div>
+    <div class="form-group has-feedback">
+        <label class="control-label">Tanggal Lahir</label>
+        <input class="form-control form-upcase date-picker" type="text" name="bio[birthdate]" data-error="Wajib di-isi" required>
+        <div class="help-block with-errors"></div>
+        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+    </div>
+    <div class="form-group has-feedback">
+        <label class="control-label">Golongan Darah</label>
+        <div class="radio">
+            <label class="radio-custom radio-inline highlight" data-initialize="radio">
+                <input type="radio" name="bio[bloodtype]" value="A" data-required-error="Wajib memilih salah satu" required>
+                A
+            </label>
+            <label class="radio-custom radio-inline highlight" data-initialize="radio">
+                <input type="radio" name="bio[bloodtype]" value="B" data-required-error="Wajib memilih salah satu" required>
+                B
+            </label>
+            <label class="radio-custom radio-inline highlight" data-initialize="radio">
+                <input type="radio" name="bio[bloodtype]" value="AB" data-required-error="Wajib memilih salah satu" required>
+                AB
+            </label>
+            <label class="radio-custom radio-inline highlight" data-initialize="radio">
+                <input type="radio" name="bio[bloodtype]" value="O" data-required-error="Wajib memilih salah satu" required>
+                O
+            </label>
+        </div>
+        <div class="help-block with-errors"></div>
+        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+    </div>
+    <div class="form-group has-feedback">
+        <label class="control-label">Alamat</label>
+        <textarea name="bio[address]" class="form-control form-upcase" rows="3" data-required-error="Wajib di-isi" required></textarea>
+        <div class="help-block with-errors"></div>
+        <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+    </div>
+    <div class="form-group pull-right ">
+<!--        <button type="button" class="btn btn-default wiz-prev"><i class="fa fa-chevron-left fa-fw"></i>Sebelumnya</button>-->
+        <button type="button" class="btn btn-primary wiz-next">Data Keluarga<i class="fa fa-chevron-right fa-fw"></i></button>
+    </div>
+</fieldset>

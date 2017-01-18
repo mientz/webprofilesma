@@ -1,0 +1,81 @@
+<fieldset>
+    <legend>Nilai Ujian Nasional</legend>
+    <div class="alert alert-dismissible alert-info">
+        <div class="fa fa-info-circle fa-fw"></div> Jika nilai mengandung koma <strong>( , )</strong>, ganti dengan titik <strong>( . )</strong>
+    </div>
+    <div class="alert alert-dismissible alert-warning">
+        <div class="fa fa-exclamation-triangle fa-fw"></div> Nilai tidak diawali dengan nol ( 0 )
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr class="active">
+                <th rowspan="3" class="text-center" style="width:150px;border:1px solid #ffffff;">Mata Pelajaran</th>
+                <th colspan="2" class="text-center" style="border:1px solid #ffffff;">Nilai</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="form-group">Bahasa dan Sastra Indonesia</td>
+                <td class="form-group"><input class="form-control input-sm" type="text" pattern="^(0|[1-9.][0-9.]*){1,}$" data-required-error="Wajib di-isi" data-pattern-error="Hanya Angka dan titik(.)" name="ngrades[bahasa]" required>
+                    <div class="help-block with-errors"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">Bahasa Inggris</td>
+                <td class="form-group"><input class="form-control input-sm" type="text" pattern="^(0|[1-9.][0-9.]*){1,}$" data-required-error="Wajib di-isi" data-pattern-error="Hanya Angka dan titik(.)" name="ngrades[english]" required>
+                    <div class="help-block with-errors"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">Matematika</td>
+                <td class="form-group"><input class="form-control input-sm" type="text" pattern="^(0|[1-9.][0-9.]*){1,}$" data-required-error="Wajib di-isi" data-pattern-error="Hanya Angka dan titik(.)" name="ngrades[math]" required>
+                    <div class="help-block with-errors"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">Ilmu Pengetahuan Alam</td>
+                <td class="form-group"><input class="form-control input-sm" type="text" pattern="^(0|[1-9.][0-9.]*){1,}$" data-required-error="Wajib di-isi" data-pattern-error="Hanya Angka dan titik(.)" name="ngrades[science]" required>
+                    <div class="help-block with-errors"></div>
+                </td>
+            </tr>
+        </tbody>
+        <thead>
+            <tr class="active">
+                <th rowspan="3" class="text-center" style="width:150px;border:1px solid #ffffff;"></th>
+                <th colspan="2" class="text-center" style="border:1px solid #ffffff;">Nilai</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="form-group">Jumlah NIlai Ujian Nasional</td>
+                <td class="form-group"><input class="form-control input-sm" type="text" pattern="^(0|[1-9.][0-9.]*){1,}$" data-required-error="Wajib di-isi" data-pattern-error="Hanya Angka dan titik(.)" name="ngrades[total]" required>
+                    <div class="help-block with-errors"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="form-group">Rata-rata NIlai Ujian Nasional</td>
+                <td class="form-group"><input class="form-control input-sm" type="text" pattern="^(0|[1-9.][0-9.]*){1,}$" data-required-error="Wajib di-isi" data-pattern-error="Hanya Angka dan titik(.)" name="ngrades[average]" required>
+                    <div class="help-block with-errors"></div>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr class="active">
+                <th> File Scan Ijazah / SKHUN </th>
+                <th>
+                    <label class="btn btn-default btn-xs">
+                        <input class="upload-file-selector" type="file"  name="ngrades" style="display:none;">
+                        <i class="fa fa-cloud-upload fa-fw"></i>
+                    </label>
+                    <a href="" data-toggle="lightbox">
+                        <img src="" style="max-height:30px;border:1px solid #000;border-radius:4px;">
+                    </a>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+    <div class="form-group pull-right ">
+        <button type="button" class="btn btn-default wiz-prev"><i class="fa fa-chevron-left fa-fw"></i>Asal Sekolah</button>
+        <button type="submit" class="btn btn-primary">Daftar<i class="fa fa-check-circle-o fa-fw"></i></button>
+    </div>
+</fieldset>

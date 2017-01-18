@@ -894,5 +894,105 @@
             "slim",
             "whoops"
         ]
+    },
+    {
+        "name": "siriusphp/validation",
+        "version": "2.1.2",
+        "version_normalized": "2.1.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/siriusphp/validation.git",
+            "reference": "be7e2bc467135fe804199aabfbfa84971df8d3a6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/siriusphp/validation/zipball/be7e2bc467135fe804199aabfbfa84971df8d3a6",
+            "reference": "be7e2bc467135fe804199aabfbfa84971df8d3a6",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "3.7"
+        },
+        "time": "2016-07-23 06:09:10",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Sirius\\Validation\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Adrian Miu",
+                "email": "adrian@adrianmiu.ro"
+            }
+        ],
+        "description": "Data validation library. Validate arrays, array objects, domain models etc using a simple API. Easily add your own validators on top of the already dozens built-in validation rules",
+        "keywords": [
+            "form",
+            "modeling",
+            "sanitization",
+            "security",
+            "validation"
+        ]
+    },
+    {
+        "name": "siriusphp/upload",
+        "version": "2.1.0",
+        "version_normalized": "2.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/siriusphp/upload.git",
+            "reference": "fa3938ef5401ac5d4f83a2c57c54dd5128499506"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/siriusphp/upload/zipball/fa3938ef5401ac5d4f83a2c57c54dd5128499506",
+            "reference": "fa3938ef5401ac5d4f83a2c57c54dd5128499506",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3",
+            "siriusphp/validation": "~2.1"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.8"
+        },
+        "suggest": {
+            "knplabs/gaufrette": "Alternative filesystem abstraction library for upload destinations",
+            "league/flysystem": "To upload to different destinations, not just to the local file system"
+        },
+        "time": "2016-03-31 13:47:45",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Sirius\\Upload\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Adrian Miu",
+                "email": "adrian@adrianmiu.ro"
+            }
+        ],
+        "description": "Framework agnostic upload library",
+        "keywords": [
+            "file",
+            "form",
+            "upload",
+            "validation"
+        ]
     }
 ]

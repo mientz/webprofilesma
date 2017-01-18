@@ -59,6 +59,7 @@ $container['mailer'] = function ($container) {
     return new Emailer($container, $mail, $twig);
 };
 
+
 /*
  * session
  */

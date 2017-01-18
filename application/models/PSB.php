@@ -32,17 +32,36 @@ class PSB extends \Wijaya\WebApp {
         }
     }
 
-    public function getPSBData($psb_id, $regnumber = null){
+    public function getPSBData($psb_id, $id = null){
+        if($id == null){
+            $psbData = $this->pdo->select()->from('psb_value')->where('psb_id', '=', $psb_id)->execute()->fetchAll();
+            foreach ($psbData as &$value) {
+                $value['data'] = json_decode($value['data'], true);
+                $value['verification'] = json_decode($value['verification'], true);
+            }
+            return $psbData;
+            unset($value);
+        }else{
+            $psbData = $this->pdo->select()->from('psb_value')->where('psb_id', '=', $psb_id)->where('id', '=', $id)->execute()->fetch();
+            $psbData['data'] = json_decode($psbData['data'], true);
+            $psbData['verification'] = json_decode($psbData['verification'], true);
+            return $psbData;
+        }
+    }
+
+    public function getPSBDataByRegNumber($psb_id, $regnumber = null){
         if($regnumber == null){
             $psbData = $this->pdo->select()->from('psb_value')->where('psb_id', '=', $psb_id)->execute()->fetchAll();
             foreach ($psbData as &$value) {
                 $value['data'] = json_decode($value['data'], true);
+                $value['verification'] = json_decode($value['verification'], true);
             }
             return $psbData;
             unset($value);
         }else{
             $psbData = $this->pdo->select()->from('psb_value')->where('psb_id', '=', $psb_id)->where('regnumber', '=', $regnumber)->execute()->fetch();
             $psbData['data'] = json_decode($psbData['data'], true);
+            $psbData['verification'] = json_decode($psbData['verification'], true);
             return $psbData;
         }
     }
@@ -52,7 +71,7 @@ class PSB extends \Wijaya\WebApp {
     }
 
     public function getPSBDataRegNumber($id){
-        return $this->pdo->select(['regnumber'])->form('psb_value')->where('id', '=', $id)->execute()->fetchColumn();
+        return $this->pdo->select(['regnumber'])->from('psb_value')->where('id', '=', $id)->execute()->fetchColumn();
     }
 
     public function setPSBForm($data, $id=null){

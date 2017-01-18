@@ -10,7 +10,8 @@
         "qazd/text-diff": "^0.1.0",
         "phpmailer/phpmailer": "^5.2",
         "slim/pdo": "~1.9",
-        "zeuxisoo/slim-whoops": "^0.5.1"
+        "zeuxisoo/slim-whoops": "^0.5.1",
+        "siriusphp/upload": "^2.1"
     },
     "autoload": {
         "classmap": ["application/"]

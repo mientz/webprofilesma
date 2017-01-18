@@ -1,0 +1,125 @@
+{
+    "bio": {
+        "nisn": "3631079397",
+        "name": "Oman Mustofa",
+        "gender": "Laki-laki",
+        "religion": "Islam",
+        "birthplace": "Bitung",
+        "birthdate": "04 Dec 1987",
+        "bloodtype": "A",
+        "address": "Kpg. Bayam No. 487, Sibolga 79942, DIY"
+    },
+    "family": {
+        "father": {
+            "name": "Daliman Uwais",
+            "work": "aliquam",
+            "paycheck": 98648,
+            "address": "Gg. Babakan No. 193, Sawahlunto 55943, Gorontalo"
+        },
+        "mother": {
+            "name": "Cinta Riyanti",
+            "work": "ea",
+            "paycheck": 3,
+            "address": "Jln. Dahlia No. 333, Bekasi 87447, SumUt"
+        },
+        "sibling": {
+            "number": "2",
+            "from": "3"
+        },
+        "sibling_data": {
+            "name": ["Kasusra", "Aurora"],
+            "relation": ["kakak", "adik"],
+            "education": ["s1", "tk"]
+        }
+    },
+    "school": {
+        "name": "SMPS BABUR ROHMAH",
+        "city": "Kabupaten Sumenep",
+        "address": "Psr. Ketandan No. 964, Tomohon 51336, Gorontalo"
+    },
+    "grades": {
+        "1": {
+            "bahasa": 68,
+            "english": 98,
+            "math": 63,
+            "science": 95,
+            "social": 84,
+            "total": 64,
+            "course_total": 78,
+            "mean": 89,
+            "rank": 16,
+            "image": "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
+        },
+        "2": {
+            "bahasa": 62,
+            "english": 71,
+            "math": 74,
+            "science": 68,
+            "social": 82,
+            "total": 91,
+            "course_total": 62,
+            "mean": 77,
+            "rank": 30,
+            "image": "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
+        },
+        "3": {
+            "bahasa": 72,
+            "english": 75,
+            "math": 69,
+            "science": 79,
+            "social": 65,
+            "total": 92,
+            "course_total": 82,
+            "mean": 89,
+            "rank": 23,
+            "image": "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
+        },
+        "4": {
+            "bahasa": 99,
+            "english": 97,
+            "math": 87,
+            "science": 89,
+            "social": 80,
+            "total": 100,
+            "course_total": 87,
+            "mean": 78,
+            "rank": 4,
+            "image": "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
+        },
+        "5": {
+            "bahasa": 62,
+            "english": 94,
+            "math": 91,
+            "science": 86,
+            "social": 68,
+            "total": 86,
+            "course_total": 67,
+            "mean": 85,
+            "rank": 16,
+            "image": "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
+        }
+    },
+    "cert": {
+        "1": {
+            "name": "quaerat ut minima",
+            "year": "1984",
+            "level": "Sawahlunto",
+            "rank": "Juara 3",
+            "image": "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
+        },
+        "2": {
+            "name": "et qui tempora",
+            "year": "1982",
+            "level": "Pekanbaru",
+            "rank": "Juara 1",
+            "image": "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
+        },
+        "3": {
+            "name": "exercitationem nam delectus",
+            "year": "1991",
+            "level": "Tanjungbalai",
+            "rank": "Juara 1",
+            "image": "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="
+        }
+    }
+}

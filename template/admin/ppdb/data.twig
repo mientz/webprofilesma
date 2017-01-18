@@ -1,0 +1,311 @@
+{% extends "admin/base.twig" %}{% block head %} {{ parent() }}
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet">
+<link href="public/assets/css/bootstrap-datepicker.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.13/b-1.2.4/b-colvis-1.2.4/b-html5-1.2.4/b-print-1.2.4/fc-3.2.2/fh-3.1.2/r-2.1.0/sc-1.4.2/se-1.2.0/datatables.min.css"/>
+<style>
+    table, th, td {
+        border: 1px solid #fff !important;
+    }
+    th {
+        background-color: #067588 !important;
+    }
+    td {
+        padding-top: 15px !important;
+        padding-bottom: 15px !important;
+        font-size: 13px !important;
+    }
+</style>
+{% endblock %} {% block title %} Pos {% endblock %} {% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 no-gutter">
+            <div class="col-md-8 no-gutter">
+                <h3 class="page-title pull-left">Pendaftaran <q class="text-info">{{ form.name }}</q></h3>
+            </div>
+        </div>
+        <br>
+        <div class="col-md-12 no-gutter" id="post-list" style="padding-top:20px;">
+            <div class="col-md-12 no-gutter">
+                <div class="btn-group btn-group-justified" data-toggle="buttons">
+                    <label class="btn btn-info active">
+                        <input type="radio" name="options" class="col-vis-do" data-col="{{[0,1,2,3,4,5,6,7]|json_encode()}}" autocomplete="off" checked>
+                        Biodata<br>Siswa
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="options" class="col-vis-do" data-col="{{[0,1,15,16,17, 45,46]|json_encode()}}" autocomplete="off">
+                        Data<br>Asal Sekolah
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="options" class="col-vis-do" data-col="{{[0,1,8,9,10,11,12,13,14, 46, 47]|json_encode()}}"  autocomplete="off">
+                        Data<br>
+                        Keluarga
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="options" class="col-vis-do" data-col="{{[0,1,2,18,19,20,21,22,43,44, 46, 47]|json_encode()}}" autocomplete="off">
+                        Data Rapor<br>Bhs Indonesia
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="options" class="col-vis-do" data-col="{{[0,1,2,23,24,25,26,27,43,44, 46, 47]|json_encode()}}" autocomplete="off">
+                        Data Rapor<br>Bhs Inggris
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="options" class="col-vis-do" data-col="{{[0,1,2,28,29,30,31,32,43,44, 46, 47]|json_encode()}}" autocomplete="off">
+                        Data Rapor<br>Matematika
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="options" class="col-vis-do" data-col="{{[0,1,2,33,34,35,36,37,43,44, 46, 47]|json_encode()}}" autocomplete="off">
+                        Data Rapor<br>IPA - IPS
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="options" class="col-vis-do" data-col="{{[0,1,2,38,39,40,41,42,43,44, 46, 47]|json_encode()}}" autocomplete="off">
+                        Data Rapor<br>IPS
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="options" class="col-vis-do" data-col="{{[0,1,2,45, 46, 57]|json_encode()}}"  autocomplete="off">
+                        Data<br>Piagam
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-12 no-gutter" style="padding-top:20px;">
+                <div class="col-md-12 no-gutter">
+                    <table class="table" id="main-table" style="max-width:100% !important;">
+                        <thead>
+                            <tr class="info">
+                                <th class="text-center" rowspan="3">NO</th>
+                                <th class="text-center" rowspan="3" style="max-width:180px;min-width:180px;">NAMA</th>
+                                <th class="text-center" rowspan="3">ASAL SEKOLAH</th>
+                                <th class="text-center" rowspan="2" colspan="5">BIODATA PENDAFTAR</th>
+                                <th class="text-center" rowspan="1" colspan="7">DATA KELUARGA PENDAFTAR</th>
+                                <th class="text-center" rowspan="2" colspan="3">DATA ASAL SEKOLAH PENDAFTAR</th>
+                                <th class="text-center" colspan="27">NILAI RAPOR</th>
+                                <th class="text-center" rowspan="3">PIAGAM / SERTIFIKAT</th>
+                                <th class="text-center" rowspan="3">VERIFIKASI</th>
+                                <th class="text-center" rowspan="3">TINDAK<br>LANJUT</th>
+                                <!-- <th class="text-center" rowspan="2" colspan="2">VERIFIKASI<br>DATA</th> -->
+                            </tr>
+                            <tr class="info">
+                                <th class="text-center" colspan="3">AYAH</th>
+                                <th class="text-center" colspan="3">IBU</th>
+                                <th class="text-center" colspan="1">SAUDARA</th>
+                                <th class="text-center" colspan="5">BAHASA INDONESIA</th>
+                                <th class="text-center" colspan="5">BAHASA INGGRIS</th>
+                                <th class="text-center" colspan="5">MATEMATIKA</th>
+                                <th class="text-center" colspan="5">ILMU PENGETAHUAN ALAM</th>
+                                <th class="text-center" colspan="5">ILMU PENGETAHUAN SOSIAL</th>
+                                <th class="text-center" rowspan="2">JUMLAH</th>
+                                <th class="text-center" rowspan="2">RATA-RATA</th>
+                                <!-- <th class="text-center">RAPOR</th>
+                                <th class="text-center">PIAGAM</th> -->
+                                <!-- <th class="text-center" rowspan="2">TINDAK LANJUT</th> -->
+                            </tr>
+                            <tr class="info">
+                                <th class="text-center">NISN</th>
+                                <th class="text-center">JK</th>
+                                <th class="text-center">AGAMA</th>
+                                <th class="text-center">TTL</th>
+                                <th class="text-center">DARAH</th>
+                                <th class="text-center">NAMA</th>
+                                <th class="text-center">PEKERJAAN</th>
+                                <th class="text-center">GAJI</th>
+                                <th class="text-center">NAMA</th>
+                                <th class="text-center">PEKERJAAN</th>
+                                <th class="text-center">GAJI</th>
+                                <th class="text-center">ANAK KE</th>
+                                <th class="text-center">ASAL SEKOLAH</th>
+                                <th class="text-center">KOTA/KABUPATEN</th>
+                                <th class="text-center">ALAMAT</th>
+                                <th class="text-center">7 SMT 1</th>
+                                <th class="text-center">7 SMT 2</th>
+                                <th class="text-center">8 SMT 1</th>
+                                <th class="text-center">8 SMT 2</th>
+                                <th class="text-center">9 SMT 1</th>
+                                <th class="text-center">7 SMT 1</th>
+                                <th class="text-center">7 SMT 2</th>
+                                <th class="text-center">8 SMT 1</th>
+                                <th class="text-center">8 SMT 2</th>
+                                <th class="text-center">9 SMT 1</th>
+                                <th class="text-center">7 SMT 1</th>
+                                <th class="text-center">7 SMT 2</th>
+                                <th class="text-center">8 SMT 1</th>
+                                <th class="text-center">8 SMT 2</th>
+                                <th class="text-center">9 SMT 1</th>
+                                <th class="text-center">7 SMT 1</th>
+                                <th class="text-center">7 SMT 2</th>
+                                <th class="text-center">8 SMT 1</th>
+                                <th class="text-center">8 SMT 2</th>
+                                <th class="text-center">9 SMT 1</th>
+                                <th class="text-center">7 SMT 1</th>
+                                <th class="text-center">7 SMT 2</th>
+                                <th class="text-center">8 SMT 1</th>
+                                <th class="text-center">8 SMT 2</th>
+                                <th class="text-center">9 SMT 1</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for data in datas %}
+                        {% set data = data.data %}
+                        {% set bio, school, family, certs = data.bio, data.school, data.family, data.cert %}
+                        {% set father, mother, siblings, sibling_data = family.father, family.mother, family.sibling, family.sibling_data %}
+                        {% set total = 0 %}
+                        <tr data-id="{{psbdata.id}}" data-regnumber="{{psbdata.regnumber}}" data-name="{{bio.name}}" data-school="{{school.name}}">
+                            <td>{{loop.index}}</td>
+                            <td><b>{{bio.name}}</b></td>
+                            <td><b>{{school.name}}</b></td>
+                            <td>{{bio.nisn}}</td>
+                            <td>{{bio.gender|split('', 1)[0]}}</td>
+                            <td>{{bio.religion}}</td>
+                            <td>{{bio.birthplace}},<br>{{bio.birthdate}}</td>
+                            <td>{{bio.bloodtype}}</td>
+                            <td>{{father.name}}</td>
+                            <td>{{father.work}}</td>
+                            <td>{{father.paycheck}}</td>
+                            <td>{{mother.name}}</td>
+                            <td>{{mother.work}}</td>
+                            <td>{{mother.paycheck}}</td>
+                            <td>{{siblings.number}} dari {{siblings.from}} bersaudara</td>
+                            <td class="ver-school" data-type="{{school.name}}">{{school.name}}</td>
+                            <td>{{school.city}}</td>
+                            <td>{{school.address}}</td>
+
+                            {% for grade in  data.grades %}
+                                {% set total = total+grade.bahasa %}
+                                <td class="text-center ver-grade" data-type="bahasa" data-title="Verifikasi Nilai Bahasa Indonesia Semester {{loop.index}}" data-smt="{{loop.index}}" data-grade="{{grade.bahasa}}" data-image="{{grade.image}}"><abbr title="Klik dua kali untuk melakukan verifikasi">{{grade.bahasa}}</abbr></td>
+                            {% endfor %}
+                            {% for grade in  data.grades %}
+                                {% set total = total+grade.english %}
+                                <td class="text-center">{{grade.english}}</td>
+                            {% endfor %}
+                            {% for grade in  data.grades %}
+                                {% set total = total+grade.math %}
+                                <td class="text-center">{{grade.math}}</td>
+                            {% endfor %}
+                            {% for grade in  data.grades %}
+                                {% set total = total+grade.science %}
+                                <td class="text-center">{{grade.science}}</td>
+                            {% endfor %}
+                            {% for grade in  data.grades %}
+                                {% set total = total+grade.social %}
+                                <td class="text-center">{{grade.social}}</td>
+                            {% endfor %}
+                            <td class="text-center">{{total}}</td>
+                            <td class="text-center">{{ total / 25 }}</td>
+                            <td>
+                                {% for cert in certs %}
+                                    <p><b>{{cert.name}}</b>({{cert.year}}), {{cert.level}} - {{cert.rank}}</p>
+                                {% endfor %}
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-danger btn-block verification"><i class="fa fa-check fa-fw"></i> {{psbdata.verification}}%</button>
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-info btn-block confirmation"><i class="fa fa-external-link-square fa-fw"></i>Konfimasi</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }}
+<script src="public/assets/js/list.min.js"></script>
+<script src="public/assets/js/list.pagination.min.js"></script>
+<script src="public/assets/js/bootbox.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/b-1.2.4/b-colvis-1.2.4/b-html5-1.2.4/b-print-1.2.4/fc-3.2.2/fh-3.1.2/r-2.1.0/sc-1.4.2/se-1.2.0/datatables.min.js"></script>
+<script>
+    $(document).ready(function(){
+        var verGradeTmpl = Twig.twig({
+            href: baseUrl+"template/admin/psb/helper/modal-ver-grades.twig",
+            async: false
+        });
+        var table = $('#main-table').DataTable({
+            pagingType: "full_numbers",
+            autoWidth: false,
+            pageLength: 10,
+            colReorder: true,
+            // dom: 'lfrBtip',
+            dom: '<"col-md-12 no-gutter"<"col-md-6 no-lgutter"l><"col-md-6 no-rgutter"f>>t<"col-md-12 no-gutter"<"col-md-2 no-lgutter"B><"col-md-2 no-gutter"i><"col-md-8 no-rgutter"p>>',
+            buttons: {
+                name: 'primary',
+                buttons: [ 'copy', 'csv' ]
+            },
+            "language": {
+                "lengthMenu": "Tampilkan _MENU_ data per halaman",
+                "zeroRecords": "Tidak ada data yang cocok dengan pencarian anda",
+                "info": "Hal _PAGE_ dari _PAGES_ halaman",
+                "infoEmpty": "Tidak ada data tersedia",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "paginate": {
+                    "first":      '<i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i>',
+                    "last":       '<i class="fa fa-chevron-right"></i><i class="fa fa-chevron-right"></i>',
+                    "next":       '<i class="fa fa-chevron-right"></i>',
+                    "previous":   '<i class="fa fa-chevron-left"></i>'
+                },
+            }
+        });
+        $('#main-table').on( 'dblclick', 'tbody tr td.ver-grade', function () {
+            var data = {
+                id: $(this).parent().data('id'),
+                regnumber: $(this).parent().data('regnumber'),
+                name: $(this).parent().data('name'),
+                school: $(this).parent().data('school'),
+                smt : $(this).data('smt'),
+                type : $(this).data('type'),
+                img : $(this).data('image'),
+                grade : $(this).data('grade')
+            };
+            var title = $(this).data('title');
+            var dialog = bootbox.dialog({
+                title: title.toUpperCase(),
+                message: verGradeTmpl.render(data),
+                buttons: {
+                    add: {
+                        label: 'Verifikasi',
+                        className: "btn-success",
+                        callback: function() {
+                            $.post( baseUrl+'psb/ver-grade/'+data.regnumber, data, function(data){
+
+                            }, 'json');
+                            return false;
+                        }
+                    },
+                    cancel: {
+                        label: 'Batal',
+                        className: "btn-danger",
+                    }
+                }
+            });
+        });
+//        var def_view = [0,1,2,3,4,5,6,7, 46, 47];
+        var def_view = ['NO'];
+        table.columns().every(function(index){
+            if(jQuery.inArray( index, def_view ) >= 0){
+                table.column(index).visible( true );
+            }else{
+                table.column(index).visible( false );
+            }
+            console.log(index)
+        });
+        $('.col-vis-do').on('change', function(){
+            var btn = $(this);
+            var col = $(this).data('col');
+            $('.col-vis-do').each(function(){
+                $(this).parent().removeClass('btn-info');
+                $(this).parent().addClass('btn-default');
+                btn.parent().removeClass('btn-default');
+                btn.parent().addClass('btn-info');
+            });
+            table.columns().every(function(index){
+                if(jQuery.inArray( index, col ) >= 0){
+                    table.column(index).visible( true );
+                }else{
+                    table.column(index).visible( false );
+                }
+                console.log(index)
+            })
+            console.log(col)
+        });
+    })
+</script>
+{% endblock %}

@@ -3,7 +3,7 @@
 
 <head>
     {% block head %}
-    <base href="{{ base_path }}/">
+    <base href="{{ base_url() }}/">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,7 +11,7 @@
     <link href="public/assets/css/admin.css" rel="stylesheet">
     <link href="public/assets/css/font-awesome.min.css" rel="stylesheet">
     <link href="public/assets/css/image-picker.css" rel="stylesheet">
-    <link href="public/assets/css/admin.style.css" rel="stylesheet"> {% endblock %} {% set privilege = user_data.privilege %}
+    <link href="public/assets/css/admin.style.css" rel="stylesheet"> {% endblock %}
 </head>
 {% set AuthUser = AuthData.user %}
 {% set AuthGroupKey = AuthData.groupKey %}
@@ -111,77 +111,76 @@
         <!--sidebar wrapper-->
         <div id="sidebar-wrapper">
             <ul class="nav nav-pills nav-stacked">
-                <li class="{{ dashboard }}" style="padding: 10px 0;">
+                <li class="{{ active('AdminDashboard') }}" style="padding: 10px 0;">
                     <a href="{{ path_for('AdminDashboard') }}"><i class="fa fa-circle-o-notch fa-spin" style="padding:0;margin-right:10px;"></i>Dasbor</a>
                 </li>
-                {% if currentUserGroupID %}
                 {% if AuthUserGroups.role in ['writer', 'editor', 'administrator' ]%}
                 <li class="{{ sidemenu.post ? 'active' }}">
-                    <a href="{{ path_for('getAdminPostListHTML') }}"><i class="fa fa-thumb-tack fa-fw"></i>Pos</a>
+                    <a href="{{ path_for('') }}"><i class="fa fa-thumb-tack fa-fw"></i>Pos</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
-                        <li class="{{ sidemenu.post == 'all' ? 'active' }}"><a href="{{ path_for('getAdminPostListHTML') }}">Semua Pos</a></li>
-                        <li class="{{ sidemenu.post == 'add' ? 'active' }}"><a href="{{ path_for('getAdminPostAddHTML') }}">Tambah Baru</a></li>
-                        <li class="{{ sidemenu.post == 'media' ? 'active' }}"><a href="{{ path_for('getAdminPostmediaHTML') }}">Media</a></li>
-                        <li class="{{ sidemenu.post == 'category' ? 'active' }}"><a href="{{ path_for('getAdminCategoryListHTML') }}">Kategori</a></li>
+                        <li class="{{ sidemenu.post == 'all' ? 'active' }}"><a href="{{ path_for('') }}">Semua Pos</a></li>
+                        <li class="{{ sidemenu.post == 'add' ? 'active' }}"><a href="{{ path_for('') }}">Tambah Baru</a></li>
+                        <li class="{{ sidemenu.post == 'media' ? 'active' }}"><a href="{{ path_for('') }}">Media</a></li>
+                        <li class="{{ sidemenu.post == 'category' ? 'active' }}"><a href="{{ path_for('') }}">Kategori</a></li>
 <!--                        <li class=""><a href="#">Tags</a></li>-->
                     </ul>
                 </li>
                 <li class="{{ sidemenu.pages ? 'active' }}">
-                    <a href="{{ path_for('getAdminPagesListHTML') }}"><i class="fa fa-clone fa-fw"></i>Halaman</a>
+                    <a href="{{ path_for('') }}"><i class="fa fa-clone fa-fw"></i>Halaman</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
-                        <li class="{{ sidemenu.pages == 'all' ? 'active' }}"><a href="{{ path_for('getAdminPagesListHTML') }}">Semua Halaman</a></li>
-                        <li class="{{ sidemenu.pages == 'add' ? 'active' }}"><a href="{{ path_for('getAdminPagesAddHTML') }}">Tambah Baru</a></li>
+                        <li class="{{ sidemenu.pages == 'all' ? 'active' }}"><a href="{{ path_for('') }}">Semua Halaman</a></li>
+                        <li class="{{ sidemenu.pages == 'add' ? 'active' }}"><a href="{{ path_for('') }}">Tambah Baru</a></li>
                         <li class=""><a href="#">Manager File</a></li>
-                        <li class="{{ sidemenu.pages == 'teachers' ? 'active' }}"><a href="{{ path_for('getAdminCustomPageTeachersHTML') }}">Data Guru</a></li>
+                        <li class="{{ sidemenu.pages == 'teachers' ? 'active' }}"><a href="{{ path_for('') }}">Data Guru</a></li>
                     </ul>
                 </li>
 <!--                <li class=""><a href="#"><i class="fa fa-comments-o fa-fw"></i>Komentar</a></li>-->
                 <li class="{{ sidemenu.gallery ? 'active' }}">
-                    <a href="{{ path_for('getAdminCustomGalleryHTML') }}"><i class="fa fa-picture-o fa-fw"></i>Galeri</a>
+                    <a href="{{ path_for('') }}"><i class="fa fa-picture-o fa-fw"></i>Galeri</a>
                 </li>
                 {% endif %}
             </ul>
             <ul class="nav nav-pills nav-stacked" style="padding-top:30px;">
                 {% if AuthUserGroups.role in [ 'register', 'administrator' ] %}
-                <li class="{{ sidemenu.psb ? 'active' }}">
-                    <a href="{{ path_for('getAdminPSBListHTML') }}"><i class="fa fa-rocket fa-fw"></i>Aplikasi</a>
+                <li class="{{ active(['admin_PPDB_forms', 'admin_PPDB_data']) }}">
+                    <a href="{{ path_for('admin_PPDB_forms') }}"><i class="fa fa-rocket fa-fw"></i>Aplikasi</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
-                        <li class="{{ sidemenu.psb == 'all' ? 'active' }}"><a href="{{ path_for('getAdminPSBListHTML') }}">Pendaftaran</a></li>
-                        <li class="{{ sidemenu.psb == 'result' ? 'active' }}"><a href="{{ path_for('getAdminPSBListHTML') }}">Data Pendaftar</a></li>
+                        <li class="{{ active('admin_PPDB_forms') }}"><a href="{{ path_for('admin_PPDB_forms') }}">Pendaftaran</a></li>
+                        <li class="{{ active('admin_PPDB_data', true) }}"><a href="{{ hidden_path('admin_PPDB_data') }}">Data Pendaftar</a></li>
                     </ul>
                 </li>
                 {% endif %} {% if privilege.role in [ 'editor', 'administrator' ] %}
                 <li class="{{ sidemenu.view ? 'active' }}">
-                    <a href="{{ path_for('getAdminMenuListHTML') }}"><i class="fa fa-paint-brush fa-fw"></i>Tampilan</a>
+                    <a href="{{ path_for('') }}"><i class="fa fa-paint-brush fa-fw"></i>Tampilan</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
-                        <li class="{{ sidemenu.view == 'menu' ? 'active' }}"><a href="{{ path_for('getAdminMenuListHTML') }}">Menu</a></li>
+                        <li class="{{ sidemenu.view == 'menu' ? 'active' }}"><a href="{{ path_for('') }}">Menu</a></li>
                         <li class=""><a href="#">Pengaturan Tampilan</a></li>
                         <li class=""><a href="#">Halaman Depan</a></li>
                     </ul>
                 </li>
                 {% endif %} {% if privilege.role in [ 'administrator' ] %}
                 <li class="{{ sidemenu.groups ? 'active' }}">
-                    <a href="{{ path_for('getAdminGroupsListHTML') }}"><i class="fa fa-cubes fa-fw"></i>Komunitas</a>
+                    <a href="{{ path_for('') }}"><i class="fa fa-cubes fa-fw"></i>Komunitas</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
-                        <li class="{{ sidemenu.groups == 'list' ? 'active' }}"><a href="{{ path_for('getAdminGroupsListHTML') }}">Semua Komunitas</a></li>
+                        <li class="{{ sidemenu.groups == 'list' ? 'active' }}"><a href="{{ path_for('') }}">Semua Komunitas</a></li>
                         <li class=""><a role="button" class="new-groups">Tambah Baru</a></li>
                     </ul>
                 </li>
                 <li class="{{ sidemenu.users ? 'active' }}">
-                    <a href="{{ path_for('getAdminUserListHTML') }}"><i class="fa fa-user-circle-o fa-fw"></i>Pengguna</a>
+                    <a href="{{ path_for('') }}"><i class="fa fa-user-circle-o fa-fw"></i>Pengguna</a>
                     <ul class="nav nav-pills nav-stacked nav-sub">
-                        <li class="{{ sidemenu.users == 'list' ? 'active' }}"><a href="{{ path_for('getAdminUserListHTML') }}">Semua Pengguna</a></li>
+                        <li class="{{ sidemenu.users == 'list' ? 'active' }}"><a href="{{ path_for('') }}">Semua Pengguna</a></li>
                         <li class=""><a role="button" class="invite-users">Tambah Baru</a></li>
                         <li class=""><a href="#">Profil Anda</a></li>
                     </ul>
                 </li>
                 {% else %}
                 <li class="{{ sidemenu.users ? 'active' }}">
-                    <a href="{{ path_for('getAdminUserListHTML') }}"><i class="fa fa-user-circle-o fa-fw"></i>Profil</a>
+                    <a href="{{ path_for('') }}"><i class="fa fa-user-circle-o fa-fw"></i>Profil</a>
                 </li>
                 {% endif %} {% if privilege.role in [ 'administrator' ] %}
                 <li class="{{ sidemenu.settings ? 'active' }}">
-                    <a href="{{ path_for('getAdminSettingsHTML') }}"><i class="fa fa-sliders fa-fw"></i>Pengaturan</a>
+                    <a href="{{ path_for('') }}"><i class="fa fa-sliders fa-fw"></i>Pengaturan</a>
 <!--
                     <ul class="nav nav-pills nav-stacked nav-sub">
                         <li class=""><a href="#">Umum</a></li>
@@ -189,11 +188,6 @@
                         <li class=""><a href="#">Media Sosial</a></li>
                     </ul>
 -->
-                </li>
-                {% endif %}
-                {% else %}
-                <li class="{{ sidemenu.users ? 'active' }}">
-                    <a href="{#{ path_for('getAdminUserListHTML') }#}"><i class="fa fa-user-circle-o fa-fw"></i>Profil</a>
                 </li>
                 {% endif %}
             </ul>
@@ -301,7 +295,7 @@
     <script>
         var baseUrl = $('base').attr('href');
         $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip();
+            // $('[data-toggle="tooltip"]').tooltip();
         });
 
         // var globalUrl = {#

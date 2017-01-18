@@ -1,0 +1,46 @@
+<form method="post">
+    <fieldset>
+        <div class="col-md-4 no-lgutter">
+            <div class="form-group">
+                <label class="control-label">Nama Formulir</label>
+                <input class="form-control" type="text" name="name">
+            </div>
+        </div>
+        <div class="col-md-2 no-lgutter">
+            <div class="form-group">
+                <label class="control-label">Jalur</label>
+                <select class="form-control" name="type">
+                    <option value="reguler">Reguler</option>
+                    <option value="prestasi">Prestasi</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2 no-lgutter">
+            <div class="form-group">
+                <label class="control-label">Kuota Penerimaan</label>
+                <input type="number" class="form-control" name="quota">
+            </div>
+        </div>
+        <div class="col-md-4 no-gutter">
+            <div class="form-group">
+                <label class="control-label">Dibuka</label>
+                <div class="input-group input-daterange">
+                    <input type="text" class="form-control" name="start" value="{{start|date("d M Y")}}">
+                    <span class="input-group-addon">Sampai</span>
+                    <input type="text" class="form-control" name="end" value="{{ end|date("d M Y") }}">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 no-lgutter form-group">
+            <label class="control-label">Pesan Infromasi Pendaftaran</label>
+            <div class="summernote-before"><p></p></div>
+            <input type="hidden" class="messages-before" name="before">
+        </div>
+        <div class="col-md-6 no-gutter form-group">
+            <label class="control-label">Pesan Sesudah Pendaftaran</label>
+            <div class="summernote-after"><p></p></div>
+            <input type="hidden" class="messages-after" name="after">
+        </div>
+    </div>
+</fieldset>
+</form>

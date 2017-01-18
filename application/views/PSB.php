@@ -18,12 +18,27 @@ class PSB extends \Wijaya\WebApp {
         $this->psbModel = new \Wijaya\WebApp\Models\PSB($ci);
     }
 
+    public function adminPPDBForms($req, $res, $args){
+        $req = $req->withAttribute('sidemenu', ['aplications'=>[]]);
+        $req = $req->withAttribute('PSB', $this->psbModel->getPSBform());
+        return $this->view->render($res, 'admin/psb/index.twig', $req->getAttributes());
+    }
+
+    public function adminPPDBData($req, $res, $args){
+        $req = $req->withAttribute('sidemenu', ['psb'=>'all']);
+        $req = $req->withAttribute('PSB', $this->psbModel->getPSBform());
+        return $this->view->render($res, 'admin/psb/index.twig', $req->getAttributes());
+    }
+
     public function homePsb($req, $res, $args){
+        $req = $req->withAttribute('sidemenu', ['psb'=>'all']);
         $req = $req->withAttribute('PSB', $this->psbModel->getPSBform());
         return $this->view->render($res, 'admin/psb/index.twig', $req->getAttributes());
     }
 
     public function PSBData($req, $res, $args){
+        $req = $req->withAttribute('sidemenu', ['psb'=>'all']);
+        $req = $req->withAttribute('PSBForm', $this->psbModel->getPSBForm($args['psb_id']));
         $req = $req->withAttribute('PSBData', $this->psbModel->getPSBData($args['psb_id']));
         return $this->view->render($res, 'admin/psb/psb-data.twig', $req->getAttributes());
     }

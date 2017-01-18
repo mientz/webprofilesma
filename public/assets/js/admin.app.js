@@ -4,7 +4,7 @@ $(document).ready(function (e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
-    $("img.lazy").lazyload();
+    // $("img.lazy").lazyload();
 });
 
 /**
@@ -713,7 +713,7 @@ function addPostPage(){
 
 
 function postListPage(){
-    
+
 }
 
 function pagesListPage(){
@@ -1267,4 +1267,158 @@ function menuPage(){
     window.removeMenu = function (elm){
         $(elm).parent().parent().parent().remove();
     }
+}
+
+function PPDBForm(option) {
+    var url = option.url;
+    var addFormTemplate = Twig.twig({
+        href: baseUrl + "template/admin/ppdb/helper/form-add.twig",
+        async: false
+    });
+    var editFormTemplate = Twig.twig({
+        href: baseUrl + "template/admin/psb/psb-info-form.twig",
+        async: false
+    });
+
+    $('#new-form').on('click', function () {
+        var btn = $(this);
+        var dialog = bootbox.dialog({
+            className: 'modal-success',
+            size: 'large',
+            title: 'Buat Formulir Pendaftaran',
+            message: addFormTemplate.render(),
+            buttons: {
+                add: {
+                    label: 'Tambah',
+                    className: "btn-info",
+                    callback: function () {
+                        dialog.find('form').submit(function (e) {
+                            e.preventDefault;
+                            // return false to prevent normal browser submit and page navigation
+                            return false;
+                        });
+                        // submit the form
+                        dialog.find('form').ajaxSubmit({
+                            url: url.newForm,
+                            success: function (data) {
+                                if (data.status == 'success') {
+                                    location.reload();
+                                } else {
+                                    $.notify(data.message, "error");
+                                }
+                            }
+                        });
+                        return false;
+                    }
+                },
+                cancel: {
+                    label: 'Batal',
+                    className: "btn-default",
+                }
+            }
+        });
+        dialog.init(function () {
+            $('.summernote-before').summernote({
+                maxHeight: 200,
+                height: 200,
+                callbacks: {
+                    onChange: function (contents, $editable) {
+                        dialog.find('.messages-before').val(contents);
+                    }
+                }
+            });
+            $('.summernote-after').summernote({
+                maxHeight: 200,
+                height: 200,
+                callbacks: {
+                    onChange: function (contents, $editable) {
+                        dialog.find('.messages-after').val(contents);
+                    }
+                }
+            });
+            $('.input-daterange input').each(function () {
+                $(this).datepicker({
+                    autoclose: true,
+                    format: 'd M yyyy',
+                    todayHighlight: true,
+                    todayBtn: true,
+                    zIndexOffset: 50000000
+                });
+            });
+        });
+    })
+    $('.edit-form').on('click', function () {
+        var btn = $(this);
+        var data = btn.data('form');
+        var dialog = bootbox.dialog({
+            title: 'Buat Formulir Pendaftaran',
+            size: 'large',
+            message: editFormTemplate.render(data),
+            buttons: {
+                view: {
+                    label: 'Lihat Pendaftar',
+                    className: "btn-success pull-left",
+                    callback: function () {
+                        location.replace(baseUrl + 'admin/psb/list-' + data.id);
+                    }
+                },
+                add: {
+                    label: 'Simpan Perubahan',
+                    className: "btn-info",
+                    callback: function () {
+                        dialog.find('form').submit(function (e) {
+                            e.preventDefault;
+                            // return false to prevent normal browser submit and page navigation
+                            return false;
+                        });
+                        // submit the form
+                        dialog.find('form').ajaxSubmit({
+                            url: baseUrl + 'api/edit/psb/' + data.id,
+                            success: function (data) {
+                                if (data.status == 'success') {
+                                    location.reload();
+                                } else {
+                                    $.notify(data.message, "error");
+                                }
+                            }
+                        });
+                        return false;
+                    }
+                },
+                cancel: {
+                    label: 'Batal',
+                    className: "btn-default",
+                }
+            }
+        });
+        dialog.init(function () {
+            $('.summernote-before').summernote({
+                maxHeight: 200,
+                height: 200,
+                callbacks: {
+                    onChange: function (contents, $editable) {
+                        dialog.find('.messages-before').val(contents);
+                    }
+                }
+            });
+            $('.summernote-after').summernote({
+                maxHeight: 200,
+                height: 200,
+                callbacks: {
+                    onChange: function (contents, $editable) {
+                        dialog.find('.messages-after').val(contents);
+                    }
+                }
+            });
+            $('.input-daterange input').each(function () {
+                $(this).datepicker({
+                    autoclose: true,
+                    format: 'd M yyyy',
+                    todayHighlight: true,
+                    todayBtn: true,
+                    zIndexOffset: 50000000
+                });
+            });
+        });
+    })
 }

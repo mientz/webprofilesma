@@ -21,40 +21,66 @@ $container = $app->getContainer();
 require 'container.php';
 
 // base url midleware
-$app->add(new \Wijaya\WebApp\Middleware\Path);
+$app->add(new \Wijaya\WebApp\Middleware\Path($container));
 
-$app->group('/auth', function() {
-    $this->get('-login', \Wijaya\WebApp\View\Auth::class.':Login')->setname('AdminLogin'); // Login Page
-    $this->post('-login', \Wijaya\WebApp\Controller\Auth::class.':Login'); // Login Page
-    $this->get('-logout', \Wijaya\WebApp\Controller\Auth::class.':Logout')->setname('AdminLogout'); // Login Page
-});
 $app->any('/register/{token}', \Wijaya\WebApp\Register::class)->setname('AdminRegister');
-
-$app->group('/api', function() {
-    $this->group('/get', function(){
-        $this->get('/post[/{id}]', \Wijaya\WebApp\Controller\Post::class)->setname('ApiPost');
-        $this->get('/psb[/{psb_id}]', \Wijaya\WebApp\Controller\PSB::class.':getPSBData')->setname('ApiPost');
-    });
-    $this->group('/new', function(){
-        $this->post('/psb', \Wijaya\WebApp\Controller\PSB::class.':newPSBForm')->setname('ApiPSB_new');
-        $this->post('/psb-data/{psb_id}[/{step}[/{regnumber}]]', \Wijaya\WebApp\Controller\PSB::class.':savePSBData')->setname('ApiPSB_DataSave');
-    });
-    $this->group('/edit', function(){
-        $this->post('/psb[/{id}]', \Wijaya\WebApp\Controller\PSB::class.':editPSBForm')->setname('ApiPSB_edit');
-    });
-})
-->add(new \Wijaya\WebApp\Middleware\AuthData($container));
+$app->group('/auth', function() {
+    $this->get('-login.html', \Wijaya\WebApp\View\Auth::class.':Login')->setname('AdminLogin'); // Login Page
+    $this->post('-login.html', \Wijaya\WebApp\Controller\Auth::class.':Login'); // Login Page
+    $this->get('-logout.html', \Wijaya\WebApp\Controller\Auth::class.':Logout')->setname('AdminLogout'); // Login Page
+});
 
 $app->group('/admin', function() {
-    $this->get('', \Wijaya\WebApp\Admin\Dashboard::class)->setname('AdminDashboard');
-    $this->get('/post', \Wijaya\WebApp\View\Post::class.':getPosts')->setname('AdminPost');
-    $this->get('/psb', \Wijaya\WebApp\View\PSB::class.':homePsb')->setname('AdminPSB');
-    $this->get('/psb/list-{psb_id}', \Wijaya\WebApp\View\PSB::class.':PSBData')->setname('AdminPSB_DataView');
+    $this->get('.html', \Wijaya\WebApp\Admin\Dashboard::class)->setname('AdminDashboard');
+    $this->group('ppdb', function(){
+        $this->get('forms.html', '\Wijaya\WebApp\View\AdminPPDB:form')->setname('admin_PPDB_forms');
+        $this->get('data{name}.html', '\Wijaya\WebApp\View\AdminPPDB:data')->setname('admin_PPDB_data');
+        $this->group('actions', function(){
+            $this->post('newform', '\Wijaya\WebApp\Controller\AdminPPDB:newForm')->setname('admin_PPDB_forms_new');
+        });
+    });
+    //
+    // $this->group('/api', function(){
+    //     $this->group('/ppdb', function(){
+    //         $this->post('/forms/{psb_id}', '\Wijaya\WebApp\Controller\PSB:adminPPDBForms');
+    //         $this->post('/data', '\Wijaya\WebApp\Controller\PSB:adminPPDBData');
+    //     });
+    //     // $this->any('/psb[/{params:.*}]', \Wijaya\WebApp\Controller\PSB::class)->setname('ApiPSB');
+    //     $this->any('/psb[/{id:[0-9]+}]', \Wijaya\WebApp\Controller\PSB::class.':getPSBForm')->setname('ApiPSB_form');
+    //     $this->any('/psb/data[/{id:[0-9]+}]', \Wijaya\WebApp\Controller\PSB::class.':getPSBForm')->setname('ApiPSB_form');
+    //     $this->any('/psb/data/verification[/{regnumber:[0-9]+}]', \Wijaya\WebApp\Controller\PSB::class.':getPSBForm')->setname('ApiPSB_DataRegnumber');
+    //     $this->group('/get', function(){
+    //         $this->get('/post[/{id}]', \Wijaya\WebApp\Controller\Post::class)->setname('ApiPost');
+    //         $this->get('/psb[/{psb_id}]', \Wijaya\WebApp\Controller\PSB::class.':getPSBData')->setname('ApiPSB');
+    //     });
+    //     $this->group('/new', function(){
+    //         $this->post('/psb', \Wijaya\WebApp\Controller\PSB::class.':newPSBForm')->setname('ApiPSB_new');
+    //     });
+    //     $this->group('/edit', function(){
+    //         $this->post('/psb[/{id}]', \Wijaya\WebApp\Controller\PSB::class.':editPSBForm')->setname('ApiPSB_edit');
+    //         // $this->post('/psb/ver-[/{type}[/{regnumber}]]', \Wijaya\WebApp\Controller\PSB::class.':verification')->setname('ApiPSB_verification');
+    //     });
+    // });
+        // // $this->map(['GET', 'POST'], '/ppdb[/{id}]', '\Wijaya\WebApp\Controller\PSB:adminPSBForm')->setname('admin_psb_form');
+        // $this->get('/psb/form', \Wijaya\WebApp\View\PSB::class.':homePsb')->setname('AdminPSB');
+        // $this->get('/psb/data/{psb_id}', \Wijaya\WebApp\View\PSB::class.':PSBData')->setname('AdminPSB_DataView');
+
 })
 ->add(new \Wijaya\WebApp\Middleware\AuthData($container));
 
-$app->group('', function() {
-    $this->get('/ppdb[/{psb_id}[/langkah-{step}[/{regnumber}]]]', \Wijaya\WebApp\View\PSB::class.':fieldPSB')->setname('WebPSB');
+$app->group('/', function() {
+    // $this->any('/ppdb/{name}')
+    // $this->get('/ppdb[/{psb_id:[0-9]+}[/langkah-{step:[0-9]+}[/{regnumber:[0-9]+}]]]', \Wijaya\WebApp\View\PSB::class.':fieldPSB')->setname('WebPSB');
+    $this->group('ppdb', function(){
+        $this->get('-{name}.html', '\Wijaya\WebApp\View\WebPPDB:form')->setname('web_PPDB_form');
+        $this->group('-actions', function(){
+            $this->post('-newdata-{name}.html', '\Wijaya\WebApp\Controller\WebPPDB:newData')->setname('web_PPDB_data_new');
+        });
+    });
+
+    $this->group('/api', function(){
+        $this->post('/psb-data/{psb_id:[0-9]+}[/{step:[0-9]+}[/{regnumber:[0-9]+}]]', '\Wijaya\WebApp\Controller\PSB:newPSBData')->setname('ApiPSB_DataSave');
+    });
 })
 ->add(new \Wijaya\WebApp\Middleware\WebSettings($container));
 // $app->group('/auth', function(){
@@ -240,12 +266,19 @@ $app->group('', function() {
 
 $app->any('/test', function($req, $res, $args){
     // $POST = new \Wijaya\WebApp\Admin\Post($container);
-    $data = $this->pdo->insert(['lala', 'lele'])->into('lolo')->values([1, 2]);
-    // $data = $req->getParsedBody();
-    // $ticket_data = [];
-    // $ticket_data['title'] = filter_var($data['title'], FILTER_SANITIZE_STRING);
-    // $ticket_data['description'] = filter_var($data['description'], FILTER_SANITIZE_STRING);
-    return $res->write($data);
+    if($req->isPost()){
+        $files = $req->getUploadedFiles();
+        $lala = [];
+        foreach ($files as $input) {
+            foreach ($input as $file){
+                array_push($lala, $file->getClientFilename());
+            }
+        }
+        return $res->withJson($lala);
+    }else{
+        return $this->view->render($res, 'coba.twig', $req->getAttributes());
+    }
+    // return $res->withJson(explode('/', $args['actions']));
 });
 
 $app->any('/us', \Wijaya\WebApp\Controller\Users::class.':getUsers');

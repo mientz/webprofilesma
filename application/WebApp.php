@@ -17,6 +17,7 @@ class WebApp{
     protected $filesize;
     protected $router;
     protected $report;
+    public $activePage;
     /**
      * Main WEB App Constructor
      * @method __construct

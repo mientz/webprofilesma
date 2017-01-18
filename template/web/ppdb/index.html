@@ -1,0 +1,336 @@
+{% extends "web/base.html" %}{% block head %} {{ parent() }}
+<link href="public/assets/css/awesome-bootstrap-checkbox.css" rel="stylesheet">
+<link href="public/assets/css/bootstrap-datepicker.min.css" rel="stylesheet">
+{% endblock %} {% block title %} Home {% endblock %} {% block content %}
+<!--page header area-->
+<div class="col-md-12 col-xs-12 page-header-area">
+    <div class="col-md-12">
+        <div class="col-md-10 col-md-offset-1">
+            <blockquote>
+                <h3>Jalur Reguler</h3>
+            </blockquote>
+        </div>
+    </div>
+</div>
+<div class="col-md-12 col-xs-12 page-wrapper-area">
+    <div class="col-md-12">
+        <div class="col-md-10 col-md-offset-1">
+            <ul class="breadcrumb">
+                <li><a href="#">Beranda</a></li>
+                <li>Pendaftaran</li>
+                <li class="active">Jalur Reguler</li>
+            </ul>
+            <div class="col-md-9 news-list">
+                <div class="col-md-12 news-item">
+
+                    <div class="col-md-12 news-title news-title-detail">
+                        <h1>Pendaftaran Jalur Reguler</h1>
+                    </div>
+                    <div class="wizard">
+                        <div class="wizard-inner">
+                            <div class="connecting-line"></div>
+                            <ul class="nav nav-tabs" role="tablist">
+
+                                <li role="presentation" class="{{ step == 1 ? 'active' : 'disabled'}}">
+                                    <a  aria-controls="step1" role="tab" title="Step 1">
+                                        <span class="round-tab">
+                                            <i class="fa fa-user fa-fw fa-lg"></i>
+                                        </span>
+                                    </a>
+                                </li>
+
+                                <li role="presentation" class="{{ step == 2 ? 'active' : 'disabled'}}">
+                                    <a  aria-controls="step2" role="tab" title="Step 2">
+                                        <span class="round-tab">
+                                            <i class="fa fa-users fa-fw fa-lg"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li role="presentation" class="{{ step == 3 ? 'active' : 'disabled'}}">
+                                    <a  aria-controls="step3" role="tab" title="Step 3">
+                                        <span class="round-tab">
+                                            <i class="fa fa-graduation-cap fa-fw fa-lg"></i>
+                                        </span>
+                                    </a>
+                                </li>
+
+                                <li role="presentation" class="{{ step == 4 ? 'active' : 'disabled'}}">
+                                    <a  aria-controls="complete" role="tab" title="Complete">
+                                        <span class="round-tab">
+                                            <i class="fa fa-check fa-fw fa-lg"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                            <div class="tab-content">
+                                <div class="tab-pane {{ step == 1 ? 'active' : 'hidden'}}" id="step1">
+                                    <form method="post" data-toggle="validator" role="form" action="{{ path_for('actionsRegisterPre', {'id': psb_id, 'step':step}) }}">
+                                        <fieldset>
+                                            <legend>Data Diri</legend>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Nama Lengkap</label>
+                                                <input class="form-control" type="text" name="name" data-error="Wajib di-isi" required>
+                                                <div class="help-block with-errors"></div>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">NISN</label>
+                                                <input class="form-control" pattern="^[_0-9]{1,}$"  type="text" name="nisn" data-error="Wajib di-isi. Hanya Angka" required>
+                                                <div class="help-block with-errors"></div>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Jenis Kelamin</label>
+                                                <div class="radio">
+                                                    <input type="radio" name="gender" value="Laki-laki" required>
+                                                    <label>Laki-Laki</label>
+                                                </div>
+                                                <div class="radio">
+                                                    <input type="radio" name="gender" value="Perempuan" required>
+                                                    <label>Perempuan</label>
+                                                </div>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Agama</label>
+                                                <select class="form-control" name="religion" required data-error="Wajib Memilih">
+                                                    <option value="Islam">Islam</option>
+                                                    <option value="Katolik">Katolik</option>
+                                                    <option value="Protestan">Protestan</option>
+                                                    <option value="Hindu">Hindu</option>
+                                                    <option value="Budha">Budha</option>
+                                                </select>
+                                                <div class="help-block with-errors"></div>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Tempat Lahir</label>
+                                                <input class="form-control" type="text" name="birthplace" data-error="Wajib di-isi" required>
+                                                <div class="help-block with-errors"></div>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Tanggal Lahir</label>
+                                                <input class="form-control date-picker" type="text" name="birthdate" data-error="Wajib di-isi" required>
+                                                <div class="help-block with-errors"></div>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Golongan Darah</label>
+                                                <select class="form-control" name="bloodtype" required data-error="Wajib Memilih">
+                                                    <option value="A">A</option>
+                                                    <option value="B">B</option>
+                                                    <option value="AB">AB</option>
+                                                    <option value="O">O</option>
+                                                </select>
+                                                <div class="help-block with-errors"></div>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary pull-right">Selanjutnya</button>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                <div class="tab-pane {{ step == 2 ? 'active' : 'hidden'}}" role="tabpanel" id="step2">
+                                    <form method="post" data-toggle="validator" role="form" action="{{ path_for('actionsRegisterPre', {'id': psb_id, 'step':step, 'data_id': data_id?:0 }) }}">
+                                        <fieldset>
+                                            <legend>Data Keluarga</legend>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Nama Ayah</label>
+                                                <input class="form-control" type="text" name="father_name" data-error="Wajib di-isi" required>
+                                                <div class="help-block with-errors"></div>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Alamat Ayah</label>
+                                                <input class="form-control" type="text" name="father_address">
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Pekerjaan Ayah</label>
+                                                <input class="form-control" type="text" name="father_work">
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Penghasilan Ayah per bulan</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Rp.</span>
+                                                    <input class="form-control" pattern="^[_0-9]{1,}$" type="text" name="father_paycheck" data-error="Wajib di-isi. Hanya Angka" required>
+                                                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                </div>
+                                                <div class="help-block with-errors"></div>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Nama Ibu</label>
+                                                <input class="form-control" type="text" name="father_name" data-error="Wajib di-isi" required>
+                                                <div class="help-block with-errors"></div>
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Alamat Ibu</label>
+                                                <input class="form-control" type="text" name="father_address">
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Pekerjaan Ibu</label>
+                                                <input class="form-control" type="text" name="father_work">
+                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Penghasilan Ibu per bulan</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Rp.</span>
+                                                    <input class="form-control" pattern="^[_0-9]{1,}$" type="text" name="father_paycheck" data-error="Wajib di-isi. Hanya Angka" required>
+                                                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                </div>
+                                                <div class="help-block with-errors"></div>
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-primary pull-right">Selanjutnya</button>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                <div class="tab-pane {{ step == 3 ? 'active' : 'hidden'}}" role="tabpanel" id="step3">
+                                    <fieldset>
+                                        <legend>Data Sekolah</legend>
+                                        <form method="post"  data-toggle="validator" role="form">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th rowspan="3" class="text-center">Mata Pelajaran</th>
+                                                        <th colspan="5" class="text-center">Nilai</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th colspan="2" class="text-center">Kelas VII</th>
+                                                        <th colspan="2" class="text-center">Kelas VIII</th>
+                                                        <th colspan="1" class="text-center">Kelas IX</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Semester 1</th>
+                                                        <th>Semester 2</th>
+                                                        <th>Semester 1</th>
+                                                        <th>Semester 2</th>
+                                                        <th>Semester 1</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Bahasa dan Sastra Indonesia</td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="bahasa[1]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="bahasa[2]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="bahasa[3]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="bahasa[4]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="bahasa[5]" required></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Bahasa Inggris</td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="inggris[1]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="inggris[2]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="inggris[3]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="inggris[4]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="inggris[5]" required></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Matematika</td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="mat[1]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="mat[2]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="mat[3]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="mat[4]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="mat[5]" required></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Ilmu Pengetahuan Alam</td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="ipa[1]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="ipa[2]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="ipa[3]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="ipa[4]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="ipa[5]" required></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Ilmu Pengetahuan Sosial</td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="ips[1]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="ips[2]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="ips[3]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="ips[4]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="ips[5]" required></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td colspan="5"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Jumlah Nilai Rapor</td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="total_rapor[1]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="total_rapor[2]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="total_rapor[3]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="total_rapor[4]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="total_rapor[5]" required></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Jumlah Nilai Rapor</td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="total_mapel[1]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="total_mapel[2]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="total_mapel[3]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="total_mapel[4]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="total_mapel[5]" required></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Rata Rata Rapor</td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="rata_rapor[1]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="rata_rapor[2]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="rata_rapor[3]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="rata_rapor[4]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="rata_rapor[5]" required></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Rata Rata Rapor</td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="peringkat[1]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="peringkat[2]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="peringkat[3]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="peringkat[4]" required></td>
+                                                        <td><input class="form-control" id="focusedInput" type="number" name="peringkat[5]" required></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary pull-right">Selanjutnya</button>
+                                            </div>
+                                        </form>
+                                    </fieldset>
+                                </div>
+                                <div class="tab-pane {{ step == 4 ? 'active' : 'hidden'}}" role="tabpanel" id="complete">
+
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                    </div>
+
+                </div>
+            </div>
+            {% include 'web/sidebar.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %} {% block js %} {{ parent() }}
+<script type="text/javascript" src="public/assets/js/validator.min.js"></script>
+<script src="public/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="public/assets/js/bootstrap-datepicker.id.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.date-picker').each(function() {
+            $(this).datepicker({
+                autoclose: true,
+                format: 'd M yyyy',
+                todayHighlight: true,
+                todayBtn: true,
+                zIndexOffset: 50000000,
+                language: 'id'
+            });
+        });
+    });
+</script>
+{% endblock %}
